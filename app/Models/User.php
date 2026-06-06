@@ -7,10 +7,12 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'google_id', 'avatar', 'biografia'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -28,5 +30,45 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Obtiene los roles asignados al usuario.
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * Obtiene las reseñas escritas por el usuario.
+     */
+    public function resenas(): HasMany
+    {
+        return $this->hasMany(Resena::class);
+    }
+
+    /**
+     * Obtiene los favoritos del usuario.
+     */
+    public function favoritos(): HasMany
+    {
+        return $this->hasMany(Favorito::class);
+    }
+
+    /**
+     * Obtiene los destinos visitados por el usuario.
+     */
+    public function destinosVisitados(): HasMany
+    {
+        return $this->hasMany(DestinoVisitado::class);
+    }
+
+    /**
+     * Verifica si el usuario tiene un rol específico por su nombre.
+     */
+    public function hasRole(string $roleName): bool
+    {
+        return $this->roles()->where('nombre', $roleName)->exists();
     }
 }
