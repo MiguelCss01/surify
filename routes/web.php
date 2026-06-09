@@ -42,6 +42,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+// 7. Herramientas (solo usuarios registrados)
+use App\Http\Controllers\CombustibleController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/herramientas/combustible', [CombustibleController::class, 'index'])->name('combustible.index');
+});
 
 // Ruta temporal - módulo Combustible (pendiente de implementar)
 Route::middleware('auth')->get('/combustible', function () {

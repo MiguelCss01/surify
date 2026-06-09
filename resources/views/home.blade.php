@@ -13,17 +13,17 @@
                 @if(isset($banners) && $banners->count() > 0)
                     @foreach($banners as $index => $banner)
                         <img src="{{ asset('storage/' . $banner->imagen) }}" 
-                             class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 {{ $index == 0 ? 'opacity-100' : 'opacity-0' }} filter brightness-[0.7]" alt="{{ $banner->titulo }}">
+                             class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 {{ $index == 0 ? 'opacity-100' : 'opacity-0' }} filter brightness-[0.65]" alt="{{ $banner->titulo }}">
                     @endforeach
                 @else
-                    <!-- Imágenes estables de respaldo en HD -->
-                    <img src="https://images.unsplash.com/photo-1589307775553-9f62f3a61dfc?auto=format&fit=crop&w=1920&q=80" class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100 filter brightness-[0.7]" alt="Iguazú">
-                    <img src="https://images.unsplash.com/photo-1513026705753-bc31df43b444?auto=format&fit=crop&w=1920&q=80" class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0 filter brightness-[0.7]" alt="Perito Moreno">
-                    <img src="https://images.unsplash.com/photo-1623055418146-da1cb8b7754b?auto=format&fit=crop&w=1920&q=80" class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0 filter brightness-[0.7]" alt="Humahuaca">
+                    <!-- CORRECCIÓN: URLs optimizadas de respaldo con compresión automática y carga garantizada -->
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920&auto=format&fit=crop" class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100 filter brightness-[0.65]" alt="Iguazú">
+                    <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1920&auto=format&fit=crop" class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0 filter brightness-[0.65]" alt="Perito Moreno">
+                    <img src="https://images.unsplash.com/photo-1606293926075-69a00dbfde81?q=80&w=1920&auto=format&fit=crop" class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0 filter brightness-[0.65]" alt="Humahuaca">
                 @endif
                 
                 <!-- Degradado suave para que los textos en blanco se lean perfecto -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-95"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-95"></div>
             </div>
 
             <!-- Contenido del Hero Banner -->
@@ -130,17 +130,17 @@
                         </div>
                     @endforeach
                 @else
-                    <!-- Tarjetas fijas de respaldo en modo claro -->
+                    <!-- Tarjetas fijas de respaldo en modo claro con URLs seguras -->
                     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                        <div class="h-56"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1513026705753-bc31df43b444?auto=format&fit=crop&w=600&q=80"/></div>
+                        <div class="h-56"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=600&auto=format&fit=crop"/></div>
                         <div class="p-6"><h3 class="text-xl font-bold text-slate-800">Glaciar Perito Moreno</h3><p class="text-sm text-slate-500 mt-2">Espectáculo natural de hielos eternos en la Patagonia.</p></div>
                     </div>
-                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-md transition-all duration-300">
-                        <div class="h-56"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1623055418146-da1cb8b7754b?auto=format&fit=crop&w=600&q=80"/></div>
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="h-56"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1606293926075-69a00dbfde81?q=80&w=600&auto=format&fit=crop"/></div>
                         <div class="p-6"><h3 class="text-xl font-bold text-slate-800">Quebrada de Humahuaca</h3><p class="text-sm text-slate-500 mt-2">Cerros multiculturales de colores vivos en el norte argentino.</p></div>
                     </div>
-                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-md transition-all duration-300">
-                        <div class="h-56"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80"/></div>
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="h-56"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=600&auto=format&fit=crop"/></div>
                         <div class="p-6"><h3 class="text-xl font-bold text-slate-800">Ruta del Vino</h3><p class="text-sm text-slate-500 mt-2">Los mejores viñedos boutique a los pies de la cordillera de los Andes.</p></div>
                     </div>
                 @endif
