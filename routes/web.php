@@ -43,4 +43,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Ruta temporal - módulo Combustible (pendiente de implementar)
+Route::middleware('auth')->get('/combustible', function () {
+    return view('dashboard'); // redirige al dashboard hasta que esté listo
+})->name('combustible.index');
+
 require __DIR__.'/auth.php';
