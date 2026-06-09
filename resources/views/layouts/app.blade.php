@@ -234,7 +234,7 @@
             if (url.includes('logout')) return;
             if (url.includes('#')) return;
 
-            if (url.includes('login') || url.includes('register')) return;
+            if (url.includes('login') || url.includes('register') || url.includes('profile')) return;
 
             e.preventDefault();
             navegarSinRecarga(url);

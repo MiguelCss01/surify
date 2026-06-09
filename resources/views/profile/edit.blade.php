@@ -25,8 +25,7 @@
 
 {{-- Hero Section --}}
 <section class="relative h-[400px] w-full overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8 -mt-8">
-    <img id="hero-bg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6-m6YoqcA9wGgByBvlymlv-8G_jX6-3iEMyq_8Pc7u94AS_lRqAuL1KOwYJG_mis7hGvRh5BfgZa8zxfHRykgwZanea5S_mFOrJtNtjljT2SekyjtoDER_5tURzwV552qg05g9cijiNiK_PpuI_SaHNtZLZyfN8NUs1MxOP0IpY78ISj6ttnm9wyPhaK4cZRSfpvNKrmeQKgfYfAmd2A0mIab0kz3gUmJDbJmoafvEcl4AbUV7CSokZf7sRQnpFNmOn5ne3nyY8zS"
-        class="w-full h-full object-cover" alt="Hero">
+    <img id="hero-bg" src="" class="w-full h-full object-cover" alt="Hero">
 
     {{-- Botón cambiar portada --}}
     <button onclick="document.getElementById('modal-portada').classList.remove('hidden')"
@@ -197,8 +196,6 @@
 {{-- Modal configuración --}}
 <div id="modal-configuracion" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-
-        {{-- Header --}}
         <div class="flex items-center justify-between p-6 border-b border-slate-100 sticky top-0 bg-white rounded-t-2xl z-10">
             <h3 class="text-lg font-bold text-[#28628f] flex items-center gap-2">
                 <span class="material-symbols-outlined">settings</span>
@@ -360,6 +357,7 @@
         </div>
     </div>
 </div>
+
 {{-- Modal portadas --}}
 <div id="modal-portada" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6">
@@ -392,6 +390,11 @@
 </div>
 
 <script>
+    const PORTADA_DEFAULT = 'https://señalcalafate.com/download/multimedia.normal.b4444966a274ae56.Z2xhY2lhcl9ub3JtYWwud2VicA==.webp';
+    const portadaGuardada = localStorage.getItem('surify-portada-{{ auth()->id() }}');
+    const heroBg = document.getElementById('hero-bg');
+    heroBg.src = portadaGuardada || PORTADA_DEFAULT;
+
     function abrirConfig() {
         const icon = document.getElementById('settings-btn-icon');
         icon.style.transform = 'rotate(180deg)';
@@ -410,18 +413,9 @@
         document.getElementById('modal-portada').classList.add('hidden');
     }
 
-    const portadaGuardada = localStorage.getItem('surify-portada-{{ auth()->id() }}');
-    if (portadaGuardada) {
-        document.getElementById('hero-bg').src = portadaGuardada;
-    }
-
     document.querySelectorAll('.group').forEach(badge => {
-        badge.addEventListener('mouseenter', () => {
-            badge.style.transform = 'translateY(-4px)';
-        });
-        badge.addEventListener('mouseleave', () => {
-            badge.style.transform = 'translateY(0)';
-        });
+        badge.addEventListener('mouseenter', () => { badge.style.transform = 'translateY(-4px)'; });
+        badge.addEventListener('mouseleave', () => { badge.style.transform = 'translateY(0)'; });
     });
 
     document.querySelectorAll('.theme-btn').forEach(btn => {
