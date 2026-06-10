@@ -15,7 +15,7 @@ return new class extends Migration
             $table->text('descripcion');
             $table->string('rango_precio'); // Bajo, Medio, Alto
             $table->string('categoria')->nullable(); // Aventura, Cultural, Gastronómico, etc
-            $table->geometry('ubicacion')->nullable(); // PostGIS POINT
+            $table->text('ubicacion')->nullable(); // PostGIS POINT
             $table->string('imagen_url')->nullable();
             $table->boolean('activo')->default(true);
             $table->timestamps();

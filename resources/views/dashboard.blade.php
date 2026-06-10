@@ -1,17 +1,187 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
+@section('title', 'Surify - Panel de Administración')
+
+@section('content')
+
+{{-- Bienvenida --}}
+<section class="mb-8">
+    <p class="text-xs font-bold uppercase tracking-widest text-amber-600 mb-2">Panel de Control</p>
+    <h1 class="text-5xl font-black text-slate-900 tracking-tight leading-none mb-3" style="font-family: 'Inter', sans-serif;">
+        Bienvenido, {{ auth()->user()->name }}.
+    </h1>
+    <p class="text-slate-500 text-base max-w-2xl">Este es el estado actual de Surify. Gestioná destinos, usuarios, roles y contenido desde acá.</p>
+</section>
+
+{{-- Métricas --}}
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-all">
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-10 h-10 rounded-xl bg-[#28628f]/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#28628f]">landscape</span>
+            </div>
+            <span class="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">trending_up</span> Activos
+            </span>
+        </div>
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Destinos</p>
+        <p class="text-3xl font-black text-slate-800">{{ str_pad($countDestinos, 2, '0', STR_PAD_LEFT) }}</p>
+        <div class="mt-3 h-1 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-[#28628f] w-3/4 rounded-full"></div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-all">
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+                <span class="material-symbols-outlined text-amber-500">person_add</span>
+            </div>
+            <span class="text-xs font-bold text-slate-400">Total registrados</span>
+        </div>
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Usuarios</p>
+        <p class="text-3xl font-black text-slate-800">{{ str_pad($countUsuarios, 2, '0', STR_PAD_LEFT) }}</p>
+        <div class="mt-3 flex gap-1 items-end h-8">
+    <div class="w-full rounded-t-sm bg-amber-200" style="height:40%"></div>
+    <div class="w-full rounded-t-sm bg-amber-200" style="height:60%"></div>
+    <div class="w-full rounded-t-sm bg-amber-200" style="height:45%"></div>
+    <div class="w-full rounded-t-sm bg-amber-200" style="height:80%"></div>
+    <div class="w-full rounded-t-sm bg-amber-200" style="height:55%"></div>
+    <div class="w-full rounded-t-sm bg-amber-200" style="height:90%"></div>
+    <div class="w-full rounded-t-sm bg-amber-200" style="height:100%"></div>
+</div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-b-4 border-slate-200 border-b-rose-400 shadow-sm p-6 hover:shadow-md transition-all">
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center">
+                <span class="material-symbols-outlined text-rose-400">celebration</span>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-1 bg-rose-50 text-rose-500 rounded-full border border-rose-100">PRÓXIMOS</span>
+        </div>
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Eventos</p>
+        <p class="text-3xl font-black text-slate-800">{{ str_pad($countEventos, 2, '0', STR_PAD_LEFT) }}</p>
+        <a href="{{ route('eventos.index') }}" class="mt-3 text-rose-400 text-xs font-bold flex items-center gap-1 hover:underline text-decoration-none">
+            Ver todos <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+        </a>
+    </div>
+</section>
+
+{{-- Tabla + Acciones --}}
+<div class="flex flex-col lg:flex-row gap-6">
+
+    {{-- Tabla provincias --}}
+    <section class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-black text-slate-800" style="font-family: 'Inter', sans-serif;">Provincias Cargadas</h2>
+            <a href="#" class="px-4 py-2 bg-[#28628f] text-white text-xs font-bold rounded-full hover:bg-[#1a4669] transition-all text-decoration-none">
+                + Nueva Provincia
+            </a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-slate-100">
+                        <th class="text-left py-3 text-xs font-bold uppercase tracking-wider text-slate-400">Provincia</th>
+                        <th class="text-left py-3 text-xs font-bold uppercase tracking-wider text-slate-400">Región</th>
+                        <th class="text-left py-3 text-xs font-bold uppercase tracking-wider text-slate-400">Destinos</th>
+                        <th class="text-right py-3 text-xs font-bold uppercase tracking-wider text-slate-400">Acción</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse($provincias ?? [] as $provincia)
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="py-4">
+                                <span class="text-sm font-bold text-slate-800">{{ $provincia->nombre }}</span>
+                            </td>
+                            <td class="py-4">
+                                <span class="text-sm text-slate-500">{{ $provincia->region ?? '—' }}</span>
+                            </td>
+                            <td class="py-4">
+                                <span class="text-sm font-bold text-[#28628f]">{{ $provincia->destinos_count ?? 0 }}</span>
+                            </td>
+                            <td class="py-4 text-right">
+                                <a href="{{ route('provincia.show', $provincia->nombre) }}"
+                                   class="material-symbols-outlined text-[#28628f] hover:scale-110 transition-transform text-[20px]">
+                                    edit_square
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="py-12 text-center">
+                                <span class="material-symbols-outlined text-4xl text-slate-300 block mb-2">folder_open</span>
+                                <p class="text-sm text-slate-400">No hay provincias cargadas todavía.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    {{-- Panel lateral --}}
+    <aside class="w-full lg:w-72 flex flex-col gap-4">
+
+        {{-- Acciones rápidas --}}
+        <div class="bg-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-white font-bold text-base mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-amber-400 text-[20px]">bolt</span>
+                Acciones Rápidas
+            </h3>
+            <div class="flex flex-col gap-2">
+                <a href="{{ route('admin.destinos.create') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
+    <span class="material-symbols-outlined text-amber-400 text-[20px]">add_location</span>
+    Agregar Destino
+</a>
+<a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
+    <span class="material-symbols-outlined text-blue-300 text-[20px]">celebration</span>
+    Cargar Evento
+</a>
+                <a href="{{ route('admin.roles.index') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
+                    <span class="material-symbols-outlined text-emerald-400 text-[20px]">admin_panel_settings</span>
+                    Gestionar Roles
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
+                    <span class="material-symbols-outlined text-purple-300 text-[20px]">group</span>
+                    Ver Usuarios
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
+                    <span class="material-symbols-outlined text-rose-300 text-[20px]">chat_bubble</span>
+                    Moderar Reseñas
+                </a>
+            </div>
+        </div>
+
+        {{-- Estado del sistema --}}
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Estado del Sistema</h4>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-slate-500">Base de Datos</span>
+                    <span class="text-xs font-bold text-emerald-500 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Online
+                    </span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-slate-500">Laravel</span>
+                    <span class="text-xs font-bold text-slate-600">v{{ app()->version() }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-slate-500">Entorno</span>
+                    <span class="text-xs font-bold text-slate-600">{{ app()->environment() }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-slate-500">Roles creados</span>
+                    <span class="text-xs font-bold text-[#28628f]">{{ $countRoles }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-slate-500">Permisos definidos</span>
+                    <span class="text-xs font-bold text-[#28628f]">{{ $countPermisos }}</span>
                 </div>
             </div>
         </div>
-    </div>
-</x-app-layout>
+    </aside>
+</div>
+
+@endsection
