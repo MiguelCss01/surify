@@ -5,39 +5,41 @@ use App\Http\Controllers\EventoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\CombustibleController;
+use App\Http\Controllers\Admin\RolController;
+use App\Http\Controllers\Admin\DestinoController as AdminDestinoController;
+use App\Http\Controllers\Admin\ResenaController as AdminResenaController;
 use Illuminate\Support\Facades\Route;
 
-// 1. HOME
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('roles', RolController::class);
+    Route::resource('destinos', AdminDestinoController::class);
+    
+    // Reseñas
+    Route::get('/resenas', [AdminResenaController::class, 'index'])->name('resenas.index');
+    Route::patch('/resenas/{resena}/aprobar', [AdminResenaController::class, 'aprobar'])->name('resenas.aprobar');
+    Route::patch('/resenas/{resena}/rechazar', [AdminResenaController::class, 'rechazar'])->name('resenas.rechazar');
+    Route::delete('/resenas/{resena}', [AdminResenaController::class, 'destroy'])->name('resenas.destroy');
+});
+// ==================== PÚBLICO ====================
 Route::get('/', function () {
-    return view('home'); 
+    return view('home');
 })->name('home');
 
-// 2. MAPA NACIONAL
 Route::get('/mapa', function () {
     $provincias = \App\Models\Provincia::all();
-    return view('mapa_nacional', compact('provincias')); 
+    return view('mapa_nacional', compact('provincias'));
 })->name('mapa.nacional');
 
-// 3. VISTA PROVINCIAL
 Route::get('/provincia/{nombre}', [DestinoController::class, 'porProvincia'])->name('provincia.show');
-
-// 4. FICHA DE DESTINO
 Route::get('/destinos/{id}', [DestinoController::class, 'show'])->name('destinos.show');
 
-// 5. EVENTOS
 Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
 Route::get('/eventos/{id}', [EventoController::class, 'show'])->name('eventos.show');
 
-// 6. RESEÑAS
-Route::post('/resenas', [ResenaController::class, 'store'])->name('resenas.store');
-
-// 7. DASHBOARD
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-// 8. PERFIL Y HERRAMIENTAS (auth)
+// ==================== AUTH ====================
 Route::middleware('auth')->group(function () {
+    Route::post('/resenas', [ResenaController::class, 'store'])->name('resenas.store');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -45,5 +47,20 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/herramientas/combustible', [CombustibleController::class, 'index'])->name('combustible.index');
 });
+
+// ==================== DASHBOARD ====================
+Route::get('/dashboard', function () {
+    $provincias = \App\Models\Provincia::withCount('destinos')->get();
+    $countDestinos = \App\Models\Destino::count();
+    $countUsuarios = \App\Models\User::count();
+    $countEventos = \App\Models\Evento::count();
+    $countRoles = \App\Models\Role::count();
+    $countPermisos = \App\Models\Permiso::count();
+
+    return view('dashboard', compact(
+        'provincias', 'countDestinos', 'countUsuarios',
+        'countEventos', 'countRoles', 'countPermisos'
+    ));
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 require __DIR__.'/auth.php';
