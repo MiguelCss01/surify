@@ -5,17 +5,31 @@ use App\Http\Controllers\EventoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\CombustibleController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 // 1. HOME
 Route::get('/', function () {
-    return view('home'); 
+    return view('home');
 })->name('home');
 
 // 2. MAPA NACIONAL
 Route::get('/mapa', function () {
     $provincias = \App\Models\Provincia::all();
-    return view('mapa_nacional', compact('provincias')); 
+    $destinos = \App\Models\Destino::where('activo', true)->with('provincia')->get()->map(function ($d) {
+            $coords = DB::select('SELECT ST_Y(ubicacion::geometry) as lat, ST_X(ubicacion::geometry) as lng FROM destinos WHERE id = ?', [$d->id])[0];
+        return [
+            'id' => $d->id,
+            'nombre' => $d->nombre,
+            'descripcion' => $d->descripcion,
+            'categoria' => $d->categoria,
+            'imagen_url' => $d->imagen_url,
+            'provincia' => $d->provincia->nombre ?? '',
+            'lat' => $coords->lat,
+            'lng' => $coords->lng,
+        ];
+    });
+    return view('mapa_nacional', compact('provincias', 'destinos'));
 })->name('mapa.nacional');
 
 // 3. VISTA PROVINCIAL
@@ -46,4 +60,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/herramientas/combustible', [CombustibleController::class, 'index'])->name('combustible.index');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

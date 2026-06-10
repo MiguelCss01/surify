@@ -8,23 +8,28 @@
     .surify-map-dashboard {
         position: relative;
         width: 100%;
-        height: calc(100vh - 4rem); 
+        height: calc(100vh - 4rem);
         overflow: hidden;
         background-color: #f8f9fa;
-        margin-top: -2rem; /* Eliminada la palabra que rompia el compilador */
+        margin-top: -2rem;
     }
+
     #mapa-container {
         width: 100%;
         height: 100%;
         position: absolute;
-        top: 0; left: 0;
-        z-index: 1; 
+        top: 0;
+        left: 0;
+        z-index: 1;
     }
+
     .ui-overlay {
         position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        z-index: 30; 
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 30;
         pointer-events: none;
         display: flex;
         flex-direction: column;
@@ -32,32 +37,119 @@
         padding: 24px;
         box-sizing: border-box;
     }
-    .interactuable { pointer-events: auto !important; }
+
+    .interactuable {
+        pointer-events: auto !important;
+    }
+
     .light-panel {
-        background: rgba(255,255,255,0.95) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(0,0,0,0.06);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         color: #1e293b !important;
     }
-    .menu-list a { color: #475569 !important; font-weight: 600; font-size: 13px; text-decoration: none; display: flex; align-items: center; padding: 8px 12px; border-radius: 10px; transition: all 0.2s; }
-    .menu-list a:hover { background-color: rgba(40,98,143,0.06) !important; color: #28628f !important; }
-    .menu-list a.is-active-menu { background-color: rgba(40,98,143,0.1) !important; color: #28628f !important; font-weight: 700; }
-    .custom-zoom-controls button {
-        background: #fff; color: #475569;
-        border: 1px solid rgba(0,0,0,0.08);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-        cursor: pointer; width: 40px; height: 40px;
-        display: flex; align-items: center; justify-content: center;
-        margin-bottom: 6px; border-radius: 10px; transition: all 0.2s;
+
+    .menu-list a {
+        color: #475569 !important;
+        font-weight: 600;
+        font-size: 13px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 10px;
+        transition: all 0.2s;
     }
-    .custom-zoom-controls button:hover { background: #f8fafc; color: #28628f; border-color: #28628f; }
-    .menu-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; margin-bottom: 12px; padding-left: 4px; }
-    .card-info { padding: 14px; }
-    .card-info h2 { font-size: 16px; font-weight: 800; color: #0f172a; margin: 4px 0 12px; letter-spacing: -0.02em; }
-    .card-info p { font-size: 10px; color: #e11d48; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-    .btn-ver { background: #28628f; color: #fff; border: none; width: 100%; padding: 10px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; transition: background 0.2s; }
-    .btn-ver:hover { background: #1a4669; }
+
+    .menu-list a:hover {
+        background-color: rgba(40, 98, 143, 0.06) !important;
+        color: #28628f !important;
+    }
+
+    .menu-list a.is-active-menu {
+        background-color: rgba(40, 98, 143, 0.1) !important;
+        color: #28628f !important;
+        font-weight: 700;
+    }
+
+    .custom-zoom-controls button {
+        background: #fff;
+        color: #475569;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 6px;
+        border-radius: 10px;
+        transition: all 0.2s;
+    }
+
+    .custom-zoom-controls button:hover {
+        background: #f8fafc;
+        color: #28628f;
+        border-color: #28628f;
+    }
+
+    .menu-label {
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #94a3b8;
+        margin-bottom: 12px;
+        padding-left: 4px;
+    }
+
+    .card-info {
+        padding: 14px;
+    }
+
+    .card-info h2 {
+        font-size: 16px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 4px 0 12px;
+        letter-spacing: -0.02em;
+    }
+
+    .card-info p {
+        font-size: 10px;
+        color: #e11d48;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-ver {
+        background: #28628f;
+        color: #fff;
+        border: none;
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 13px;
+        transition: background 0.2s;
+    }
+
+    .btn-ver:hover {
+        background: #1a4669;
+    }
+
+    #card-destino {
+        display: none;
+        transition: all 0.3s ease;
+    }
+
+    #card-destino.visible {
+        display: block;
+    }
 </style>
 
 <div class="surify-map-dashboard -mx-4 sm:-mx-6 lg:-mx-8">
@@ -70,10 +162,25 @@
                 <aside class="light-panel" style="border-radius: 16px; padding: 16px; width: 230px; max-height: 320px; overflow-y: auto;">
                     <p class="menu-label">Explorador</p>
                     <ul class="menu-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;">
-                        <li><a class="is-active-menu"><i class="fa-solid fa-compass" style="margin-right:10px; font-size: 14px;"></i> Destinos</a></li>
-                        <li><a><i class="fa-solid fa-calendar-day" style="margin-right:10px; font-size: 14px;"></i> Festivales</a></li>
-                        <li><a><i class="fa-solid fa-gas-pump" style="margin-right:10px; font-size: 14px;"></i> Estaciones</a></li>
-                        <li><a><i class="fa-solid fa-utensils" style="margin-right:10px; font-size: 14px;"></i> Restaurantes</a></li>
+                        <li><a class="is-active-menu" onclick="filtrarCategoria('todos')" style="cursor:pointer;"><i class="fa-solid fa-compass" style="margin-right:10px; font-size: 14px;"></i> Todos</a></li>
+                        <li><a onclick="filtrarCategoria('naturaleza')" style="cursor:pointer;"><i class="fa-solid fa-tree" style="margin-right:10px; font-size: 14px;"></i> Naturaleza</a></li>
+                        <li><a onclick="filtrarCategoria('ciudad')" style="cursor:pointer;"><i class="fa-solid fa-city" style="margin-right:10px; font-size: 14px;"></i> Ciudades</a></li>
+                        <li><a onclick="filtrarCategoria('cultura')" style="cursor:pointer;"><i class="fa-solid fa-landmark" style="margin-right:10px; font-size: 14px;"></i> Cultura</a></li>
+                        <li><a onclick="filtrarCategoria('montaña')" style="cursor:pointer;"><i class="fa-solid fa-mountain" style="margin-right:10px; font-size: 14px;"></i> Montañas</a></li>
+                        <li><a onclick="filtrarCategoria('playa')" style="cursor:pointer;"><i class="fa-solid fa-umbrella-beach" style="margin-right:10px; font-size: 14px;"></i> Playas</a></li>
+                    </ul>
+
+                    <hr style="margin: 12px 0; border-color: #e2e8f0;">
+                    <p class="menu-label">Provincias</p>
+                    <ul class="menu-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px;">
+                        @foreach($provincias as $provincia)
+                        <li>
+                            <a onclick="irAProvincia('{{ $provincia->nombre }}')" style="cursor:pointer;">
+                                <i class="fa-solid fa-map-pin" style="margin-right:10px; font-size: 12px;"></i>
+                                {{ $provincia->nombre }}
+                            </a>
+                        </li>
+                        @endforeach
                     </ul>
                 </aside>
             </div>
@@ -86,19 +193,19 @@
         </div>
 
         <div style="display: flex; justify-content: flex-start; width: 100%;">
-            <div class="interactuable light-panel" style="border-radius: 16px; overflow: hidden; width: 230px;">
+            <div id="card-destino" class="interactuable light-panel" style="border-radius: 16px; overflow: hidden; width: 230px;">
                 <div style="position: relative;">
-                    <img src="https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?q=80&w=400"
-                         alt="Glaciar Perito Moreno"
-                         style="width: 100%; height: 135px; object-fit: cover; display: block;">
-                    <span style="position: absolute; top: 10px; right: 10px; background: #28628f; color: white; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 800; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                        <i class="fa-solid fa-star" style="color: #fbbf24; margin-right: 2px;"></i> 4.9
+                    <img id="card-img" src="" alt="" style="width: 100%; height: 135px; object-fit: cover; display: block;">
+                    <span style="position: absolute; top: 10px; right: 10px; background: #28628f; color: white; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 800;">
+                        <i class="fa-solid fa-star" style="color: #fbbf24; margin-right: 2px;"></i>
+                        <span id="card-categoria"></span>
                     </span>
                 </div>
                 <div class="card-info">
-                    <p>Santa Cruz</p>
-                    <h2>Glaciar Perito Moreno</h2>
-                    <button class="btn-ver">Ver detalles</button>
+                    <p id="card-provincia"></p>
+                    <h2 id="card-nombre"></h2>
+                    <p id="card-desc" style="color: #64748b; font-size: 11px; text-transform: none; font-weight: 400; margin-bottom: 10px;"></p>
+                    <a id="card-link" href="#" class="btn-ver" style="display:block; text-align:center; text-decoration:none;">Ver detalles</a>
                 </div>
             </div>
         </div>
@@ -106,48 +213,229 @@
 </div>
 
 <script>
-var mapaInstance = null;
+    var mapaInstance = null;
+    var todosLosMarkers = [];
+    var destinosData = @json($destinos);
 
-function inicializarMapa() {
-    var contenedor = document.getElementById('mapa-container');
-    if (!contenedor || mapaInstance !== null) return;
+    var coordenadasProvincias = {
+        'Buenos Aires': {
+            lat: -36.6769,
+            lng: -60.5583,
+            zoom: 7
+        },
+        'Catamarca': {
+            lat: -27.3357,
+            lng: -66.9477,
+            zoom: 7
+        },
+        'Chaco': {
+            lat: -26.9478,
+            lng: -60.1658,
+            zoom: 7
+        },
+        'Chubut': {
+            lat: -43.2934,
+            lng: -65.1078,
+            zoom: 6
+        },
+        'Córdoba': {
+            lat: -31.4135,
+            lng: -64.1811,
+            zoom: 7
+        },
+        'Corrientes': {
+            lat: -27.4692,
+            lng: -58.8306,
+            zoom: 7
+        },
+        'Entre Ríos': {
+            lat: -31.7748,
+            lng: -60.4956,
+            zoom: 7
+        },
+        'Formosa': {
+            lat: -24.8948,
+            lng: -59.8901,
+            zoom: 7
+        },
+        'Jujuy': {
+            lat: -23.1897,
+            lng: -65.9997,
+            zoom: 7
+        },
+        'La Pampa': {
+            lat: -36.6148,
+            lng: -64.2839,
+            zoom: 7
+        },
+        'La Rioja': {
+            lat: -29.4127,
+            lng: -66.8552,
+            zoom: 7
+        },
+        'Mendoza': {
+            lat: -32.8908,
+            lng: -68.8458,
+            zoom: 7
+        },
+        'Misiones': {
+            lat: -26.9478,
+            lng: -54.6964,
+            zoom: 7
+        },
+        'Neuquén': {
+            lat: -38.9516,
+            lng: -68.0591,
+            zoom: 7
+        },
+        'Río Negro': {
+            lat: -40.8135,
+            lng: -63.0154,
+            zoom: 7
+        },
+        'Salta': {
+            lat: -24.7821,
+            lng: -65.4117,
+            zoom: 7
+        },
+        'San Juan': {
+            lat: -30.8653,
+            lng: -68.8894,
+            zoom: 7
+        },
+        'San Luis': {
+            lat: -33.2950,
+            lng: -66.3356,
+            zoom: 7
+        },
+        'Santa Cruz': {
+            lat: -51.6230,
+            lng: -69.2168,
+            zoom: 6
+        },
+        'Santa Fe': {
+            lat: -30.7069,
+            lng: -60.9498,
+            zoom: 7
+        },
+        'Santiago del Estero': {
+            lat: -27.7824,
+            lng: -64.2661,
+            zoom: 7
+        },
+        'Tierra del Fuego': {
+            lat: -54.0000,
+            lng: -67.0000,
+            zoom: 7
+        },
+        'Tucumán': {
+            lat: -26.8083,
+            lng: -65.2176,
+            zoom: 8
+        },
+        'Ciudad Autónoma de Buenos Aires': {
+            lat: -34.6037,
+            lng: -58.3816,
+            zoom: 12
+        },
+    };
 
-    if (contenedor.offsetWidth === 0 || contenedor.offsetHeight === 0) {
-        setTimeout(inicializarMapa, 100);
-        return;
+    var icono = L.divIcon({
+        html: '<div style="background:#28628f; width:14px; height:14px; border-radius:50%; border:3px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>',
+        className: '',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7],
+    });
+
+    function inicializarMapa() {
+        var contenedor = document.getElementById('mapa-container');
+        if (!contenedor || mapaInstance !== null) return;
+
+        if (contenedor.offsetWidth === 0 || contenedor.offsetHeight === 0) {
+            setTimeout(inicializarMapa, 100);
+            return;
+        }
+
+        mapaInstance = L.map('mapa-container', {
+            zoomControl: false,
+            minZoom: 4,
+            maxZoom: 14,
+            maxBounds: L.latLngBounds(L.latLng(-56.5, -76.0), L.latLng(-21.0, -53.0)),
+            maxBoundsViscosity: 1.0
+        }).setView([-38.416097, -63.616672], 4);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap, © CartoDB',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(mapaInstance);
+
+        // Agregar marcadores desde la BD
+        destinosData.forEach(function(destino) {
+            var marker = L.marker([destino.lat, destino.lng], {
+                    icon: icono
+                })
+                .addTo(mapaInstance)
+                .on('click', function() {
+                    mostrarCard(destino);
+                });
+
+            marker.bindTooltip(destino.nombre, {
+                permanent: false,
+                direction: 'top',
+                className: 'leaflet-tooltip-surify'
+            });
+
+            marker._destinoCategoria = destino.categoria;
+            todosLosMarkers.push(marker);
+        });
+
+        setTimeout(function() {
+            mapaInstance.invalidateSize(true);
+        }, 300);
     }
 
-    mapaInstance = L.map('mapa-container', {
-        zoomControl: false,
-        minZoom: 4,
-        maxZoom: 14,
-        maxBounds: L.latLngBounds(L.latLng(-56.5, -76.0), L.latLng(-21.0, -53.0)),
-        maxBoundsViscosity: 1.0
-    }).setView([-38.416097, -63.616672], 4);
+    function mostrarCard(destino) {
+        document.getElementById('card-img').src = destino.imagen_url;
+        document.getElementById('card-nombre').textContent = destino.nombre;
+        document.getElementById('card-provincia').textContent = destino.provincia;
+        document.getElementById('card-desc').textContent = destino.descripcion;
+        document.getElementById('card-categoria').textContent = destino.categoria;
+        document.getElementById('card-link').href = '/destinos/' + destino.id;
+        document.getElementById('card-destino').classList.add('visible');
+    }
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap, © CartoDB',
-        subdomains: 'abcd',
-        maxZoom: 20
-    }).addTo(mapaInstance);
+    function filtrarCategoria(categoria) {
+        // Actualizar menú activo
+        document.querySelectorAll('.menu-list a').forEach(a => a.classList.remove('is-active-menu'));
+        event.target.closest('a').classList.add('is-active-menu');
 
-    L.marker([-50.5083, -73.0833]).addTo(mapaInstance).bindPopup(`
-        <div style="font-family:sans-serif; font-size:13px; line-height:1.5;">
-            <strong style="color:#28628f;">Glaciar Perito Moreno</strong><br>
-            Provincia de Santa Cruz.<br><br>
-            <a href="#" style="color:#28628f; font-weight:bold; text-decoration:none;">Explorar →</a>
-        </div>
-    `);
+        todosLosMarkers.forEach(function(marker) {
+            if (categoria === 'todos' || marker._destinoCategoria === categoria) {
+                if (!mapaInstance.hasLayer(marker)) mapaInstance.addLayer(marker);
+            } else {
+                if (mapaInstance.hasLayer(marker)) mapaInstance.removeLayer(marker);
+            }
+        });
+    }
 
-    setTimeout(function() {
-        mapaInstance.invalidateSize(true);
-    }, 300);
-}
+    function irAProvincia(nombre) {
+        var coords = coordenadasProvincias[nombre];
+        if (coords) {
+            mapaInstance.flyTo([coords.lat, coords.lng], coords.zoom, {
+                duration: 1.5
+            });
+        }
+    }
 
-// Llamado inicial
-inicializarMapa();
+    function centrarEnArgentina() {
+        mapaInstance.flyTo([-38.416097, -63.616672], 4, {
+            duration: 1.5
+        });
+    }
 
-// Por si el contenedor tardó en tener dimensiones
-setTimeout(inicializarMapa, 500);
+    inicializarMapa();
+    setTimeout(inicializarMapa, 500);
 </script>
+
 @endsection
