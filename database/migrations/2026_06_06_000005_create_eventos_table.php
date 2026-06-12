@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('tipo'); // Musical, Gastronómico, Deportivo, Cultural
             $table->date('fecha_inicio');
             $table->date('fecha_fin')->nullable();
-            $table->text('ubicacion')->nullable(); // PostGIS POINT
+            $table->geometry('ubicacion')->nullable(); // PostGIS POINT
             $table->string('rango_precio')->nullable(); // Bajo, Medio, Alto
             $table->string('imagen_url')->nullable();
             $table->boolean('activo')->default(true);

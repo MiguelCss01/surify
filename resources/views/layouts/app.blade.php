@@ -70,43 +70,42 @@
             </div>
 
             <!-- Nav links -->
-            <!-- Nav links -->
-<nav class="hidden md:flex items-center gap-1 shrink-0">
-    @auth
-        @if(auth()->user()->hasRole('admin'))
-            {{-- Navbar Admin --}}
-<a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-    <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
-</a>
-<a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-    <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
-</a>
-<a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-    <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
-</a>
-<a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-    <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
-</a>
-<a href="#" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-    <span class="material-symbols-outlined text-[16px]">celebration</span> Eventos
-</a>
-<a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-    <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
-</a>
-        @else
-            {{-- Navbar Usuario Normal --}}
-            <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
-            <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
-            <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
-            <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Combustible</a>
-        @endif
-    @else
-        {{-- Navbar Invitado --}}
-        <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
-        <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
-        <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
-    @endauth
-</nav>
+            <nav class="hidden md:flex items-center gap-1 shrink-0">
+                @auth
+                    @if(auth()->user()->hasRole('Admin')) {{-- CORREGIDO: 'Admin' con mayúscula --}}
+                        {{-- Navbar Admin --}}
+                        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
+                        </a>
+                        <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
+                        </a>
+                        <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
+                        </a>
+                        <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
+                        </a>
+                        <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">celebration</span> Eventos
+                        </a>
+                        <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
+                        </a>
+                    @else
+                        {{-- Navbar Usuario Normal --}}
+                        <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
+                        <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
+                        <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
+                        <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Combustible</a>
+                    @endif
+                @else
+                    {{-- Navbar Invitado --}}
+                    <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
+                    <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
+                    <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
+                @endauth
+            </nav>
 
             <!-- Auth -->
             <div class="flex items-center gap-3 shrink-0">
@@ -155,10 +154,11 @@
 
     <footer class="border-t border-slate-200 bg-white py-8 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-400">
-            <p>&copy; {{ date('Y') }} Surify. Todos los derechos reservados. Desarrollado con 💖 y Laravel.</p>
+            <p>&copy; {{ date('Y') }} Surify. Todos los derechos reservados. Desarrollado con 💖 por Casasola, Gómez y Martínez para la UCP 🌸.</p>
         </div>
-    </footer>
+    </footer >
 
+    <!-- Reproductor Himno -->
     <div class="fixed bottom-6 right-6 z-50 flex items-center bg-white border border-slate-200 p-3 rounded-full shadow-xl gap-3 max-w-xs transition-all duration-300 hover:border-[#28628f]">
         <button id="global-music-btn" class="w-10 h-10 rounded-full bg-[#28628f] text-white flex items-center justify-center hover:bg-[#1a4669] transition-transform active:scale-95 shadow-sm">
             <span id="global-music-icon" class="material-symbols-outlined">play_arrow</span>
@@ -242,7 +242,6 @@
                         window.history.pushState({}, '', url);
                         document.title = doc.title;
 
-                        // Ejecutar los scripts de la nueva página
                         document.querySelector('main').querySelectorAll('script').forEach(function(scriptViejo) {
                             const scriptNuevo = document.createElement('script');
                             scriptNuevo.textContent = scriptViejo.textContent;
