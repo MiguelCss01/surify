@@ -420,12 +420,7 @@
     }
 
     function irAProvincia(nombre) {
-        var coords = coordenadasProvincias[nombre];
-        if (coords) {
-            mapaInstance.flyTo([coords.lat, coords.lng], coords.zoom, {
-                duration: 1.5
-            });
-        }
+        window.location.href = '/provincia/' + encodeURIComponent(nombre);
     }
 
     function centrarEnArgentina() {

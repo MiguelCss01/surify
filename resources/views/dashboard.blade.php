@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Surify - Panel de Administración')
 
@@ -78,6 +78,10 @@
                 + Nueva Provincia
             </a>
         </div>
+        @php
+            /** @var \Illuminate\Support\Collection|array $provincias */
+            $provincias = $provincias ?? collect();
+        @endphp
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
@@ -89,19 +93,19 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
-                    @forelse($provincias ?? [] as $provincia)
+                    @forelse($provincias as $provincia)
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="py-4">
-                                <span class="text-sm font-bold text-slate-800">{{ $provincia->nombre }}</span>
+                                <span class="text-sm font-bold text-slate-800">{{ optional($provincia)->nombre }}</span>
                             </td>
                             <td class="py-4">
-                                <span class="text-sm text-slate-500">{{ $provincia->region ?? '—' }}</span>
+                                <span class="text-sm text-slate-500">{{ optional($provincia)->region ?? '—' }}</span>
                             </td>
                             <td class="py-4">
-                                <span class="text-sm font-bold text-[#28628f]">{{ $provincia->destinos_count ?? 0 }}</span>
+                                <span class="text-sm font-bold text-[#28628f]">{{ optional($provincia)->destinos_count ?? 0 }}</span>
                             </td>
                             <td class="py-4 text-right">
-                                <a href="{{ route('provincia.show', $provincia->nombre) }}"
+                                <a href="{{ route('provincia.show', optional($provincia)->nombre) }}"
                                    class="material-symbols-outlined text-[#28628f] hover:scale-110 transition-transform text-[20px]">
                                     edit_square
                                 </a>

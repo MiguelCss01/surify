@@ -8,12 +8,13 @@ use App\Http\Controllers\CombustibleController;
 use App\Http\Controllers\Admin\RolController;
 use App\Http\Controllers\Admin\DestinoController as AdminDestinoController;
 use App\Http\Controllers\Admin\ResenaController as AdminResenaController;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Admin\EventoController as AdminEventoController;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+// ==================== ADMIN ====================
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('roles', RolController::class);
     Route::resource('destinos', AdminDestinoController::class);
     Route::resource('usuarios', UsuarioController::class)->only(['index', 'edit', 'update']);
@@ -22,23 +23,13 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('/resenas/{resena}/aprobar', [AdminResenaController::class, 'aprobar'])->name('resenas.aprobar');
     Route::patch('/resenas/{resena}/rechazar', [AdminResenaController::class, 'rechazar'])->name('resenas.rechazar');
     Route::delete('/resenas/{resena}', [AdminResenaController::class, 'destroy'])->name('resenas.destroy');
-    });
 
     Route::get('/eventos', [AdminEventoController::class, 'index'])->name('eventos.index');
     Route::get('/eventos/{evento}/edit', [AdminEventoController::class, 'edit'])->name('eventos.edit');
     Route::put('/eventos/{evento}', [AdminEventoController::class, 'update'])->name('eventos.update');
     Route::delete('/eventos/{evento}', [AdminEventoController::class, 'destroy'])->name('eventos.destroy');
-
-    Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('roles', RolController::class);
-    Route::resource('destinos', AdminDestinoController::class);
-    
-    // Reseñas
-    Route::get('/resenas', [AdminResenaController::class, 'index'])->name('resenas.index');
-    Route::patch('/resenas/{resena}/aprobar', [AdminResenaController::class, 'aprobar'])->name('resenas.aprobar');
-    Route::patch('/resenas/{resena}/rechazar', [AdminResenaController::class, 'rechazar'])->name('resenas.rechazar');
-    Route::delete('/resenas/{resena}', [AdminResenaController::class, 'destroy'])->name('resenas.destroy');
 });
+
 // ==================== PÚBLICO ====================
 Route::get('/', function () {
     return view('home');
@@ -47,7 +38,7 @@ Route::get('/', function () {
 Route::get('/mapa', function () {
     $provincias = \App\Models\Provincia::all();
     $destinos = \App\Models\Destino::where('activo', true)->with('provincia')->get()->map(function ($d) {
-            $coords = DB::select('SELECT ST_Y(ubicacion::geometry) as lat, ST_X(ubicacion::geometry) as lng FROM destinos WHERE id = ?', [$d->id])[0];
+        $coords = DB::select('SELECT ST_Y(ubicacion::geometry) as lat, ST_X(ubicacion::geometry) as lng FROM destinos WHERE id = ?', [$d->id])[0];
         return [
             'id' => $d->id,
             'nombre' => $d->nombre,
