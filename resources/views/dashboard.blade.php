@@ -142,13 +142,13 @@
                     <span class="material-symbols-outlined text-emerald-400 text-[20px]">admin_panel_settings</span>
                     Gestionar Roles
                 </a>
-                <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
+                <a href="{{ route('admin.usuarios.index') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
                     <span class="material-symbols-outlined text-purple-300 text-[20px]">group</span>
                     Ver Usuarios
                 </a>
-                <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
-                    <span class="material-symbols-outlined text-rose-300 text-[20px]">chat_bubble</span>
-                    Moderar Reseñas
+                <a href="{{ route('admin.resenas.index') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
+                     <span class="material-symbols-outlined text-rose-300 text-[20px]">chat_bubble</span>
+                     Moderar Reseñas
                 </a>
             </div>
         </div>

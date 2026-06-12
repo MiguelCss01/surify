@@ -10,8 +10,26 @@ use App\Http\Controllers\Admin\DestinoController as AdminDestinoController;
 use App\Http\Controllers\Admin\ResenaController as AdminResenaController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UsuarioController;
+use App\Http\Controllers\Admin\EventoController as AdminEventoController;
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('roles', RolController::class);
+    Route::resource('destinos', AdminDestinoController::class);
+    Route::resource('usuarios', UsuarioController::class)->only(['index', 'edit', 'update']);
+
+    Route::get('/resenas', [AdminResenaController::class, 'index'])->name('resenas.index');
+    Route::patch('/resenas/{resena}/aprobar', [AdminResenaController::class, 'aprobar'])->name('resenas.aprobar');
+    Route::patch('/resenas/{resena}/rechazar', [AdminResenaController::class, 'rechazar'])->name('resenas.rechazar');
+    Route::delete('/resenas/{resena}', [AdminResenaController::class, 'destroy'])->name('resenas.destroy');
+    });
+
+    Route::get('/eventos', [AdminEventoController::class, 'index'])->name('eventos.index');
+    Route::get('/eventos/{evento}/edit', [AdminEventoController::class, 'edit'])->name('eventos.edit');
+    Route::put('/eventos/{evento}', [AdminEventoController::class, 'update'])->name('eventos.update');
+    Route::delete('/eventos/{evento}', [AdminEventoController::class, 'destroy'])->name('eventos.destroy');
+
+    Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('roles', RolController::class);
     Route::resource('destinos', AdminDestinoController::class);
     

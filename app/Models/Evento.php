@@ -61,4 +61,13 @@ class Evento extends Model
     {
         return $this->hasMany(Favorito::class);
     }
+    /**
+ * Determina si el evento ya pasó.
+ */
+    public function getPasadoAttribute(): bool
+    {
+        return $this->fecha_fin
+            ? $this->fecha_fin->isPast()
+            : $this->fecha_inicio->isPast();
+    }
 }

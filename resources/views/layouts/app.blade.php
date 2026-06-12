@@ -81,7 +81,7 @@
 <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
     <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
 </a>
-<a href="#" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+<a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
     <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
 </a>
 <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
@@ -89,6 +89,9 @@
 </a>
 <a href="#" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
     <span class="material-symbols-outlined text-[16px]">celebration</span> Eventos
+</a>
+<a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+    <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
 </a>
         @else
             {{-- Navbar Usuario Normal --}}
@@ -259,7 +262,7 @@
             if (url.includes('logout')) return;
             if (url.includes('#')) return;
 
-            if (url.includes('login') || url.includes('register') || url.includes('profile')) return;
+            if (url.includes('login') || url.includes('register') || url.includes('profile') || url.includes('admin') || url.includes('dashboard')) return;
 
             e.preventDefault();
             navegarSinRecarga(url);
