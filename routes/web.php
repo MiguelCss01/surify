@@ -32,7 +32,23 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
 // ==================== PÚBLICO ====================
 Route::get('/', function () {
-    return view('home');
+    $destinos = \App\Models\Destino::where('activo', true)
+        ->with('provincia')
+        ->get()
+        ->map(function ($d) {
+            $coords = DB::select('SELECT ST_Y(ubicacion::geometry) as lat, ST_X(ubicacion::geometry) as lng FROM destinos WHERE id = ?', [$d->id])[0];
+            return [
+                'id' => $d->id,
+                'nombre' => $d->nombre,
+                'descripcion' => $d->descripcion,
+                'categoria' => $d->categoria,
+                'imagen_url' => $d->imagen_url,
+                'provincia' => $d->provincia->nombre ?? '',
+                'lat' => $coords->lat,
+                'lng' => $coords->lng,
+            ];
+        });
+    return view('home', compact('destinos'));
 })->name('home');
 
 Route::get('/mapa', function () {
@@ -81,9 +97,19 @@ Route::get('/dashboard', function () {
     $countPermisos = \App\Models\Permiso::count();
 
     return view('dashboard', compact(
-        'provincias', 'countDestinos', 'countUsuarios',
-        'countEventos', 'countRoles', 'countPermisos'
+        'provincias',
+        'countDestinos',
+        'countUsuarios',
+        'countEventos',
+        'countRoles',
+        'countPermisos'
     ));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+Route::middleware('auth')->group(function () {
+    // ... las rutas que ya tenés
+    Route::post('/favoritos/toggle', [\App\Http\Controllers\FavoritoController::class, 'toggle'])->name('favoritos.toggle');
+});
+
+Route::post('/visitados/toggle', [\App\Http\Controllers\DestinoVisitadoController::class, 'toggle'])->name('visitados.toggle');
+require __DIR__ . '/auth.php';

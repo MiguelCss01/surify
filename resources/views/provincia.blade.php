@@ -152,6 +152,68 @@
         </div>
     </section>
 
+    {{-- ========== CLIMA ========== --}}
+    @if($clima)
+    <section class="bg-white border-y border-slate-200 py-6 my-4 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <h2 class="text-lg font-black text-slate-800 mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[#28628f]">partly_cloudy_day</span>
+                Clima en {{ $nombre }} ahora
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {{-- Clima actual --}}
+                <div class="bg-gradient-to-br from-[#28628f] to-[#1a4669] rounded-2xl p-6 text-white flex items-center gap-6">
+                    <div class="text-center">
+                        <img src="https://openweathermap.org/img/wn/{{ $clima['weather'][0]['icon'] }}@2x.png"
+                            alt="{{ $clima['weather'][0]['description'] }}" class="w-20 h-20">
+                    </div>
+                    <div>
+                        <p class="text-6xl font-black leading-none">{{ round($clima['main']['temp']) }}°</p>
+                        <p class="text-white/80 capitalize text-sm mt-1">{{ $clima['weather'][0]['description'] }}</p>
+                        <p class="text-white/60 text-xs mt-2">Sensación térmica: {{ round($clima['main']['feels_like']) }}°C</p>
+                    </div>
+                    <div class="ml-auto flex flex-col gap-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-white/70">water_drop</span>
+                            <span>{{ $clima['main']['humidity'] }}% humedad</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-white/70">air</span>
+                            <span>{{ round($clima['wind']['speed'] * 3.6) }} km/h viento</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-white/70">thermostat</span>
+                            <span>{{ round($clima['main']['temp_min']) }}° / {{ round($clima['main']['temp_max']) }}°</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Pronóstico --}}
+                @if($pronostico)
+                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Próximas horas</p>
+                    <div class="grid grid-cols-4 gap-2">
+                        @foreach(array_slice($pronostico['list'], 0, 4) as $item)
+                        <div class="text-center bg-white rounded-xl p-2 border border-slate-100">
+                            <p class="text-xs text-slate-400 font-semibold">
+                                {{ \Carbon\Carbon::parse($item['dt_txt'])->format('H:i') }}
+                            </p>
+                            <img src="https://openweathermap.org/img/wn/{{ $item['weather'][0]['icon'] }}.png"
+                                class="w-10 h-10 mx-auto" alt="">
+                            <p class="text-sm font-black text-slate-700">{{ round($item['main']['temp']) }}°</p>
+                            <p class="text-[10px] text-slate-400 capitalize leading-tight">{{ $item['weather'][0]['description'] }}</p>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+            </div>
+        </div>
+    </section>
+    @endif
+
     {{-- ========== EVENTOS + GASTRONOMÍA ========== --}}
     <section class="bg-white border-t border-slate-200 py-12">
         <div class="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12">

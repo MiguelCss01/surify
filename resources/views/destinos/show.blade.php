@@ -7,12 +7,12 @@
 {{-- Hero --}}
 <section class="relative h-[450px] w-full overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8 -mt-8 mb-8">
     <img src="{{ $destino->imagen_url ?? 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1200' }}"
-         class="w-full h-full object-cover" alt="{{ $destino->nombre }}">
+        class="w-full h-full object-cover" alt="{{ $destino->nombre }}">
     <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));"></div>
     <div class="absolute bottom-0 left-0 p-8 max-w-3xl">
         <div class="flex items-center gap-2 mb-3">
             <a href="{{ route('provincia.show', $destino->provincia->nombre) }}"
-               class="text-white/80 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors text-decoration-none flex items-center gap-1">
+                class="text-white/80 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors text-decoration-none flex items-center gap-1">
                 <span class="material-symbols-outlined text-[14px]">location_on</span>
                 {{ $destino->provincia->nombre ?? 'Argentina' }}
             </a>
@@ -27,11 +27,11 @@
                 {{ $destino->rango_precio ?? '$' }}
             </span>
             @if($destino->resenas->count() > 0)
-                <div class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-amber-400 text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                    <span class="text-white text-sm font-bold">{{ number_format($destino->resenas->avg('calificacion'), 1) }}</span>
-                    <span class="text-white/60 text-xs">({{ $destino->resenas->count() }} reseñas)</span>
-                </div>
+            <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-amber-400 text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="text-white text-sm font-bold">{{ number_format($destino->resenas->avg('calificacion'), 1) }}</span>
+                <span class="text-white/60 text-xs">({{ $destino->resenas->count() }} reseñas)</span>
+            </div>
             @endif
         </div>
     </div>
@@ -75,59 +75,119 @@
             </div>
         </section>
         @endif
+        {{-- ========== CLIMA ========== --}}
+        @if($clima)
+        <section class="bg-white border-y border-slate-200 py-6 my-4 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 md:px-8">
+                <h2 class="text-lg font-black text-slate-800 mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#28628f]">partly_cloudy_day</span>
+                    Clima en {{ $destino->nombre }} ahora
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+                    {{-- Clima actual --}}
+                    <div class="bg-gradient-to-br from-[#28628f] to-[#1a4669] rounded-2xl p-6 text-white flex items-center gap-6">
+                        <div class="text-center">
+                            <img src="https://openweathermap.org/img/wn/{{ $clima['weather'][0]['icon'] }}@2x.png"
+                                alt="{{ $clima['weather'][0]['description'] }}" class="w-20 h-20">
+                        </div>
+                        <div>
+                            <p class="text-6xl font-black leading-none">{{ round($clima['main']['temp']) }}°</p>
+                            <p class="text-white/80 capitalize text-sm mt-1">{{ $clima['weather'][0]['description'] }}</p>
+                            <p class="text-white/60 text-xs mt-2">Sensación térmica: {{ round($clima['main']['feels_like']) }}°C</p>
+                        </div>
+                        <div class="ml-auto flex flex-col gap-2 text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[16px] text-white/70">water_drop</span>
+                                <span>{{ $clima['main']['humidity'] }}% humedad</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[16px] text-white/70">air</span>
+                                <span>{{ round($clima['wind']['speed'] * 3.6) }} km/h viento</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[16px] text-white/70">thermostat</span>
+                                <span>{{ round($clima['main']['temp_min']) }}° / {{ round($clima['main']['temp_max']) }}°</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Pronóstico --}}
+                    @if($pronostico)
+                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Próximas horas</p>
+                        <div class="grid grid-cols-4 gap-2">
+                            @foreach(array_slice($pronostico['list'], 0, 4) as $item)
+                            <div class="text-center bg-white rounded-xl p-2 border border-slate-100">
+                                <p class="text-xs text-slate-400 font-semibold">
+                                    {{ \Carbon\Carbon::parse($item['dt_txt'])->format('H:i') }}
+                                </p>
+                                <img src="https://openweathermap.org/img/wn/{{ $item['weather'][0]['icon'] }}.png"
+                                    class="w-10 h-10 mx-auto" alt="">
+                                <p class="text-sm font-black text-slate-700">{{ round($item['main']['temp']) }}°</p>
+                                <p class="text-[10px] text-slate-400 capitalize leading-tight">{{ $item['weather'][0]['description'] }}</p>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                </div>
+            </div>
+        </section>
+        @endif
         {{-- Reseñas --}}
         <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
             <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined text-[#28628f]">rate_review</span>
                 Reseñas de la Comunidad
                 @if($destino->resenas->count() > 0)
-                    <span class="text-sm font-normal text-slate-400">({{ $destino->resenas->count() }})</span>
+                <span class="text-sm font-normal text-slate-400">({{ $destino->resenas->count() }})</span>
                 @endif
             </h2>
 
             @if($destino->resenas->where('aprobada', true)->count() > 0)
-                <div class="flex flex-col gap-4">
-                    @foreach($destino->resenas->where('aprobada', true) as $resena)
-                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-full bg-[#28628f] text-white flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
-                                @if($resena->anonima)
-                                    <span class="material-symbols-outlined text-[18px]">person</span>
-                                @elseif($resena->user?->avatar)
-                                    <img src="{{ $resena->user->avatar }}" class="w-full h-full object-cover" alt="">
-                                @else
-                                    {{ strtoupper(substr($resena->user?->name ?? '?', 0, 1)) }}
-                                @endif
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between mb-1">
-                                    <span class="font-bold text-slate-800 text-sm">
-                                        {{ $resena->anonima ? 'Viajero Anónimo' : ($resena->user?->name ?? 'Usuario') }}
-                                    </span>
-                                    <div class="flex items-center gap-0.5">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <span class="material-symbols-outlined text-[14px] {{ $i <= $resena->calificacion ? 'text-amber-400' : 'text-slate-200' }}"
-                                                  style="font-variation-settings: 'FILL' 1;">star</span>
+            <div class="flex flex-col gap-4">
+                @foreach($destino->resenas->where('aprobada', true) as $resena)
+                <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[#28628f] text-white flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                            @if($resena->anonima)
+                            <span class="material-symbols-outlined text-[18px]">person</span>
+                            @elseif($resena->user?->avatar)
+                            <img src="{{ $resena->user->avatar }}" class="w-full h-full object-cover" alt="">
+                            @else
+                            {{ strtoupper(substr($resena->user?->name ?? '?', 0, 1)) }}
+                            @endif
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-800 text-sm">
+                                    {{ $resena->anonima ? 'Viajero Anónimo' : ($resena->user?->name ?? 'Usuario') }}
+                                </span>
+                                <div class="flex items-center gap-0.5">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <span class="material-symbols-outlined text-[14px] {{ $i <= $resena->calificacion ? 'text-amber-400' : 'text-slate-200' }}"
+                                        style="font-variation-settings: 'FILL' 1;">star</span>
                                         @endfor
-                                    </div>
                                 </div>
-                                @if($resena->titulo)
-                                    <p class="font-semibold text-slate-700 text-sm mb-1">{{ $resena->titulo }}</p>
-                                @endif
-                                <p class="text-slate-500 text-sm leading-relaxed">{{ $resena->comentario }}</p>
-                                <p class="text-xs text-slate-300 mt-2">{{ $resena->created_at->diffForHumans() }}</p>
                             </div>
+                            @if($resena->titulo)
+                            <p class="font-semibold text-slate-700 text-sm mb-1">{{ $resena->titulo }}</p>
+                            @endif
+                            <p class="text-slate-500 text-sm leading-relaxed">{{ $resena->comentario }}</p>
+                            <p class="text-xs text-slate-300 mt-2">{{ $resena->created_at->diffForHumans() }}</p>
                         </div>
                     </div>
-                    @endforeach
                 </div>
+                @endforeach
+            </div>
             @else
-                <div class="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
-                    <span class="material-symbols-outlined text-4xl text-slate-300 block mb-2">chat_bubble_outline</span>
-                    <p class="text-slate-400 font-medium">Todavía no hay reseñas para este destino.</p>
-                    <p class="text-slate-300 text-sm mt-1">¡Sé el primero en comentar!</p>
-                </div>
+            <div class="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
+                <span class="material-symbols-outlined text-4xl text-slate-300 block mb-2">chat_bubble_outline</span>
+                <p class="text-slate-400 font-medium">Todavía no hay reseñas para este destino.</p>
+                <p class="text-slate-300 text-sm mt-1">¡Sé el primero en comentar!</p>
+            </div>
             @endif
         </section>
 
@@ -164,6 +224,33 @@
             </div>
         </div>
 
+        {{-- Botones favorito y visitado --}}
+        @auth
+        @php
+        $esFavorito = auth()->user()->favoritos->where('destino_id', $destino->id)->count() > 0;
+        $esVisitado = auth()->user()->destinosVisitados->where('destino_id', $destino->id)->count() > 0;
+        @endphp
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2 flex-1">
+                <button id="btn-favorito" onclick="toggleFavorito({{ $destino->id }})"
+                    class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all font-semibold text-sm
+                    {{ $esFavorito ? 'border-rose-400 bg-rose-50 text-rose-500' : 'border-slate-200 text-slate-400 hover:border-rose-400 hover:text-rose-400' }}">
+                    <span id="icono-favorito" class="material-symbols-outlined text-[18px]"
+                        style="font-variation-settings: 'FILL' {{ $esFavorito ? 1 : 0 }};">favorite</span>
+                    <span id="texto-favorito">{{ $esFavorito ? 'Guardado' : 'Favorito' }}</span>
+                </button>
+
+                <button id="btn-visitado" onclick="toggleVisitado({{ $destino->id }})"
+                    class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all font-semibold text-sm
+                    {{ $esVisitado ? 'border-emerald-400 bg-emerald-50 text-emerald-500' : 'border-slate-200 text-slate-400 hover:border-emerald-400 hover:text-emerald-400' }}">
+                    <span id="icono-visitado" class="material-symbols-outlined text-[18px]"
+                        style="font-variation-settings: 'FILL' {{ $esVisitado ? 1 : 0 }};">check_circle</span>
+                    <span id="texto-visitado">{{ $esVisitado ? 'Visitado' : 'Marcar visitado' }}</span>
+                </button>
+            </div>
+        </div>
+        @endauth
+
         {{-- Escribir reseña --}}
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 text-center">
             <span class="material-symbols-outlined text-4xl text-[#28628f] block mb-3">rate_review</span>
@@ -171,23 +258,23 @@
             <p class="text-slate-500 text-sm mb-5">Compartí tu experiencia con otros viajeros.</p>
 
             @auth
-                <button onclick="document.getElementById('modal-resena-destino').classList.remove('hidden')"
-                        class="bg-[#28628f] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#1a4669] transition-all shadow-sm inline-flex items-center gap-2 w-full justify-center">
-                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                    Escribir reseña
-                </button>
+            <button onclick="document.getElementById('modal-resena-destino').classList.remove('hidden')"
+                class="bg-[#28628f] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#1a4669] transition-all shadow-sm inline-flex items-center gap-2 w-full justify-center">
+                <span class="material-symbols-outlined text-[18px]">edit</span>
+                Escribir reseña
+            </button>
             @else
-                <a href="{{ route('login') }}"
-                   class="bg-[#28628f] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#1a4669] transition-all shadow-sm inline-flex items-center gap-2 w-full justify-center text-decoration-none">
-                    <span class="material-symbols-outlined text-[18px]">login</span>
-                    Iniciá sesión para comentar
-                </a>
+            <a href="{{ route('login') }}"
+                class="bg-[#28628f] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#1a4669] transition-all shadow-sm inline-flex items-center gap-2 w-full justify-center text-decoration-none">
+                <span class="material-symbols-outlined text-[18px]">login</span>
+                Iniciá sesión para comentar
+            </a>
             @endauth
         </div>
 
         {{-- Volver --}}
         <a href="{{ route('provincia.show', $destino->provincia->nombre) }}"
-           class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 justify-center text-decoration-none">
+            class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 justify-center text-decoration-none">
             <span class="material-symbols-outlined text-[18px]">arrow_back</span>
             Volver a {{ $destino->provincia->nombre ?? 'la provincia' }}
         </a>
@@ -198,59 +285,108 @@
 {{-- Modal reseña --}}
 <div id="modal-resena-destino" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="px-6 py-5 border-b border-slate-100">
+
+        {{-- Header --}}
+        <div class="px-6 py-5 border-b border-slate-100 bg-slate-50 rounded-t-2xl">
             <div class="flex items-center justify-between mb-1">
-                <h2 class="text-xl font-bold text-slate-800">Reseña: {{ $destino->nombre }}</h2>
+                <nav class="flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
+                    <span class="text-slate-500">Destinos</span>
+                    <span class="material-symbols-outlined text-slate-400 text-[14px]">chevron_right</span>
+                    <span class="text-[#28628f]">{{ $destino->provincia->nombre ?? '' }}</span>
+                </nav>
                 <button onclick="document.getElementById('modal-resena-destino').classList.add('hidden')"
-                        class="text-slate-400 hover:text-slate-600 transition-colors">
+                    class="text-slate-400 hover:text-slate-600 transition-colors">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <p class="text-sm text-slate-500">{{ $destino->provincia->nombre ?? '' }}</p>
+            <h2 class="text-xl font-bold text-slate-800">Compartí tu experiencia: {{ $destino->nombre }}</h2>
+            <p class="text-sm text-slate-500 mt-1">Ayudá a otros a descubrir lo mejor de este destino.</p>
         </div>
 
-        <form action="{{ route('resenas.store') }}" method="POST" class="p-6 space-y-6">
+        {{-- Formulario --}}
+        <form action="{{ route('resenas.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
             @csrf
             <input type="hidden" name="destino_id" value="{{ $destino->id }}">
 
+            {{-- Calificación y título --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
-                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Calificación</label>
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Calificación General</label>
                     <div class="flex gap-1" id="estrellas-destino">
                         @for($i = 1; $i <= 5; $i++)
-                        <button type="button" onclick="setCalificacionDestino({{ $i }})"
-                                class="estrella-destino material-symbols-outlined text-[32px] text-amber-400 cursor-pointer"
-                                style="font-variation-settings: 'FILL' 1;" data-valor="{{ $i }}">star</button>
-                        @endfor
+                            <button type="button" onclick="setCalificacionDestino({{ $i }})"
+                            class="estrella-destino material-symbols-outlined text-[36px] text-amber-400 cursor-pointer transition-all"
+                            style="font-variation-settings: 'FILL' 1;" data-valor="{{ $i }}">star</button>
+                            @endfor
                     </div>
                     <input type="hidden" name="calificacion" id="calificacion-destino" value="5">
+                    <p class="text-xs text-slate-400">Hacé clic en una estrella para calificar</p>
                 </div>
                 <div class="space-y-2">
-                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Título (opcional)</label>
-                    <input type="text" name="titulo" placeholder="Resumí tu visita"
-                           class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Título de la reseña</label>
+                    <input type="text" name="titulo" placeholder="Resumí tu visita en pocas palabras"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] transition-colors">
                 </div>
             </div>
 
+            {{-- Categorías --}}
             <div class="space-y-2">
-                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Comentario</label>
-                <textarea name="comentario" rows="4" required placeholder="Contá tu experiencia..."
-                          class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] resize-none"></textarea>
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Categorías</label>
+                <div class="flex flex-wrap gap-2">
+                    @foreach(['Ideal para familias', 'Aventura', 'Naturaleza', 'Gastronomía', 'Fotografía', 'Cultura', 'Relax'] as $cat)
+                    <button type="button" onclick="toggleCategoriaDestino(this)"
+                        class="cat-btn-destino px-4 py-1.5 rounded-full border border-slate-200 text-slate-600 font-semibold text-xs hover:border-[#28628f] hover:text-[#28628f] transition-all">
+                        {{ $cat }}
+                    </button>
+                    @endforeach
+                </div>
             </div>
 
-            <div class="flex items-center gap-3">
+            {{-- Comentario --}}
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Tu Comentario</label>
+                <textarea name="comentario" rows="5" required
+                    placeholder="¿Cuál fue lo mejor de tu visita? ¿Tenés consejos para senderos, horarios o actividades?"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] transition-colors resize-none"></textarea>
+            </div>
+
+            {{-- Fotos --}}
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Fotos</label>
+                <div onclick="document.getElementById('fotos-input').click()"
+                    class="border-2 border-dashed border-slate-200 rounded-xl p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer group">
+                    <div class="w-12 h-12 bg-[#28628f]/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-[#28628f] text-[28px]">upload_file</span>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-700">Arrastrá y soltá tus fotos acá</p>
+                    <p class="text-xs text-slate-400 mt-1">O hacé clic para explorar (hasta 5 fotos)</p>
+                </div>
+                <input type="file" id="fotos-input" name="imagenes[]" multiple accept="image/*"
+                    class="hidden" onchange="previewFotos(this)">
+
+                {{-- Preview fotos --}}
+                <div id="fotos-preview" class="flex gap-3 overflow-x-auto pb-2 mt-2 hidden">
+                </div>
+            </div>
+
+            {{-- Anónimo --}}
+            <div class="flex items-start gap-3 py-3 border-t border-slate-100">
                 <input type="checkbox" name="anonima" value="1" id="anonima-destino"
-                       class="w-5 h-5 rounded border-slate-300 text-[#28628f]">
-                <label for="anonima-destino" class="text-sm text-slate-600 cursor-pointer">Publicar de forma anónima</label>
+                    class="mt-1 w-5 h-5 rounded border-slate-300 text-[#28628f] focus:ring-[#28628f]">
+                <label for="anonima-destino" class="text-sm text-slate-600 cursor-pointer">
+                    Publicar de forma anónima
+                    <span class="block text-xs text-slate-400 mt-0.5 italic">Tu nombre y foto no serán visibles para otros viajeros.</span>
+                </label>
             </div>
 
-            <div class="flex flex-col md:flex-row-reverse gap-3">
+            {{-- Botones --}}
+            <div class="flex flex-col md:flex-row-reverse gap-3 pt-2">
                 <button type="submit"
-                        class="w-full md:w-auto px-8 py-3 bg-[#28628f] text-white font-bold rounded-xl hover:bg-[#1a4669] transition-all">
+                    class="w-full md:w-auto px-8 py-3 bg-[#28628f] text-white font-bold rounded-full hover:bg-[#1a4669] transition-all shadow-md">
                     Publicar Reseña
                 </button>
                 <button type="button" onclick="document.getElementById('modal-resena-destino').classList.add('hidden')"
-                        class="w-full md:w-auto px-8 py-3 border border-[#28628f] text-[#28628f] font-bold rounded-xl hover:bg-blue-50 transition-all">
+                    class="w-full md:w-auto px-8 py-3 border border-[#28628f] text-[#28628f] font-bold rounded-full hover:bg-blue-50 transition-all">
                     Cancelar
                 </button>
             </div>
@@ -259,15 +395,97 @@
 </div>
 
 <script>
-function setCalificacionDestino(valor) {
-    document.getElementById('calificacion-destino').value = valor;
-    document.querySelectorAll('.estrella-destino').forEach(function(e) {
-        const v = parseInt(e.dataset.valor);
-        e.style.fontVariationSettings = v <= valor ? "'FILL' 1" : "'FILL' 0";
-        e.classList.toggle('text-amber-400', v <= valor);
-        e.classList.toggle('text-slate-300', v > valor);
-    });
-}
+    function setCalificacionDestino(valor) {
+        document.getElementById('calificacion-destino').value = valor;
+        document.querySelectorAll('.estrella-destino').forEach(function(e) {
+            const v = parseInt(e.dataset.valor);
+            e.style.fontVariationSettings = v <= valor ? "'FILL' 1" : "'FILL' 0";
+            e.classList.toggle('text-amber-400', v <= valor);
+            e.classList.toggle('text-slate-300', v > valor);
+        });
+    }
+
+    function toggleCategoriaDestino(btn) {
+        btn.classList.toggle('border-[#28628f]');
+        btn.classList.toggle('text-[#28628f]');
+        btn.classList.toggle('bg-[#28628f]/5');
+        btn.classList.toggle('border-slate-200');
+        btn.classList.toggle('text-slate-600');
+    }
+
+    function previewFotos(input) {
+        const preview = document.getElementById('fotos-preview');
+        preview.innerHTML = '';
+        preview.classList.remove('hidden');
+
+        Array.from(input.files).slice(0, 5).forEach(function(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const div = document.createElement('div');
+                div.className = 'relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-slate-200';
+                div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                preview.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function toggleFavorito(destinoId) {
+        fetch('/favoritos/toggle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    destino_id: destinoId
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                const btn = document.getElementById('btn-favorito');
+                const icono = document.getElementById('icono-favorito');
+                if (data.favorito) {
+                    btn.classList.add('border-rose-400', 'bg-rose-50', 'text-rose-500');
+                    btn.classList.remove('border-slate-200', 'text-slate-400');
+                    icono.style.fontVariationSettings = "'FILL' 1";
+                } else {
+                    btn.classList.remove('border-rose-400', 'bg-rose-50', 'text-rose-500');
+                    btn.classList.add('border-slate-200', 'text-slate-400');
+                    icono.style.fontVariationSettings = "'FILL' 0";
+                }
+            });
+    }
+
+    function toggleVisitado(destinoId) {
+        fetch('/visitados/toggle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    destino_id: destinoId
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                const btn = document.getElementById('btn-visitado');
+                const icono = document.getElementById('icono-visitado');
+                const texto = document.getElementById('texto-visitado');
+                if (data.visitado) {
+                    btn.classList.add('border-emerald-400', 'bg-emerald-50', 'text-emerald-500');
+                    btn.classList.remove('border-slate-200', 'text-slate-400');
+                    icono.style.fontVariationSettings = "'FILL' 1";
+                    texto.textContent = 'Visitado';
+                } else {
+                    btn.classList.remove('border-emerald-400', 'bg-emerald-50', 'text-emerald-500');
+                    btn.classList.add('border-slate-200', 'text-slate-400');
+                    icono.style.fontVariationSettings = "'FILL' 0";
+                    texto.textContent = 'Marcar visitado';
+                }
+            });
+    }
 </script>
 
 @endsection

@@ -162,15 +162,86 @@
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold text-slate-800">Mis favoritos</h2>
                 <div class="flex gap-2">
-                    <button class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
-                    <button class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+                    <button onclick="prevFavoritos()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors">
+                        <span class="material-symbols-outlined text-sm">chevron_left</span>
+                    </button>
+                    <button onclick="nextFavoritos()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors">
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </button>
                 </div>
             </div>
+
+            @php
+            $favoritos = auth()->user()->favoritos()->with('destino.provincia')->get()->filter(fn($f) => $f->destino);
+            @endphp
+
+            @if($favoritos->count() > 0)
+            <div id="favoritos-container" class="grid grid-cols-2 gap-3">
+                @foreach($favoritos as $index => $favorito)
+                <a href="{{ route('destinos.show', $favorito->destino->id) }}"
+                    class="favorito-item relative bg-slate-100 rounded-xl overflow-hidden group text-decoration-none {{ $index >= 4 ? 'hidden' : '' }}"
+                    data-index="{{ $index }}">
+                    <div class="h-24 overflow-hidden">
+                        <img src="{{ $favorito->destino->imagen_url ?? 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400' }}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            alt="{{ $favorito->destino->nombre }}">
+                    </div>
+                    <div class="p-2 flex justify-between items-center">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800 truncate">{{ $favorito->destino->nombre }}</h4>
+                            <p class="text-[10px] text-slate-400">{{ $favorito->destino->provincia->nombre ?? '' }}</p>
+                        </div>
+                        <span class="material-symbols-outlined text-rose-500 text-[16px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+
+            <p class="text-xs text-slate-400 text-center mt-3" id="favoritos-counter">
+                Mostrando 1-{{ min(4, $favoritos->count()) }} de {{ $favoritos->count() }}
+            </p>
+            @else
             <div class="text-center py-8 text-slate-400 text-sm border-2 border-dashed border-slate-200 rounded-xl">
                 <span class="material-symbols-outlined text-3xl mb-2 block">bookmark</span>
                 Aún no guardaste ningún favorito
             </div>
+            @endif
         </section>
+
+        <script>
+            var favoritosActual = 0;
+            var favoritosPorPagina = 4;
+            var totalFavoritos = document.querySelectorAll('.favorito-item').length;
+
+            function mostrarFavoritos() {
+                document.querySelectorAll('.favorito-item').forEach(function(item) {
+                    var index = parseInt(item.dataset.index);
+                    if (index >= favoritosActual && index < favoritosActual + favoritosPorPagina) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+                var desde = favoritosActual + 1;
+                var hasta = Math.min(favoritosActual + favoritosPorPagina, totalFavoritos);
+                var counter = document.getElementById('favoritos-counter');
+                if (counter) counter.textContent = 'Mostrando ' + desde + '-' + hasta + ' de ' + totalFavoritos;
+            }
+
+            function nextFavoritos() {
+                if (favoritosActual + favoritosPorPagina < totalFavoritos) {
+                    favoritosActual += favoritosPorPagina;
+                    mostrarFavoritos();
+                }
+            }
+
+            function prevFavoritos() {
+                if (favoritosActual - favoritosPorPagina >= 0) {
+                    favoritosActual -= favoritosPorPagina;
+                    mostrarFavoritos();
+                }
+            }
+        </script>
 
     </div>
 
@@ -265,7 +336,38 @@
                     </div>
                 </div>
             </section>
-
+            {{-- Números de emergencia --}}
+            <section>
+                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Números de Emergencia Argentina</h4>
+                <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-200">
+                    @foreach([
+                    ['911', 'Policía / Emergencias', 'local_police', 'text-blue-600', 'bg-blue-50'],
+                    ['100', 'Bomberos', 'local_fire_department', 'text-orange-500', 'bg-orange-50'],
+                    ['107', 'SAME / Ambulancia', 'emergency', 'text-red-500', 'bg-red-50'],
+                    ['144', 'Violencia de Género', 'support_agent', 'text-purple-500', 'bg-purple-50'],
+                    ['102', 'Niñez y Adolescencia', 'child_care', 'text-emerald-500', 'bg-emerald-50'],
+                    ['103', 'Defensa Civil', 'shield', 'text-slate-600', 'bg-slate-100'],
+                    ['134', 'Gas / Fugas', 'gas_meter', 'text-yellow-600', 'bg-yellow-50'],
+                    ['135', 'Centro de Asistencia al Suicida', 'psychology', 'text-pink-500', 'bg-pink-50'],
+                    ] as [$numero, $descripcion, $icono, $color, $bgColor])
+                    <div class="flex items-center justify-between p-4 hover:bg-slate-100 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg {{ $bgColor }} flex items-center justify-center">
+                                <span class="material-symbols-outlined {{ $color }} text-[18px]">{{ $icono }}</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-700">{{ $descripcion }}</p>
+                                <p class="text-xs text-slate-400">Llamada gratuita las 24hs</p>
+                            </div>
+                        </div>
+                        <a href="tel:{{ $numero }}"
+                            class="text-lg font-black text-[#28628f] hover:underline">
+                            {{ $numero }}
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+            </section>
             {{-- Privacidad y seguridad --}}
             <section>
                 <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Privacidad & Seguridad</h4>
@@ -413,9 +515,61 @@
         document.getElementById('modal-portada').classList.add('hidden');
     }
 
+    function mostrarFavoritos() {
+        var container = document.getElementById('favoritos-container');
+        container.style.opacity = '0';
+        container.style.transform = 'translateX(20px)';
+
+        setTimeout(function() {
+            document.querySelectorAll('.favorito-item').forEach(function(item) {
+                var index = parseInt(item.dataset.index);
+                if (index >= favoritosActual && index < favoritosActual + favoritosPorPagina) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            container.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            container.style.opacity = '1';
+            container.style.transform = 'translateX(0)';
+
+            var desde = favoritosActual + 1;
+            var hasta = Math.min(favoritosActual + favoritosPorPagina, totalFavoritos);
+            var counter = document.getElementById('favoritos-counter');
+            if (counter) counter.textContent = 'Mostrando ' + desde + '-' + hasta + ' de ' + totalFavoritos;
+        }, 150);
+    }
+
+    function nextFavoritos() {
+        if (favoritosActual + favoritosPorPagina < totalFavoritos) {
+            var container = document.getElementById('favoritos-container');
+            container.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+            container.style.opacity = '0';
+            container.style.transform = 'translateX(-20px)';
+            favoritosActual += favoritosPorPagina;
+            mostrarFavoritos();
+        }
+    }
+
+    function prevFavoritos() {
+        if (favoritosActual - favoritosPorPagina >= 0) {
+            var container = document.getElementById('favoritos-container');
+            container.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+            container.style.opacity = '0';
+            container.style.transform = 'translateX(20px)';
+            favoritosActual -= favoritosPorPagina;
+            mostrarFavoritos();
+        }
+    }
+
     document.querySelectorAll('.group').forEach(badge => {
-        badge.addEventListener('mouseenter', () => { badge.style.transform = 'translateY(-4px)'; });
-        badge.addEventListener('mouseleave', () => { badge.style.transform = 'translateY(0)'; });
+        badge.addEventListener('mouseenter', () => {
+            badge.style.transform = 'translateY(-4px)';
+        });
+        badge.addEventListener('mouseleave', () => {
+            badge.style.transform = 'translateY(0)';
+        });
     });
 
     document.querySelectorAll('.theme-btn').forEach(btn => {

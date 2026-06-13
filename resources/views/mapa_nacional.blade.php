@@ -5,6 +5,20 @@
 @section('content')
 
 <style>
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(225, 29, 72, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(225, 29, 72, 0);
+        }
+    }
+
     .surify-map-dashboard {
         position: relative;
         width: 100%;
@@ -189,6 +203,7 @@
                 <button onclick="mapaInstance.zoomIn()" title="Acercar"><i class="fa-solid fa-plus"></i></button>
                 <button onclick="mapaInstance.zoomOut()" title="Alejar"><i class="fa-solid fa-minus"></i></button>
                 <button onclick="centrarEnArgentina()" title="Recentrar"><i class="fa-solid fa-location-crosshairs"></i></button>
+                <button onclick="miUbicacion()" title="Mi ubicación" id="btn-geolocalizacion"><i class="fa-solid fa-location-dot"></i></button>
             </div>
         </div>
 
@@ -359,7 +374,7 @@
         mapaInstance = L.map('mapa-container', {
             zoomControl: false,
             minZoom: 4,
-            maxZoom: 14,
+            maxZoom: 19,
             maxBounds: L.latLngBounds(L.latLng(-56.5, -76.0), L.latLng(-21.0, -53.0)),
             maxBoundsViscosity: 1.0
         }).setView([-38.416097, -63.616672], 4);
@@ -431,6 +446,69 @@
 
     inicializarMapa();
     setTimeout(inicializarMapa, 500);
+
+    function miUbicacion() {
+        const btn = document.getElementById('btn-geolocalizacion');
+        btn.style.color = '#28628f';
+
+        if (!navigator.geolocation) {
+            alert('Tu navegador no soporta geolocalización.');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            // Centrar mapa en la ubicación del usuario
+            mapaInstance.flyTo([lat, lng], 10, {
+                duration: 1.5
+            });
+
+            // Agregar marcador de posición
+            const iconoUsuario = L.divIcon({
+                html: '<div style="background:#e11d48; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow:0 2px 8px rgba(225,29,72,0.5); animation: pulse 1.5s infinite;"></div>',
+                className: '',
+                iconSize: [16, 16],
+                iconAnchor: [8, 8],
+            });
+
+            L.marker([lat, lng], {
+                    icon: iconoUsuario
+                })
+                .addTo(mapaInstance)
+                .bindPopup('<div style="font-family:sans-serif; font-size:13px;"><strong style="color:#e11d48;">📍 Tu ubicación</strong></div>')
+                .openPopup();
+
+            // Encontrar destinos cercanos (menos de 300km)
+            const destinosCercanos = destinosData.filter(function(destino) {
+                const dist = calcularDistancia(lat, lng, destino.lat, destino.lng);
+                return dist < 300;
+            }).sort(function(a, b) {
+                return calcularDistancia(lat, lng, a.lat, a.lng) - calcularDistancia(lat, lng, b.lat, b.lng);
+            }).slice(0, 3);
+
+            if (destinosCercanos.length > 0) {
+                mostrarCard(destinosCercanos[0]);
+            }
+
+            btn.style.color = '#e11d48';
+
+        }, function() {
+            alert('No se pudo obtener tu ubicación. Verificá los permisos del navegador.');
+            btn.style.color = '#475569';
+        });
+    }
+
+    function calcularDistancia(lat1, lng1, lat2, lng2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
 </script>
 
 @endsection
