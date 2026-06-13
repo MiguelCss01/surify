@@ -108,13 +108,42 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        @keyframes slideInFromLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideOutToRight {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(40px); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .animate-fade-out {
+            animation: fadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .animate-slide-in-left {
+            animation: slideInFromLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .animate-slide-out-right {
+            animation: slideOutToRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
     </style>
 </head>
 <body class="bg-background min-h-screen text-on-background selection:bg-primary-container selection:text-on-primary-container">
 <div class="flex min-h-screen w-full">
 
     <!-- Right Side: Register Form Canvas -->
-<div class="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-8 bg-surface-container-lowest">
+<div class="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-8 bg-surface-container-lowest page-transition-container animate-slide-in-left" style="opacity:0;">
         <div class="w-full max-w-[440px] flex flex-col gap-4">
             
             <!-- Brand & Welcome (Calco exacto del Login) -->
@@ -202,7 +231,7 @@
     </div>
 
     <!-- Left Side: Mendoza Vineyard Image (Fija y a COLOR para echar al carnicero) -->
-    <div class="hidden lg:flex lg:w-1/2 relative bg-neutral-200 overflow-hidden">
+    <div class="hidden lg:flex lg:w-1/2 relative bg-neutral-200 overflow-hidden image-transition-container animate-fade-in" style="opacity:0;">
         <div class="absolute inset-0 bg-gradient-to-r from-on-surface/20 to-transparent z-10"></div>
         <!-- Link fijo ultra-HD de un viñedo real en Mendoza a puro color -->
         <img alt="Mendoza Vineyard" class="absolute inset-0 w-full h-full object-cover" src="https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=1200&q=80">
@@ -213,5 +242,85 @@
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const googleBtn = document.querySelector('a[href*="auth/google"]');
+        const loginLink = document.querySelector('a[href*="login"]');
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const btn = this.querySelector('button[type="submit"]');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-90', 'cursor-not-allowed');
+                    
+                    // Reemplazar texto por spinner
+                    btn.innerHTML = `
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="display:inline-block; animation: spin 1s linear infinite;">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="font-label-bold text-label-bold">Creando cuenta...</span>
+                    `;
+                }
+
+                // Opacar los demás elementos
+                const formElements = this.querySelectorAll('input, label, a');
+                formElements.forEach(el => {
+                    el.style.transition = 'opacity 0.4s ease';
+                    el.style.opacity = '0.5';
+                    el.style.pointerEvents = 'none';
+                });
+            });
+        }
+
+        if (googleBtn) {
+            googleBtn.addEventListener('click', function(e) {
+                this.style.pointerEvents = 'none';
+                this.classList.add('opacity-90', 'bg-surface-container-low');
+                this.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="display:inline-block; animation: spin 1s linear infinite;">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="font-label-bold text-label-bold text-on-surface">Conectando con Google...</span>
+                `;
+            });
+        }
+
+        // Animación de salida al ir al login
+        if (loginLink) {
+            loginLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetUrl = this.href;
+                
+                const pageContainer = document.querySelector('.page-transition-container');
+                const imageContainer = document.querySelector('.image-transition-container');
+                
+                if (pageContainer) {
+                    pageContainer.classList.remove('animate-slide-in-left');
+                    pageContainer.classList.add('animate-slide-out-right');
+                }
+                if (imageContainer) {
+                    imageContainer.classList.remove('animate-fade-in');
+                    imageContainer.classList.add('animate-fade-out');
+                }
+                
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 400);
+            });
+        }
+    });
+</script>
+
+<style>
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
 </body>
 </html>

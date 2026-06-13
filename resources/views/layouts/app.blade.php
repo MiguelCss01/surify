@@ -33,10 +33,24 @@
             display: inline-block;
             line-height: 1;
         }
+
+        #top-loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #28628f, #06b6d4, #f97316);
+            z-index: 99999;
+            width: 0%;
+            transition: width 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body class="flex flex-col min-h-screen antialiased">
+    <div id="top-loading-bar"></div>
 
     <header class="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
@@ -231,9 +245,26 @@
 
     <script>
         function navegarSinRecarga(url) {
+            const bar = document.getElementById('top-loading-bar');
+            let progressInterval = null;
+            if (bar) {
+                bar.style.opacity = '1';
+                bar.style.width = '30%';
+                // Simular incremento progresivo
+                progressInterval = setInterval(() => {
+                    let curWidth = parseFloat(bar.style.width);
+                    if (curWidth < 85) {
+                        bar.style.width = (curWidth + 8) + '%';
+                    }
+                }, 100);
+            }
+
             fetch(url)
                 .then(r => r.text())
                 .then(html => {
+                    if (progressInterval) clearInterval(progressInterval);
+                    if (bar) bar.style.width = '100%';
+
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
                     const newMain = doc.querySelector('main');
@@ -252,6 +283,28 @@
                             document.body.appendChild(scriptNuevo);
                         });
                     }
+
+                    if (bar) {
+                        setTimeout(() => {
+                            bar.style.opacity = '0';
+                            setTimeout(() => {
+                                bar.style.width = '0%';
+                            }, 400);
+                        }, 200);
+                    }
+                })
+                .catch(err => {
+                    if (progressInterval) clearInterval(progressInterval);
+                    if (bar) {
+                        bar.style.width = '100%';
+                        setTimeout(() => {
+                            bar.style.opacity = '0';
+                            setTimeout(() => {
+                                bar.style.width = '0%';
+                            }, 400);
+                        }, 200);
+                    }
+                    console.error('Error cargando página:', err);
                 });
         }
 
