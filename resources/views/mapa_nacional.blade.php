@@ -173,7 +173,7 @@
         <div style="display: flex; justify-content: space-between; width: 100%;">
 
             <div class="interactuable">
-                <aside class="light-panel" style="border-radius: 16px; padding: 16px; width: 230px; max-height: 320px; overflow-y: auto;">
+                <aside class="light-panel" style="border-radius: 16px; padding: 16px; width: 230px; max-height: 450px; overflow-y: auto;">
                     <p class="menu-label">Explorador</p>
                     <ul class="menu-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;">
                         <li><a class="is-active-menu" onclick="filtrarCategoria('todos')" style="cursor:pointer;"><i class="fa-solid fa-compass" style="margin-right:10px; font-size: 14px;"></i> Todos</a></li>
@@ -182,6 +182,14 @@
                         <li><a onclick="filtrarCategoria('cultura')" style="cursor:pointer;"><i class="fa-solid fa-landmark" style="margin-right:10px; font-size: 14px;"></i> Cultura</a></li>
                         <li><a onclick="filtrarCategoria('montaña')" style="cursor:pointer;"><i class="fa-solid fa-mountain" style="margin-right:10px; font-size: 14px;"></i> Montañas</a></li>
                         <li><a onclick="filtrarCategoria('playa')" style="cursor:pointer;"><i class="fa-solid fa-umbrella-beach" style="margin-right:10px; font-size: 14px;"></i> Playas</a></li>
+                    </ul>
+
+                    <hr style="margin: 12px 0; border-color: #e2e8f0;">
+                    <p class="menu-label">Servicios Cercanos</p>
+                    <ul class="menu-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px;">
+                        <li><a onclick="buscarServicios('restaurant')" id="btn-servicio-restaurant" style="cursor:pointer;"><i class="fa-solid fa-utensils" style="margin-right:10px; font-size: 14px; color: #f97316;"></i> Restaurantes</a></li>
+                        <li><a onclick="buscarServicios('gas_station')" id="btn-servicio-gas_station" style="cursor:pointer;"><i class="fa-solid fa-gas-pump" style="margin-right:10px; font-size: 14px; color: #06b6d4;"></i> Estaciones de Servicio</a></li>
+                        <li><a onclick="buscarServicios('lodging')" id="btn-servicio-lodging" style="cursor:pointer;"><i class="fa-solid fa-hotel" style="margin-right:10px; font-size: 14px; color: #8b5cf6;"></i> Alojamiento</a></li>
                     </ul>
 
                     <hr style="margin: 12px 0; border-color: #e2e8f0;">
@@ -509,6 +517,104 @@
             Math.sin(dLng / 2) * Math.sin(dLng / 2);
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
+    var markersServicios = [];
+
+    async function buscarServicios(tipo) {
+        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+            alert('El SDK de Google Maps no está cargado. Verifica tu API Key en el archivo .env.');
+            return;
+        }
+
+        const centro = mapaInstance.getCenter();
+        const lat = centro.lat;
+        const lng = centro.lng;
+
+        // Limpiar anteriores
+        markersServicios.forEach(m => mapaInstance.removeLayer(m));
+        markersServicios = [];
+
+        // Estilos activos
+        const tipos = ['restaurant', 'gas_station', 'lodging'];
+        tipos.forEach(t => {
+            const btn = document.getElementById('btn-servicio-' + t);
+            if (btn) {
+                if (t === tipo) {
+                    btn.classList.add('is-active-menu');
+                    btn.style.backgroundColor = 'rgba(40, 98, 143, 0.1)';
+                    btn.style.color = '#28628f';
+                } else {
+                    btn.classList.remove('is-active-menu');
+                    btn.style.backgroundColor = 'transparent';
+                    btn.style.color = '#475569';
+                }
+            }
+        });
+
+        // Configurar los parámetros de búsqueda de la nueva Places API
+        const request = {
+            fields: ['displayName', 'formattedAddress', 'location', 'rating'],
+            locationRestriction: {
+                center: { lat: lat, lng: lng },
+                radius: 5000,
+            },
+            includedPrimaryTypes: [tipo === 'restaurant' ? 'restaurant' : (tipo === 'gas_station' ? 'gas_station' : 'lodging')],
+            maxResultCount: 15,
+        };
+
+        try {
+            const { Place } = await google.maps.importLibrary("places");
+            const { places } = await Place.searchNearby(request);
+
+            if (places && places.length > 0) {
+                places.forEach(function(place) {
+                    const plat = place.location.lat();
+                    const plng = place.location.lng();
+                    const name = place.displayName;
+                    const address = place.formattedAddress;
+                    const rating = place.rating;
+
+                    let color = '#f97316';
+                    let iconName = 'restaurant';
+                    if (tipo === 'gas_station') {
+                        color = '#06b6d4';
+                        iconName = 'local_gas_station';
+                    } else if (tipo === 'lodging') {
+                        color = '#8b5cf6';
+                        iconName = 'hotel';
+                    }
+
+                    const htmlIcon = `<div style="background:${color}; width:32px; height:32px; border-radius:50%; border:2px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center; color:white;"><span class="material-symbols-outlined text-[16px]" style="display:flex; justify-content:center; align-items:center; width:100%; height:100%; font-variation-settings: 'FILL' 1;">${iconName}</span></div>`;
+                    const customIcon = L.divIcon({
+                        html: htmlIcon,
+                        className: '',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16]
+                    });
+
+                    const m = L.marker([plat, plng], { icon: customIcon })
+                        .addTo(mapaInstance)
+                        .bindPopup(`
+                            <div style="font-family:'Outfit',sans-serif; padding:4px; min-width: 140px;">
+                                <strong style="color:${color}; font-size:13px; display:block; margin-bottom:2px;">${name}</strong>
+                                <span style="font-size:11px; color:#64748b; display:block; margin-bottom:4px;">📍 ${address || 'Sin dirección'}</span>
+                                ${rating ? `<span style="font-size:11px; font-weight:bold; color:#f59e0b; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span> ${rating} / 5</span>` : ''}
+                            </div>
+                        `);
+
+                    markersServicios.push(m);
+                });
+
+                mapaInstance.setView([lat, lng], 14);
+            } else {
+                alert('No se encontraron servicios de este tipo en un radio de 5km de esta zona.');
+            }
+        } catch (error) {
+            console.error('Error al buscar servicios cercanos:', error);
+            alert('Error al buscar servicios cercanos: ' + error.message);
+        }
+    }
 </script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_KEY') }}&libraries=places"></script>
 
 @endsection

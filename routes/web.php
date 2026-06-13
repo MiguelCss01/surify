@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 // ==================== ADMIN ====================
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('roles', RolController::class);
     Route::resource('destinos', AdminDestinoController::class);
     Route::resource('usuarios', UsuarioController::class)->only(['index', 'edit', 'update']);
@@ -48,7 +48,58 @@ Route::get('/', function () {
                 'lng' => $coords->lng,
             ];
         });
-    return view('home', compact('destinos'));
+
+    $ciudadesRepresentativas = [
+        ['provincia' => 'Patagonia', 'ciudad' => 'Bariloche', 'lat' => -41.1335, 'lng' => -71.3103],
+        ['provincia' => 'Cuyo', 'ciudad' => 'Mendoza', 'lat' => -32.8908, 'lng' => -68.8458],
+        ['provincia' => 'Norte', 'ciudad' => 'Salta', 'lat' => -24.7821, 'lng' => -65.4117],
+        ['provincia' => 'Pampeana', 'ciudad' => 'Buenos Aires', 'lat' => -34.6037, 'lng' => -58.3816],
+        ['provincia' => 'Litoral', 'ciudad' => 'Iguazú', 'lat' => -25.5991, 'lng' => -54.5736],
+    ];
+
+    $weatherService = app(\App\Services\WeatherService::class);
+    $climaData = [];
+    foreach ($ciudadesRepresentativas as $c) {
+        $data = null;
+        try {
+            $data = $weatherService->getCurrentWeather($c['lat'], $c['lng']);
+        } catch (\Exception $e) {
+            // Ignorar errores de conexión/API
+        }
+
+        if ($data && isset($data['main']['temp']) && isset($data['weather'][0]['icon'])) {
+            $climaData[] = [
+                'provincia' => $c['provincia'],
+                'ciudad' => $c['ciudad'],
+                'temp' => $data['main']['temp'],
+                'icono' => $data['weather'][0]['icon']
+            ];
+        } else {
+            // Fallback en caso de falla
+            $mockTemps = [
+                'Bariloche' => 2,
+                'Mendoza' => 24,
+                'Salta' => 28,
+                'Buenos Aires' => 18,
+                'Iguazú' => 30
+            ];
+            $mockIcons = [
+                'Bariloche' => '13d',
+                'Mendoza' => '01d',
+                'Salta' => '02d',
+                'Buenos Aires' => '03d',
+                'Iguazú' => '10d'
+            ];
+            $climaData[] = [
+                'provincia' => $c['provincia'],
+                'ciudad' => $c['ciudad'],
+                'temp' => $mockTemps[$c['ciudad']] ?? 15,
+                'icono' => $mockIcons[$c['ciudad']] ?? '01d'
+            ];
+        }
+    }
+
+    return view('home', compact('destinos', 'climaData'));
 })->name('home');
 
 Route::get('/mapa', function () {

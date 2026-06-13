@@ -176,6 +176,17 @@
                             <p class="font-semibold text-slate-700 text-sm mb-1">{{ $resena->titulo }}</p>
                             @endif
                             <p class="text-slate-500 text-sm leading-relaxed">{{ $resena->comentario }}</p>
+
+                            @if($resena->imagenes && $resena->imagenes->count() > 0)
+                            <div class="flex gap-2 mt-3 flex-wrap">
+                                @foreach($resena->imagenes as $img)
+                                <a href="{{ asset($img->url) }}" target="_blank" class="w-20 h-20 rounded-xl overflow-hidden border border-slate-200 hover:border-[#28628f] transition-all hover:scale-105 inline-block">
+                                    <img src="{{ asset($img->url) }}" class="w-full h-full object-cover" alt="Foto de reseña">
+                                </a>
+                                @endforeach
+                            </div>
+                            @endif
+
                             <p class="text-xs text-slate-300 mt-2">{{ $resena->created_at->diffForHumans() }}</p>
                         </div>
                     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Resena;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ResenaController extends Controller
 {
@@ -18,8 +19,8 @@ class ResenaController extends Controller
             'evento_id' => 'nullable|exists:eventos,id',
             'calificacion' => 'required|integer|min:1|max:5',
             'comentario' => 'required|string|min:5|max:1000',
-            'imagenes' => 'nullable|array',
-            'imagenes.*' => 'url', // O validación de archivos si se suben como files, de momento validamos strings/urls
+            'imagenes' => 'nullable|array|max:5',
+            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Aseguramos que el usuario esté autenticado
@@ -35,12 +36,17 @@ class ResenaController extends Controller
         $resena->calificacion = $validated['calificacion'];
         $resena->comentario = $validated['comentario'];
         
-        // Si hay imágenes se guardan como array (gracias al cast array en el modelo, Laravel lo codifica en JSON solo)
-        if (isset($validated['imagenes'])) {
-            $resena->imagenes = $validated['imagenes'];
-        }
-
         $resena->save();
+
+        // Si se subieron imágenes, las procesamos y guardamos en la tabla relacional
+        if ($request->hasFile('imagenes')) {
+            foreach ($request->file('imagenes') as $file) {
+                $path = $file->store('resenas', 'public');
+                $resena->imagenes()->create([
+                    'url' => Storage::url($path)
+                ]);
+            }
+        }
 
         return redirect()->back()->with('success', '¡Gracias por compartir tu experiencia!');
     }

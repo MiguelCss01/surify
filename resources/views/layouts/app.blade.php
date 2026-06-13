@@ -244,7 +244,11 @@
 
                         document.querySelector('main').querySelectorAll('script').forEach(function(scriptViejo) {
                             const scriptNuevo = document.createElement('script');
-                            scriptNuevo.textContent = scriptViejo.textContent;
+                            if (scriptViejo.src) {
+                                scriptNuevo.src = scriptViejo.src;
+                            } else {
+                                scriptNuevo.textContent = scriptViejo.textContent;
+                            }
                             document.body.appendChild(scriptNuevo);
                         });
                     }

@@ -105,17 +105,39 @@
             </a>
         </div>
 
+        <!-- Filtros de Precio -->
+        <div class="flex flex-wrap items-center gap-2 mb-8 bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+            <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mr-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px] text-[#28628f]">payments</span> Filtrar por Rango de Precio:
+            </span>
+            <button onclick="filtrarPorPrecio('todos')" id="btn-filtro-todos" class="px-4 py-1.5 rounded-full bg-[#28628f] text-white font-bold text-xs shadow-sm transition-all cursor-pointer">
+                Todos
+            </button>
+            <button onclick="filtrarPorPrecio('Bajo')" id="btn-filtro-Bajo" class="px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:border-[#28628f] hover:text-[#28628f] transition-all cursor-pointer">
+                💚 Bajo
+            </button>
+            <button onclick="filtrarPorPrecio('Medio')" id="btn-filtro-Medio" class="px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:border-[#28628f] hover:text-[#28628f] transition-all cursor-pointer">
+                💛 Medio
+            </button>
+            <button onclick="filtrarPorPrecio('Alto')" id="btn-filtro-Alto" class="px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:border-[#28628f] hover:text-[#28628f] transition-all cursor-pointer">
+                🔴 Alto
+            </button>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @if(isset($destinos) && $destinos->count() > 0)
             @foreach($destinos as $destino)
-            <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:scale-[1.01] transition-all border border-slate-200 flex flex-col group">
+            <div class="destino-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:scale-[1.01] transition-all border border-slate-200 flex flex-col group" data-precio="{{ $destino->rango_precio }}">
                 <div class="h-60 bg-slate-100 overflow-hidden relative">
                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         src="{{ $destino->imagen_url ? asset('storage/' . $destino->imagen_url) : 'https://images.unsplash.com/photo-1544198365-f5d60b6d8190?auto=format&fit=crop&w=600&q=80' }}"
                         alt="{{ $destino->nombre }}">
-                    <div class="absolute top-4 left-4">
+                    <div class="absolute top-4 left-4 flex gap-1.5 flex-wrap">
                         <span class="bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full font-bold text-[10px] text-slate-700 uppercase border border-slate-200 tracking-wider">
                             {{ $destino->categoria ?? 'Turismo' }}
+                        </span>
+                        <span class="bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full font-bold text-[10px] text-slate-700 uppercase border border-slate-200 tracking-wider">
+                            Precio: {{ $destino->rango_precio }}
                         </span>
                     </div>
                 </div>
@@ -124,7 +146,9 @@
                         <h3 class="text-lg font-bold text-slate-800 group-hover:text-[#28628f] transition-colors leading-tight">{{ $destino->nombre }}</h3>
                         <div class="flex items-center gap-0.5 text-amber-500 shrink-0 ml-2">
                             <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="text-sm font-bold text-slate-700">{{ $destino->rango_precio ?? '4.8' }}</span>
+                            <span class="text-sm font-bold text-slate-700">
+                                {{ $destino->resenas->count() > 0 ? number_format($destino->resenas->avg('calificacion'), 1) : '4.5' }}
+                            </span>
                         </div>
                     </div>
                     <p class="text-slate-500 text-sm mb-4 line-clamp-3 leading-relaxed">{{ $destino->descripcion }}</p>
@@ -149,6 +173,10 @@
                 <p class="text-slate-300 text-sm mt-1">Pronto estarán disponibles.</p>
             </div>
             @endif
+            <div id="sin-resultados-precio" class="hidden text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl mt-6 bg-slate-50 col-span-1 md:col-span-3">
+                <span class="material-symbols-outlined text-4xl text-slate-300 block mb-2">search_off</span>
+                <p class="text-slate-400 font-bold text-sm">No se encontraron destinos con este rango de precio.</p>
+            </div>
         </div>
     </section>
 
@@ -353,6 +381,17 @@
                         <p class="font-semibold text-slate-700 text-sm mb-1">{{ $resena->titulo }}</p>
                         @endif
                         <p class="text-slate-500 text-sm leading-relaxed">{{ $resena->comentario }}</p>
+
+                        @if($resena->imagenes && $resena->imagenes->count() > 0)
+                        <div class="flex gap-2 mt-3 flex-wrap">
+                            @foreach($resena->imagenes as $img)
+                            <a href="{{ asset($img->url) }}" target="_blank" class="w-20 h-20 rounded-xl overflow-hidden border border-slate-200 hover:border-[#28628f] transition-all hover:scale-105 inline-block">
+                                <img src="{{ asset($img->url) }}" class="w-full h-full object-cover" alt="Foto de reseña">
+                            </a>
+                            @endforeach
+                        </div>
+                        @endif
+
                         <p class="text-xs text-slate-300 mt-2">{{ $resena->created_at->diffForHumans() }}</p>
                     </div>
                 </div>
@@ -417,7 +456,16 @@
         {{-- Formulario --}}
         <form action="{{ route('resenas.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
             @csrf
-            <input type="hidden" name="destino_id" value="{{ $destinos->first()?->id }}">
+            
+            {{-- Destino a calificar --}}
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Destino turistico a calificar</label>
+                <select name="destino_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] transition-colors font-semibold text-slate-700">
+                    @foreach($destinos as $dest)
+                        <option value="{{ $dest->id }}">{{ $dest->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
 
             {{-- Calificación y título --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -459,6 +507,25 @@
                 <textarea name="comentario" rows="5" required
                     placeholder="¿Cuál fue lo mejor de tu visita? ¿Tenés consejos para otros viajeros?"
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] transition-colors resize-none"></textarea>
+            </div>
+
+            {{-- Fotos --}}
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Fotos</label>
+                <div onclick="document.getElementById('fotos-input-modal').click()"
+                    class="border-2 border-dashed border-slate-200 rounded-xl p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer group">
+                    <div class="w-12 h-12 bg-[#28628f]/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-[#28628f] text-[28px]">upload_file</span>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-700">Arrastrá y soltá tus fotos acá</p>
+                    <p class="text-xs text-slate-400 mt-1">O hacé clic para explorar (hasta 5 fotos)</p>
+                </div>
+                <input type="file" id="fotos-input-modal" name="imagenes[]" multiple accept="image/*"
+                    class="hidden" onchange="previewFotosModal(this)">
+
+                {{-- Preview fotos --}}
+                <div id="fotos-preview-modal" class="flex gap-3 overflow-x-auto pb-2 mt-2 hidden">
+                </div>
             </div>
 
             {{-- Anónimo --}}
@@ -503,6 +570,57 @@
         btn.classList.toggle('bg-[#28628f]/5');
         btn.classList.toggle('border-slate-200');
         btn.classList.toggle('text-slate-600');
+    }
+
+    function previewFotosModal(input) {
+        const preview = document.getElementById('fotos-preview-modal');
+        preview.innerHTML = '';
+        preview.classList.remove('hidden');
+
+        Array.from(input.files).slice(0, 5).forEach(function(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const div = document.createElement('div');
+                div.className = 'relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-slate-200';
+                div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                preview.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function filtrarPorPrecio(rango) {
+        const rangos = ['todos', 'Bajo', 'Medio', 'Alto'];
+        rangos.forEach(r => {
+            const btn = document.getElementById('btn-filtro-' + r);
+            if (btn) {
+                if (r === rango) {
+                    btn.className = "px-4 py-1.5 rounded-full bg-[#28628f] text-white font-bold text-xs shadow-sm transition-all cursor-pointer";
+                } else {
+                    btn.className = "px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:border-[#28628f] hover:text-[#28628f] transition-all cursor-pointer";
+                }
+            }
+        });
+
+        const cards = document.querySelectorAll('.destino-card');
+        let count = 0;
+        cards.forEach(card => {
+            if (rango === 'todos' || card.dataset.precio === rango) {
+                card.style.display = 'flex';
+                count++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const sinResultados = document.getElementById('sin-resultados-precio');
+        if (sinResultados) {
+            if (count === 0) {
+                sinResultados.classList.remove('hidden');
+            } else {
+                sinResultados.classList.add('hidden');
+            }
+        }
     }
 </script>
 @endsection
