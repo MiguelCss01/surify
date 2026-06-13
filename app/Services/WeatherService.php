@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 
 class WeatherService
 {
-    protected $apiKey;
+    protected ?string $apiKey;
     protected $baseUrl = 'https://api.openweathermap.org/data/2.5';
 
     public function __construct()

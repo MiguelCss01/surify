@@ -136,6 +136,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
 
     Route::get('/herramientas/combustible', [CombustibleController::class, 'index'])->name('combustible.index');
+    Route::post('/eventos/sugerir', [\App\Http\Controllers\EventoSugerenciaController::class, 'store'])->name('eventos.sugerir');
 });
 
 // ==================== DASHBOARD ====================

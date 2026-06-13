@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -15,13 +16,15 @@ class Evento extends Model
         'provincia_id',
         'destino_id',
         'nombre',
-        'tipo', // Musical, Gastronómico, Deportivo, Cultural
+        'descripcion',
+        'tipo',
         'fecha_inicio',
         'fecha_fin',
-        'ubicacion', // PostGIS POINT
-        'rango_precio', // Bajo, Medio, Alto
+        'ubicacion',
+        'rango_precio',
         'imagen_url',
         'activo',
+        'sugerido_por',
     ];
 
     protected $casts = [
@@ -29,7 +32,6 @@ class Evento extends Model
         'fecha_fin' => 'date',
         'activo' => 'boolean',
     ];
-
     /**
      * Obtiene la provincia a la que pertenece este evento.
      */
@@ -62,12 +64,12 @@ class Evento extends Model
         return $this->hasMany(Favorito::class);
     }
     /**
- * Determina si el evento ya pasó.
- */
+     * Determina si el evento ya pasó.
+     */
     public function getPasadoAttribute(): bool
     {
-        return $this->fecha_fin
-            ? $this->fecha_fin->isPast()
-            : $this->fecha_inicio->isPast();
+        $fecha = $this->fecha_fin ?? $this->fecha_inicio;
+
+        return Carbon::parse($fecha)->isPast();
     }
 }
