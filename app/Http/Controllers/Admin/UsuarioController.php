@@ -12,16 +12,24 @@ class UsuarioController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
+        $rolFiltro = $request->get('rol');
 
         $usuarios = User::with('roles')
-            ->when($search, function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+            ->when($search, function ($q) use ($search) {
+                $q->where('name', 'ilike', "%{$search}%")
+                    ->orWhere('email', 'ilike', "%{$search}%");
+            })
+            ->when($rolFiltro, function ($q) use ($rolFiltro) {
+                $q->whereHas('roles', function ($r) use ($rolFiltro) {
+                    $r->whereRaw('roles.id = ?', [$rolFiltro]);
+                });
             })
             ->latest()
             ->paginate(15);
 
-        return view('admin.usuarios.index', compact('usuarios', 'search'));
+        $roles = Role::orderBy('nombre')->get();
+
+        return view('admin.usuarios.index', compact('usuarios', 'search', 'roles'));
     }
 
     public function edit(User $usuario)

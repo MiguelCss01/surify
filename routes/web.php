@@ -12,9 +12,10 @@ use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Admin\EventoController as AdminEventoController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\GastronomiaController as AdminGastronomiaController;
 
 // ==================== ADMIN ====================
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('roles', RolController::class);
     Route::resource('destinos', AdminDestinoController::class);
     Route::resource('usuarios', UsuarioController::class)->only(['index', 'edit', 'update']);
@@ -25,9 +26,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/resenas/{resena}', [AdminResenaController::class, 'destroy'])->name('resenas.destroy');
 
     Route::get('/eventos', [AdminEventoController::class, 'index'])->name('eventos.index');
+    Route::get('/eventos/create', [AdminEventoController::class, 'create'])->name('eventos.create');
+    Route::post('/eventos', [AdminEventoController::class, 'store'])->name('eventos.store');
     Route::get('/eventos/{evento}/edit', [AdminEventoController::class, 'edit'])->name('eventos.edit');
     Route::put('/eventos/{evento}', [AdminEventoController::class, 'update'])->name('eventos.update');
     Route::delete('/eventos/{evento}', [AdminEventoController::class, 'destroy'])->name('eventos.destroy');
+
+    Route::get('/gastronomia', [AdminGastronomiaController::class, 'index'])->name('gastronomia.index');
+    Route::post('/gastronomia', [AdminGastronomiaController::class, 'store'])->name('gastronomia.store');
+    Route::put('/gastronomia/{gastronomia}', [AdminGastronomiaController::class, 'update'])->name('gastronomia.update');
+    Route::delete('/gastronomia/{gastronomia}', [AdminGastronomiaController::class, 'destroy'])->name('gastronomia.destroy');
+
+    Route::get('/gastronomia', [AdminGastronomiaController::class, 'index'])->name('gastronomia.index');
+    Route::post('/gastronomia', [AdminGastronomiaController::class, 'store'])->name('gastronomia.store');
+    Route::put('/gastronomia/{gastronomia}', [AdminGastronomiaController::class, 'update'])->name('gastronomia.update');
+    Route::delete('/gastronomia/{gastronomia}', [AdminGastronomiaController::class, 'destroy'])->name('gastronomia.destroy');
 });
 
 // ==================== PÚBLICO ====================

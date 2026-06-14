@@ -9,10 +9,35 @@ use Illuminate\Http\Request;
 
 class DestinoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $destinos = Destino::with('provincia')->latest()->paginate(12);
-        return view('admin.destinos.index', compact('destinos'));
+        $query = Destino::with('provincia')->latest();
+
+        if ($request->filled('buscar')) {
+            $query->where('nombre', 'ilike', '%' . $request->buscar . '%');
+        }
+
+        if ($request->filled('provincia_id')) {
+            $query->where('provincia_id', $request->provincia_id);
+        }
+
+        if ($request->filled('categoria')) {
+            $query->where('categoria', $request->categoria);
+        }
+
+        if ($request->filled('precio')) {
+            $query->where('rango_precio', $request->precio);
+        }
+
+        if ($request->filled('estado')) {
+            $query->where('activo', $request->estado === 'activo');
+        }
+
+        $destinos = $query->paginate(12)->withQueryString();
+        $provincias = Provincia::orderBy('nombre')->get();
+        $categorias = Destino::select('categoria')->distinct()->whereNotNull('categoria')->pluck('categoria');
+
+        return view('admin.destinos.index', compact('destinos', 'provincias', 'categorias'));
     }
 
     public function create()

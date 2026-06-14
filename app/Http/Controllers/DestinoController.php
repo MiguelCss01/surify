@@ -6,6 +6,7 @@ use App\Models\Destino;
 use App\Models\Provincia;
 use App\Services\WeatherService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DestinoController extends Controller
 {
@@ -20,6 +21,7 @@ class DestinoController extends Controller
     {
         $provincia = Provincia::where('nombre', $nombre)
             ->orWhere('nombre', 'like', '%' . $nombre . '%')
+            ->with(['destinos', 'eventos', 'gastronomia'])
             ->first();
 
         if ($provincia) {
@@ -28,7 +30,8 @@ class DestinoController extends Controller
             $destinos = Destino::where('provincia', $nombre)->get();
         }
 
-        // Coordenadas de las capitales de cada provincia
+        $gastronomia = $provincia ? $provincia->gastronomia : collect();
+
         $coordenadasCapitales = [
             'Buenos Aires' => [-34.6037, -58.3816],
             'Catamarca' => [-28.4696, -65.7852],
@@ -58,29 +61,29 @@ class DestinoController extends Controller
 
         $clima = null;
         $pronostico = null;
-
         if (isset($coordenadasCapitales[$nombre])) {
             [$lat, $lng] = $coordenadasCapitales[$nombre];
             $clima = $this->weather->getCurrentWeather($lat, $lng);
             $pronostico = $this->weather->getForecast($lat, $lng);
         }
 
-        return view('provincia', compact('destinos', 'provincia', 'nombre', 'clima', 'pronostico'));
+        return view('provincia', compact('destinos', 'provincia', 'nombre', 'clima', 'pronostico', 'gastronomia'));
     }
-
     public function show(int $id)
     {
         $destino = Destino::with(['provincia', 'eventos', 'resenas.user', 'resenas.imagenes'])->findOrFail($id);
 
-        if (auth()->check()) {
-            auth()->user()->load('favoritos', 'destinosVisitados');
+        /** @var \App\Models\User|null $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
+        if ($user) {
+            $user->load('favoritos', 'destinosVisitados');
         }
 
         $clima = null;
         $pronostico = null;
 
         if ($destino->ubicacion) {
-            $coords = \DB::select('SELECT ST_Y(ubicacion::geometry) as lat, ST_X(ubicacion::geometry) as lng FROM destinos WHERE id = ?', [$destino->id])[0];
+            $coords = DB::select('SELECT ST_Y(ubicacion::geometry) as lat, ST_X(ubicacion::geometry) as lng FROM destinos WHERE id = ?', [$destino->id])[0];
             $clima = $this->weather->getCurrentWeather($coords->lat, $coords->lng);
             $pronostico = $this->weather->getForecast($coords->lat, $coords->lng);
         }

@@ -10,22 +10,25 @@ class EventoController extends Controller
     /**
      * Muestra la lista de todos los eventos.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Eager load el destino de cada evento y ordena por fecha de inicio
-        $eventos = Evento::with('destino')->orderBy('fecha_inicio', 'asc')->get();
-        
-        return view('eventos.index', compact('eventos'));
-    }
+        $query = Evento::with(['destino', 'provincia'])->orderBy('fecha_inicio', 'asc');
 
-    /**
-     * Muestra la ficha detallada de un evento específico.
-     */
-    public function show(int $id)
-    {
-        // Trae el evento con su destino y sus reseñas asociadas (incluyendo usuario e imágenes)
-        $evento = Evento::with(['destino', 'resenas.user', 'resenas.imagenes'])->findOrFail($id);
-        
-        return view('eventos.show', compact('evento'));
+        // Filtro por provincia
+        if ($request->filled('provincia_id')) {
+            $query->where('provincia_id', $request->provincia_id);
+        }
+
+        // Filtro por año/mes
+        $año = $request->get('año', now()->year);
+        $mes = $request->get('mes', now()->month);
+
+        $eventos = $query->whereYear('fecha_inicio', $año)
+            ->whereMonth('fecha_inicio', $mes)
+            ->get();
+
+        $provincias = \App\Models\Provincia::orderBy('nombre')->get();
+
+        return view('eventos.index', compact('eventos', 'provincias', 'año', 'mes'));
     }
 }

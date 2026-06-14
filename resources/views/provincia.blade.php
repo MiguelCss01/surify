@@ -299,34 +299,28 @@
                 </h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @if(isset($provincia) && $provincia->gastronomia && $provincia->gastronomia->count() > 0)
-                    @foreach($provincia->gastronomia as $plato)
-                    <div class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+                    @if($gastronomia->count() > 0)
+                    @foreach($gastronomia as $plato)
+                    <div onclick="abrirModalPlato('{{ addslashes($plato->nombre) }}', '{{ addslashes($plato->descripcion) }}', '{{ addslashes($plato->categoria) }}', '{{ $plato->imagen_url ? asset('storage/' . $plato->imagen_url) : '' }}')"
+                        class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col cursor-pointer hover:border-[#28628f] hover:shadow-md transition-all">
                         <div class="h-36 bg-slate-200 overflow-hidden">
                             <img src="{{ $plato->imagen_url ? asset('storage/' . $plato->imagen_url) : 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80' }}"
                                 class="w-full h-full object-cover" alt="{{ $plato->nombre }}">
                         </div>
                         <div class="p-4 flex-grow">
+                            <span class="inline-block px-2 py-0.5 bg-[#28628f]/10 rounded-md font-bold text-[9px] text-[#28628f] uppercase tracking-wider mb-1">{{ $plato->categoria }}</span>
                             <h3 class="font-bold text-slate-800 text-base mb-1">{{ $plato->nombre }}</h3>
-                            <p class="text-xs text-slate-500 leading-relaxed line-clamp-3">{{ $plato->descripcion }}</p>
+                            <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">{{ $plato->descripcion }}</p>
                         </div>
                     </div>
                     @endforeach
                     @else
-                    {{-- Placeholder gastronomía --}}
                     <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5">
                         <div class="w-10 h-10 rounded-xl bg-[#28628f]/10 flex items-center justify-center mb-3">
                             <span class="material-symbols-outlined text-[#28628f]">restaurant</span>
                         </div>
                         <h3 class="font-bold text-slate-800 text-base mb-1">Gastronomía Autóctona</h3>
                         <p class="text-xs text-slate-500 leading-relaxed">Descubrí los platos típicos e ingredientes locales que componen la identidad cultural y el patrimonio culinario de esta región.</p>
-                    </div>
-                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5">
-                        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-amber-500">local_cafe</span>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-base mb-1">Platos Tradicionales</h3>
-                        <p class="text-xs text-slate-500 leading-relaxed">Desde infusiones ancestrales hasta fusiones de recetas de inmigrantes europeos adaptadas a la geografía del norte argentino.</p>
                     </div>
                     @endif
                 </div>
@@ -456,13 +450,13 @@
         {{-- Formulario --}}
         <form action="{{ route('resenas.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
             @csrf
-            
+
             {{-- Destino a calificar --}}
             <div class="space-y-2">
                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Destino turistico a calificar</label>
                 <select name="destino_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] transition-colors font-semibold text-slate-700">
                     @foreach($destinos as $dest)
-                        <option value="{{ $dest->id }}">{{ $dest->nombre }}</option>
+                    <option value="{{ $dest->id }}">{{ $dest->nombre }}</option>
                     @endforeach
                 </select>
             </div>
@@ -552,6 +546,35 @@
         </form>
     </div>
 </div>
+
+{{-- Modal plato --}}
+<div id="modal-plato" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+        <div class="h-56 bg-slate-200 relative overflow-hidden">
+            <img id="modal-plato-img" src="" alt="" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <button onclick="document.getElementById('modal-plato').classList.add('hidden')"
+                class="absolute top-4 right-4 bg-black/40 hover:bg-black/60 text-white rounded-full p-1.5 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <span id="modal-plato-categoria" class="absolute bottom-4 left-4 bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full border border-white/30"></span>
+        </div>
+        <div class="p-6">
+            <h2 id="modal-plato-nombre" class="text-2xl font-black text-slate-800 tracking-tight mb-3"></h2>
+            <p id="modal-plato-descripcion" class="text-sm text-slate-600 leading-relaxed"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalPlato(nombre, descripcion, categoria, imagen) {
+        document.getElementById('modal-plato-nombre').textContent = nombre;
+        document.getElementById('modal-plato-descripcion').textContent = descripcion;
+        document.getElementById('modal-plato-categoria').textContent = categoria;
+        document.getElementById('modal-plato-img').src = imagen || 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80';
+        document.getElementById('modal-plato').classList.remove('hidden');
+    }
+</script>
 
 <script>
     function setCalificacionModal(valor) {

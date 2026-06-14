@@ -11,10 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-    <!-- Leaflet - siempre disponible -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,6 +48,7 @@
 </head>
 
 <body class="flex flex-col min-h-screen antialiased">
+
     <div id="top-loading-bar"></div>
 
     <header class="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
@@ -67,57 +66,44 @@
             <div class="relative flex-grow max-w-md hidden md:block" id="search-container">
                 <div class="flex items-center bg-slate-100 border border-transparent rounded-full px-4 py-2 gap-2 focus-within:border-[#28628f] focus-within:bg-white transition-all">
                     <span class="material-symbols-outlined text-slate-400 text-[18px]">search</span>
-                    <input
-                        id="search-input"
-                        type="text"
-                        placeholder="Destinos, festivales, provincias..."
-                        class="bg-transparent border-none p-0 focus:ring-0 text-sm text-slate-700 placeholder:text-slate-400 w-full"
-                        autocomplete="off">
+                    <input id="search-input" type="text" placeholder="Destinos, festivales, provincias..."
+                        class="bg-transparent border-none p-0 focus:ring-0 text-sm text-slate-700 placeholder:text-slate-400 w-full" autocomplete="off">
                 </div>
-                <!-- Dropdown resultados -->
                 <div id="search-dropdown" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-200 z-50 overflow-hidden">
                     <div id="search-results" class="max-h-80 overflow-y-auto"></div>
-                    <div id="search-empty" class="hidden px-4 py-6 text-center text-sm text-slate-400">
-                        No se encontraron resultados
-                    </div>
+                    <div id="search-empty" class="hidden px-4 py-6 text-center text-sm text-slate-400">No se encontraron resultados</div>
                 </div>
             </div>
 
             <!-- Nav links -->
             <nav class="hidden md:flex items-center gap-1 shrink-0">
                 @auth
-                    @if(auth()->user()->hasRole('Admin')) {{-- CORREGIDO: 'Admin' con mayúscula --}}
-                        {{-- Navbar Admin --}}
-                        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
-                        </a>
-                        <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
-                        </a>
-                        <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
-                        </a>
-                        <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
-                        </a>
-                        <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">celebration</span> Eventos
-                        </a>
-                        <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
-                        </a>
-                    @else
-                        {{-- Navbar Usuario Normal --}}
-                        <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
-                        <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
-                        <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
-                        <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Combustible</a>
-                    @endif
+                @if(auth()->user()->hasRole('Admin'))
+                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
+                </a>
+                <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
+                </a>
+                <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
+                </a>
+                <a href="/admin/eventos" onclick="window.location.assign('/admin/eventos'); return false;" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">celebration</span> Eventos
+                </a>
+                <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
+                </a>
                 @else
-                    {{-- Navbar Invitado --}}
-                    <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
-                    <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
-                    <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
+                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
+                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
+                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
+                <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Combustible</a>
+                @endif
+                @else
+                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
+                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
+                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
                 @endauth
             </nav>
 
@@ -156,13 +142,11 @@
             ✅ {{ session('success') }}
         </div>
         @endif
-
         @if(session('error'))
         <div class="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-sm">
             ⚠️ {{ session('error') }}
         </div>
         @endif
-
         @yield('content')
     </main>
 
@@ -170,7 +154,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-400">
             <p>&copy; {{ date('Y') }} Surify. Todos los derechos reservados. Desarrollado con 💖 por Casasola, Gómez y Martínez para la UCP 🌸.</p>
         </div>
-    </footer >
+    </footer>
 
     <!-- Reproductor Himno -->
     <div class="fixed bottom-6 right-6 z-50 flex items-center bg-white border border-slate-200 p-3 rounded-full shadow-xl gap-3 max-w-xs transition-all duration-300 hover:border-[#28628f]">
@@ -187,6 +171,8 @@
     </div>
 
     <script>
+
+        // Reproductor de música
         document.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('global-surify-song');
             const btn = document.getElementById('global-music-btn');
@@ -203,11 +189,7 @@
             audio.addEventListener('loadedmetadata', function() {
                 const savedTime = parseFloat(localStorage.getItem('surify-music-time') || '0');
                 const wasPlaying = localStorage.getItem('surify-music-playing') === 'true';
-
-                if (savedTime > 0) {
-                    audio.currentTime = savedTime;
-                }
-
+                if (savedTime > 0) audio.currentTime = savedTime;
                 if (wasPlaying) {
                     audio.play().then(() => {
                         icon.textContent = 'pause';
@@ -241,21 +223,19 @@
                 }
             });
         });
-    </script>
 
-    <script>
+        // Navegación sin recarga
+        var esAdmin = @json(auth()->check() && auth()->user()->hasRole('Admin'));
+
         function navegarSinRecarga(url) {
             const bar = document.getElementById('top-loading-bar');
             let progressInterval = null;
             if (bar) {
                 bar.style.opacity = '1';
                 bar.style.width = '30%';
-                // Simular incremento progresivo
                 progressInterval = setInterval(() => {
                     let curWidth = parseFloat(bar.style.width);
-                    if (curWidth < 85) {
-                        bar.style.width = (curWidth + 8) + '%';
-                    }
+                    if (curWidth < 85) bar.style.width = (curWidth + 8) + '%';
                 }, 100);
             }
 
@@ -272,7 +252,6 @@
                         document.querySelector('main').innerHTML = newMain.innerHTML;
                         window.history.pushState({}, '', url);
                         document.title = doc.title;
-
                         document.querySelector('main').querySelectorAll('script').forEach(function(scriptViejo) {
                             const scriptNuevo = document.createElement('script');
                             if (scriptViejo.src) {
@@ -293,7 +272,7 @@
                         }, 200);
                     }
                 })
-                .catch(err => {
+                .catch(() => {
                     if (progressInterval) clearInterval(progressInterval);
                     if (bar) {
                         bar.style.width = '100%';
@@ -304,29 +283,33 @@
                             }, 400);
                         }, 200);
                     }
-                    console.error('Error cargando página:', err);
                 });
         }
 
-        document.addEventListener('click', function(e) {
-            const link = e.target.closest('a[href]');
-            if (!link) return;
+        if (!esAdmin) {
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a[href]');
+                if (!link) return;
+                const url = link.href;
+                if (!url.startsWith(window.location.origin)) return;
+                if (url.includes('logout')) return;
+                if (url.includes('#')) return;
+                if (url.includes('login')) return;
+                if (url.includes('register')) return;
+                if (url.includes('profile')) return;
+                if (url.includes('admin')) return;
+                if (url.includes('dashboard')) return;
+                if (url.includes('eventos')) return;
+                if (url.includes('destinos')) return;
+                if (url.includes('provincia')) return;
+                e.preventDefault();
+                navegarSinRecarga(url);
+            });
 
-            const url = link.href;
-
-            if (!url.startsWith(window.location.origin)) return;
-            if (url.includes('logout')) return;
-            if (url.includes('#')) return;
-
-            if (url.includes('login') || url.includes('register') || url.includes('profile') || url.includes('admin') || url.includes('dashboard')) return;
-
-            e.preventDefault();
-            navegarSinRecarga(url);
-        });
-
-        window.addEventListener('popstate', function() {
-            navegarSinRecarga(window.location.href);
-        });
+            window.addEventListener('popstate', function() {
+                window.location.reload();
+            });
+        }
     </script>
 
 </body>
