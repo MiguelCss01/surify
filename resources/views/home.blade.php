@@ -53,6 +53,7 @@
         </div>
     </section>
     {{-- ========== DESTINOS CERCANOS ========== --}}
+    @auth
     <section class="max-w-7xl mx-auto px-6 md:px-12 py-8" id="seccion-cercanos" style="display:none;">
         <div class="flex items-center justify-between mb-6">
             <div>
@@ -64,6 +65,7 @@
         <div id="destinos-cercanos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         </div>
     </section>
+    @endauth
     <!-- ==================== CLIMA EN MODO CLARO (OPENWEATHER API) ==================== -->
     <section class="max-w-7xl mx-auto px-6 md:px-12 py-12">
         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm backdrop-blur-xl">
@@ -243,7 +245,9 @@
         document.getElementById('seccion-cercanos').style.display = 'block';
     }
 
-    if (navigator.geolocation) {
+    var usuarioLogueado = @json(auth()->check());
+
+    if (usuarioLogueado && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
