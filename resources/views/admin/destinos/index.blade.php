@@ -10,11 +10,15 @@
         <h1 class="text-4xl font-black text-slate-900 tracking-tight" style="font-family: 'Inter', sans-serif;">Destinos Turísticos</h1>
         <p class="text-slate-500 mt-2 text-sm">Gestioná todos los destinos de la plataforma Surify.</p>
     </div>
+    
+    {{-- 🔐 PERMISO: Crear nuevo destino --}}
+    @can('crear_destino')
     <a href="{{ route('admin.destinos.create') }}"
         class="inline-flex items-center gap-2 bg-[#28628f] text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-[#1a4669] transition-all shadow-sm shrink-0 text-decoration-none">
         <span class="material-symbols-outlined text-[18px]">add_location</span>
         Nuevo Destino
     </a>
+    @endcan
 </div>
 
 {{-- Filtros --}}
@@ -114,16 +118,24 @@
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-2">
+                            {{-- Visualización pública (Disponible para lectura de cualquier admin) --}}
                             <a href="{{ route('destinos.show', $destino->id) }}"
                                 class="w-9 h-9 bg-slate-100 hover:bg-[#28628f]/10 hover:text-[#28628f] text-slate-400 rounded-lg flex items-center justify-center transition-all text-decoration-none"
                                 title="Ver destino">
                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
                             </a>
+                            
+                            {{-- 🔐 PERMISO: Modificar Destino --}}
+                            @can('modificar_destino')
                             <a href="{{ route('admin.destinos.edit', $destino) }}"
                                 class="w-9 h-9 bg-slate-100 hover:bg-[#28628f]/10 hover:text-[#28628f] text-slate-400 rounded-lg flex items-center justify-center transition-all text-decoration-none"
                                 title="Editar">
                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                             </a>
+                            @endcan
+                            
+                            {{-- 🔐 PERMISO: Eliminar Destino --}}
+                            @can('eliminar_destino')
                             <form method="POST" action="{{ route('admin.destinos.destroy', $destino) }}"
                                 onsubmit="return confirm('¿Seguro que querés eliminar {{ $destino->nombre }}?')">
                                 @csrf
@@ -134,6 +146,7 @@
                                     <span class="material-symbols-outlined text-[18px]">delete</span>
                                 </button>
                             </form>
+                            @endcan
                         </div>
                     </td>
                 </tr>
@@ -142,9 +155,13 @@
                     <td colspan="6" class="px-6 py-16 text-center">
                         <span class="material-symbols-outlined text-5xl text-slate-300 block mb-3">landscape</span>
                         <p class="text-slate-400 font-medium">No hay destinos cargados todavía.</p>
+                        
+                        {{-- 🔐 PERMISO: Crear primer destino si la tabla está vacía --}}
+                        @can('crear_destino')
                         <a href="{{ route('admin.destinos.create') }}" class="inline-flex items-center gap-1 mt-3 text-[#28628f] font-bold text-sm hover:underline text-decoration-none">
                             <span class="material-symbols-outlined text-[16px]">add</span> Crear el primer destino
                         </a>
+                        @endcan
                     </td>
                 </tr>
                 @endforelse

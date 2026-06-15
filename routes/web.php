@@ -14,29 +14,38 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GastronomiaController as AdminGastronomiaController;
 
+
+// Solo esta línea limpia tiene que quedar en tu web.php:
+Route::post('/cambiar-modo-vista', [App\Http\Controllers\Admin\RolController::class, 'cambiarModoVista'])->name('admin.cambiar_vista');
+
+
 // ==================== ADMIN ====================
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('roles', RolController::class);
-    Route::resource('destinos', AdminDestinoController::class);
     Route::resource('usuarios', UsuarioController::class)->only(['index', 'edit', 'update']);
+});
 
-    Route::get('/resenas', [AdminResenaController::class, 'index'])->name('resenas.index');
-    Route::patch('/resenas/{resena}/aprobar', [AdminResenaController::class, 'aprobar'])->name('resenas.aprobar');
-    Route::patch('/resenas/{resena}/rechazar', [AdminResenaController::class, 'rechazar'])->name('resenas.rechazar');
-    Route::delete('/resenas/{resena}', [AdminResenaController::class, 'destroy'])->name('resenas.destroy');
-
+Route::middleware(['auth', 'permiso:crear_evento,modificar_evento,eliminar_evento,administrar_eventos_sugeridos'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/eventos', [AdminEventoController::class, 'index'])->name('eventos.index');
     Route::get('/eventos/create', [AdminEventoController::class, 'create'])->name('eventos.create');
     Route::post('/eventos', [AdminEventoController::class, 'store'])->name('eventos.store');
     Route::get('/eventos/{evento}/edit', [AdminEventoController::class, 'edit'])->name('eventos.edit');
     Route::put('/eventos/{evento}', [AdminEventoController::class, 'update'])->name('eventos.update');
     Route::delete('/eventos/{evento}', [AdminEventoController::class, 'destroy'])->name('eventos.destroy');
+});
 
-    Route::get('/gastronomia', [AdminGastronomiaController::class, 'index'])->name('gastronomia.index');
-    Route::post('/gastronomia', [AdminGastronomiaController::class, 'store'])->name('gastronomia.store');
-    Route::put('/gastronomia/{gastronomia}', [AdminGastronomiaController::class, 'update'])->name('gastronomia.update');
-    Route::delete('/gastronomia/{gastronomia}', [AdminGastronomiaController::class, 'destroy'])->name('gastronomia.destroy');
+Route::middleware(['auth', 'permiso:crear_destino,modificar_destino,eliminar_destino,administrar_destinos_sugeridos'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('destinos', AdminDestinoController::class);
+});
 
+Route::middleware(['auth', 'permiso:administrar_resenas'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/resenas', [AdminResenaController::class, 'index'])->name('resenas.index');
+    Route::patch('/resenas/{resena}/aprobar', [AdminResenaController::class, 'aprobar'])->name('resenas.aprobar');
+    Route::patch('/resenas/{resena}/rechazar', [AdminResenaController::class, 'rechazar'])->name('resenas.rechazar');
+    Route::delete('/resenas/{resena}', [AdminResenaController::class, 'destroy'])->name('resenas.destroy');
+});
+
+Route::middleware(['auth', 'permiso:gestionar_gastronomia'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/gastronomia', [AdminGastronomiaController::class, 'index'])->name('gastronomia.index');
     Route::post('/gastronomia', [AdminGastronomiaController::class, 'store'])->name('gastronomia.store');
     Route::put('/gastronomia/{gastronomia}', [AdminGastronomiaController::class, 'update'])->name('gastronomia.update');

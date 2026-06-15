@@ -9,6 +9,22 @@ use Illuminate\Http\Request;
 
 class RolController extends Controller
 {
+
+
+    /**
+     * Intercambia temporalmente la vista entre administrador y turista usando sesiones.
+     */
+    public function cambiarModoVista(Request $request)
+    {
+        if ($request->modo === 'turista') {
+            session(['modo_vista' => 'turista']);
+        } else {
+            session()->forget('modo_vista');
+        }
+
+        return back()->with('status', 'Modo de vista actualizado');
+    }
+    
     // Lista todos los roles
     public function index()
     {

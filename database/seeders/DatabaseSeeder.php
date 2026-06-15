@@ -17,6 +17,55 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+
+$permisos = [
+    [
+        'nombre' => 'crear_destino', 
+        'descripcion' => 'Permiso para crear nuevos destinos turísticos'
+    ],
+    [
+        'nombre' => 'modificar_destino', 
+        'descripcion' => 'Permiso para editar información de destinos existentes'
+    ],
+    [
+        'nombre' => 'eliminar_destino', 
+        'descripcion' => 'Permiso para dar de baja destinos del sistema'
+    ],
+    [
+        'nombre' => 'administrar_destinos_sugeridos', 
+        'descripcion' => 'Permiso para moderar y aprobar destinos enviados por usuarios'
+    ],
+    [
+        'nombre' => 'crear_evento', 
+        'descripcion' => 'Permiso para dar de alta nuevos eventos o festivales'
+    ],
+    [
+        'nombre' => 'modificar_evento', 
+        'descripcion' => 'Permiso para editar fechas y datos de los eventos'
+    ],
+    [
+        'nombre' => 'eliminar_evento', 
+        'descripcion' => 'Permiso para remover eventos de la agenda'
+    ],
+    [
+        'nombre' => 'administrar_eventos_sugeridos', 
+        'descripcion' => 'Permiso para gestionar las propuestas de eventos comunitarios'
+    ],
+    [
+        'nombre' => 'administrar_reseñas', 
+        'descripcion' => 'Permiso para moderar, reportar o borrar comentarios de la comunidad'
+    ],
+    [
+        'nombre' => 'gestionar_gastronomia', 
+        'descripcion' => 'Permiso para administrar los puntos gastronómicos y menúes recomendados'
+    ],
+];
+
+foreach ($permisos as $p) {
+    // firstOrCreate evita que se dupliquen si volvés a correr el seeder
+    Permiso::firstOrCreate(['nombre' => $p['nombre']], $p);
+}
+
 class DatabaseSeeder extends Seeder
 {
     /**
