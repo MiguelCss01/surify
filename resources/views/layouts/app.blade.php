@@ -40,11 +40,13 @@
             background-color: #0f172a;
             color: #f8fafc;
         }
+
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             display: inline-block;
             line-height: 1;
         }
+
         #top-loading-bar {
             position: fixed;
             top: 0;
@@ -57,6 +59,7 @@
             opacity: 0;
             pointer-events: none;
         }
+
         #loading-screen {
             position: fixed;
             inset: 0;
@@ -68,9 +71,11 @@
             justify-content: center;
             transition: opacity 0.5s ease;
         }
+
         html.dark #loading-screen {
             background: #0f172a;
         }
+
         #loading-screen.oculto {
             opacity: 0;
             pointer-events: none;
@@ -123,58 +128,76 @@
             <!-- Nav links -->
             <nav class="hidden md:flex items-center gap-1 shrink-0">
                 @auth
-                    @php $user = auth()->user(); @endphp
+                @php
+                $user = auth()->user();
+                $modoUsuario = session('modo_usuario', false);
+                $esAdmin = !$modoUsuario && ($user->hasRole('admin') || $user->hasRole('Admin'));
+                $permisosUsuario = $user->permisos()->pluck('nombre')->toArray();
+                $tieneAlguno = fn(array $perms) => !$modoUsuario && ($esAdmin || count(array_intersect($perms, $permisosUsuario)) > 0);
+                $esOperador = !$modoUsuario && ($esAdmin || count($permisosUsuario) > 0);
+                @endphp
 
-                    {{-- Links exclusivos del Admin --}}
-                    @if($user->hasRole('Admin'))
-                        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
-                        </a>
-                        <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
-                        </a>
-                        <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
-                        </a>
-                        <a href="{{ route('admin.gastronomia.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">restaurant</span> Gastronomía
-                        </a>
-                    @endif
+                {{-- Links públicos: solo si NO es operador, o si está en modo usuario --}}
+                @if(!$esOperador || $modoUsuario)
+                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">home</span> Inicio
+                </a>
+                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">map</span> Mapa
+                </a>
+                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">event</span> Eventos
+                </a>
+                <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">local_gas_station</span> Combustible
+                </a>
+                @endif
 
-                    {{-- Eventos: Admin o quien tenga permiso --}}
-                    @if($user->hasRole('Admin') || $user->hasPermiso('crear_evento') || $user->hasPermiso('modificar_evento'))
-                        <a href="{{ route('admin.eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">celebration</span> Eventos
-                        </a>
-                    @endif
+                @if($esOperador)
+                <span class="h-5 w-px bg-slate-200 dark:bg-slate-700 mx-1"></span>
+                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
+                </a>
+                @endif
 
-                    {{-- Destinos: Admin o quien tenga permiso --}}
-                    @if($user->hasRole('Admin') || $user->hasPermiso('crear_destino') || $user->hasPermiso('modificar_destino'))
-                        <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
-                        </a>
-                    @endif
+                @if($esAdmin)
+                <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
+                </a>
+                <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
+                </a>
+                @endif
 
-                    {{-- Reseñas: Admin o quien tenga permiso --}}
-                    @if($user->hasRole('Admin') || $user->hasPermiso('administrar_resenas'))
-                        <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
-                        </a>
-                    @endif
+                @if($tieneAlguno(['crear_destino', 'modificar_destino', 'eliminar_destino', 'administrar_destinos_sugeridos']))
+                <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
+                </a>
+                @endif
 
-                    {{-- Navbar usuario Turista (sin permisos admin) --}}
-                    @if($user->hasRole('Turista') && !$user->hasRole('Admin'))
-                        <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
-                        <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
-                        <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
-                        <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Combustible</a>
-                    @endif
+                @if($tieneAlguno(['crear_evento', 'modificar_evento', 'eliminar_evento', 'administrar_eventos_sugeridos']))
+                <a href="/admin/eventos" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">celebration</span> Festivales
+                </a>
+                @endif
+
+                @if($tieneAlguno(['administrar_resena', 'administrar_resenas', 'eliminar_comentario']))
+                <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
+                </a>
+                @endif
+
+                @if($tieneAlguno(['gestionar_gastronomia']))
+                <a href="{{ route('admin.gastronomia.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">restaurant</span> Gastronomía
+                </a>
+                @endif
 
                 @else
-                    {{-- Invitado --}}
-                    <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
-                    <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
-                    <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
+                {{-- Invitado --}}
+                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1"><span class="material-symbols-outlined text-[16px] hidden">home</span> Inicio</a>
+                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1"><span class="material-symbols-outlined text-[16px] hidden">map</span> Mapa</a>
+                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1"><span class="material-symbols-outlined text-[16px] hidden">event</span> Eventos</a>
                 @endauth
             </nav>
 
@@ -182,13 +205,25 @@
             <div class="flex items-center gap-3 shrink-0">
                 @auth
                 <div class="flex items-center gap-3">
+
+                    {{-- Botón Ver como usuario / Vista Admin --}}
+                    @if(isset($esOperador) && ($esOperador || session('modo_usuario')))
+                    <form method="POST" action="{{ route('admin.cambiar_vista') }}">
+                        @csrf
+                        <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#28628f] text-slate-500 dark:text-slate-400 hover:text-[#28628f] dark:hover:text-white transition-all bg-white dark:bg-slate-800 cursor-pointer flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px]">{{ session('modo_usuario') ? 'admin_panel_settings' : 'visibility' }}</span>
+                            {{ session('modo_usuario') ? 'Vista Admin' : 'Ver como usuario' }}
+                        </button>
+                    </form>
+                    @endif
+
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 hover:opacity-80 transition-all text-decoration-none">
                         @if(auth()->user()->avatar)
-                            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full border border-[#28628f]">
+                        <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full border border-[#28628f]">
                         @else
-                            <div class="w-8 h-8 rounded-full bg-[#28628f] text-white flex items-center justify-center text-sm font-bold">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                            </div>
+                        <div class="w-8 h-8 rounded-full bg-[#28628f] text-white flex items-center justify-center text-sm font-bold">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </div>
                         @endif
                         <span class="text-sm font-medium text-slate-700 dark:text-slate-300 hidden lg:block">{{ auth()->user()->name }}</span>
                     </a>
@@ -268,13 +303,16 @@
                 bar.style.width = '100%';
                 setTimeout(() => {
                     screen.classList.add('oculto');
-                    setTimeout(() => { if (screen.parentNode) screen.remove(); }, 500);
+                    setTimeout(() => {
+                        if (screen.parentNode) screen.remove();
+                    }, 500);
                 }, 200);
             }
 
             document.addEventListener('DOMContentLoaded', ocultarPantalla);
             setTimeout(ocultarPantalla, 5000);
         })();
+
         // Reproductor de música
         document.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('global-surify-song');
@@ -304,7 +342,9 @@
                         status.className = "text-[10px] text-amber-500 font-bold tracking-wide animate-pulse";
                     });
                 }
-            }, { once: true });
+            }, {
+                once: true
+            });
 
             btn.addEventListener('click', function() {
                 if (audio.paused) {
@@ -324,6 +364,7 @@
                 }
             });
         });
+
         // Navegación sin recarga
         var esAdmin = @json(auth()->check() && auth()->user()->hasRole('Admin'));
 
@@ -401,4 +442,5 @@
     </script>
 
 </body>
+
 </html>

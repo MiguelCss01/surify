@@ -4,6 +4,7 @@
 
 @section('content')
 
+
 {{-- Bienvenida --}}
 <section class="mb-8">
     <p class="text-xs font-bold uppercase tracking-widest text-amber-600 mb-2">Panel de Control</p>
@@ -138,7 +139,7 @@
     <span class="material-symbols-outlined text-amber-400 text-[20px]">add_location</span>
     Agregar Destino
 </a>
-<a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
+<a href="{{ url('/admin/eventos/create') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
     <span class="material-symbols-outlined text-blue-300 text-[20px]">celebration</span>
     Cargar Evento
 </a>
