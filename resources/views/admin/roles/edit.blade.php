@@ -131,7 +131,7 @@
             <h3 class="font-black text-base mb-2">Zona de peligro</h3>
             <p class="text-slate-400 text-xs mb-4">Eliminar este rol lo quitará de todos los usuarios que lo tengan asignado.</p>
             <form method="POST" action="{{ route('admin.roles.destroy', $role) }}"
-                  onsubmit="return confirm('¿Seguro que querés eliminar el rol {{ $role->nombre }}? Esta acción no se puede deshacer.')">
+                  class="form-eliminar" data-title="¿Eliminar rol?" data-text="¿Seguro que querés eliminar el rol {{ $role->nombre }}? Esta acción no se puede deshacer.">
                 @csrf
                 @method('DELETE')
                 <button type="submit"
