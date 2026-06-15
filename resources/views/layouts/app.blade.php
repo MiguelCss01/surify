@@ -230,6 +230,7 @@
     </div>
 
     <script>
+<<<<<<< Updated upstream
         // Pantalla de carga inicial
         (function() {
             const bar = document.getElementById('loading-bar-screen');
@@ -258,6 +259,8 @@
             setTimeout(ocultarPantalla, 5000);
         })();
 
+=======
+>>>>>>> Stashed changes
         // Reproductor de música
         document.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('global-surify-song');
@@ -307,6 +310,84 @@
                 }
             });
         });
+<<<<<<< Updated upstream
+=======
+
+        // Navegación sin recarga
+        var esAdmin = @json(auth()->check() && auth()->user()->hasRole('Admin'));
+
+        function navegarSinRecarga(url) {
+            const bar = document.getElementById('top-loading-bar');
+            let progressInterval = null;
+            if (bar) {
+                bar.style.opacity = '1';
+                bar.style.width = '30%';
+                progressInterval = setInterval(() => {
+                    let curWidth = parseFloat(bar.style.width);
+                    if (curWidth < 85) bar.style.width = (curWidth + 8) + '%';
+                }, 100);
+            }
+
+            fetch(url)
+                .then(r => r.text())
+                .then(html => {
+                    if (progressInterval) clearInterval(progressInterval);
+                    if (bar) bar.style.width = '100%';
+
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newMain = doc.querySelector('main');
+
+                    // Solo reemplazar si encontró un main válido
+                    if (newMain && document.querySelector('main')) {
+                        document.querySelector('main').innerHTML = newMain.innerHTML;
+                        window.history.pushState({}, '', url);
+                        document.title = doc.title;
+
+                        // Re-ejecutar scripts del nuevo contenido
+                        document.querySelector('main').querySelectorAll('script').forEach(function(scriptViejo) {
+                            const scriptNuevo = document.createElement('script');
+                            if (scriptViejo.src) {
+                                scriptNuevo.src = scriptViejo.src;
+                            } else {
+                                scriptNuevo.textContent = scriptViejo.textContent;
+                            }
+                            document.body.appendChild(scriptNuevo);
+                        });
+                    } else {
+                        // Si no hay main, navegación normal
+                        window.location.href = url;
+                    }
+
+                    if (bar) {
+                        setTimeout(() => {
+                            bar.style.opacity = '0';
+                            setTimeout(() => {
+                                bar.style.width = '0%';
+                            }, 400);
+                        }, 200);
+                    }
+                })
+                .catch(() => {
+                    if (progressInterval) clearInterval(progressInterval);
+                    window.location.href = url;
+                });
+        }
+
+        // Interceptar clicks en enlaces internos
+        document.addEventListener('click', function(e) {
+            const enlace = e.target.closest('a');
+            if (enlace && enlace.href && enlace.origin === window.location.origin && !enlace.hasAttribute('target') && !enlace.classList.contains('no-ajax')) {
+                e.preventDefault();
+                navegarSinRecarga(enlace.href);
+            }
+        });
+
+        // Manejar navegación con botones del navegador
+        window.addEventListener('popstate', function() {
+            navegarSinRecarga(window.location.href);
+        });
+>>>>>>> Stashed changes
     </script>
 
 </body>
