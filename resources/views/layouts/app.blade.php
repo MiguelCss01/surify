@@ -40,13 +40,11 @@
             background-color: #0f172a;
             color: #f8fafc;
         }
-
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             display: inline-block;
             line-height: 1;
         }
-
         #top-loading-bar {
             position: fixed;
             top: 0;
@@ -59,10 +57,42 @@
             opacity: 0;
             pointer-events: none;
         }
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        html.dark #loading-screen {
+            background: #0f172a;
+        }
+        #loading-screen.oculto {
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body class="flex flex-col min-h-screen antialiased">
+
+    {{-- Pantalla de carga inicial --}}
+    <div id="loading-screen">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:24px">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;font-size:40px;color:#28628f">explore</span>
+                <span class="dark:text-white" style="font-family:'Inter',sans-serif;font-size:2.5rem;font-weight:900;color:#191c1d;letter-spacing:-0.05em">Surify</span>
+            </div>
+            <div style="width:192px;height:4px;background:#f1f5f9;border-radius:9999px;overflow:hidden">
+                <div id="loading-bar-screen" style="height:100%;background:#28628f;border-radius:9999px;width:0%;transition:width 0.3s"></div>
+            </div>
+            <p style="font-size:0.75rem;font-weight:600;color:#94a3b8;letter-spacing:0.1em;text-transform:uppercase">Explorando Argentina...</p>
+        </div>
+    </div>
 
     <div id="top-loading-bar"></div>
 
@@ -93,32 +123,58 @@
             <!-- Nav links -->
             <nav class="hidden md:flex items-center gap-1 shrink-0">
                 @auth
-                @if(auth()->user()->hasRole('Admin'))
-                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
-                </a>
-                <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
-                </a>
-                <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
-                </a>
-                <a href="/admin/eventos" onclick="window.location.assign('/admin/eventos'); return false;" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">celebration</span> Eventos
-                </a>
-                <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
-                </a>
+                    @php $user = auth()->user(); @endphp
+
+                    {{-- Links exclusivos del Admin --}}
+                    @if($user->hasRole('Admin'))
+                        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
+                        </a>
+                        <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
+                        </a>
+                        <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
+                        </a>
+                        <a href="{{ route('admin.gastronomia.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">restaurant</span> Gastronomía
+                        </a>
+                    @endif
+
+                    {{-- Eventos: Admin o quien tenga permiso --}}
+                    @if($user->hasRole('Admin') || $user->hasPermiso('crear_evento') || $user->hasPermiso('modificar_evento'))
+                        <a href="{{ route('admin.eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">celebration</span> Eventos
+                        </a>
+                    @endif
+
+                    {{-- Destinos: Admin o quien tenga permiso --}}
+                    @if($user->hasRole('Admin') || $user->hasPermiso('crear_destino') || $user->hasPermiso('modificar_destino'))
+                        <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
+                        </a>
+                    @endif
+
+                    {{-- Reseñas: Admin o quien tenga permiso --}}
+                    @if($user->hasRole('Admin') || $user->hasPermiso('administrar_resenas'))
+                        <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
+                        </a>
+                    @endif
+
+                    {{-- Navbar usuario Turista (sin permisos admin) --}}
+                    @if($user->hasRole('Turista') && !$user->hasRole('Admin'))
+                        <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
+                        <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
+                        <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
+                        <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Combustible</a>
+                    @endif
+
                 @else
-                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
-                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
-                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
-                <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Combustible</a>
-                @endif
-                @else
-                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
-                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
-                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
+                    {{-- Invitado --}}
+                    <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
+                    <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
+                    <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
                 @endauth
             </nav>
 
@@ -128,11 +184,11 @@
                 <div class="flex items-center gap-3">
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 hover:opacity-80 transition-all text-decoration-none">
                         @if(auth()->user()->avatar)
-                        <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full border border-[#28628f]">
+                            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full border border-[#28628f]">
                         @else
-                        <div class="w-8 h-8 rounded-full bg-[#28628f] text-white flex items-center justify-center text-sm font-bold">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
+                            <div class="w-8 h-8 rounded-full bg-[#28628f] text-white flex items-center justify-center text-sm font-bold">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            </div>
                         @endif
                         <span class="text-sm font-medium text-slate-700 dark:text-slate-300 hidden lg:block">{{ auth()->user()->name }}</span>
                     </a>
@@ -152,6 +208,12 @@
     </header>
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @if(session('status'))
+        <div class="mb-6 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[#28628f] text-sm font-semibold flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">info</span>
+            {{ session('status') }}
+        </div>
+        @endif
         @if(session('success'))
         <div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-sm">
             ✅ {{ session('success') }}
@@ -186,7 +248,33 @@
     </div>
 
     <script>
+        // Pantalla de carga inicial
+        (function() {
+            const bar = document.getElementById('loading-bar-screen');
+            const screen = document.getElementById('loading-screen');
+            let progress = 0;
+            let oculto = false;
 
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 85) progress = 85;
+                bar.style.width = progress + '%';
+            }, 100);
+
+            function ocultarPantalla() {
+                if (oculto) return;
+                oculto = true;
+                clearInterval(interval);
+                bar.style.width = '100%';
+                setTimeout(() => {
+                    screen.classList.add('oculto');
+                    setTimeout(() => { if (screen.parentNode) screen.remove(); }, 500);
+                }, 200);
+            }
+
+            document.addEventListener('DOMContentLoaded', ocultarPantalla);
+            setTimeout(ocultarPantalla, 5000);
+        })();
         // Reproductor de música
         document.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('global-surify-song');
@@ -216,9 +304,7 @@
                         status.className = "text-[10px] text-amber-500 font-bold tracking-wide animate-pulse";
                     });
                 }
-            }, {
-                once: true
-            });
+            }, { once: true });
 
             btn.addEventListener('click', function() {
                 if (audio.paused) {
@@ -238,7 +324,6 @@
                 }
             });
         });
-
         // Navegación sin recarga
         var esAdmin = @json(auth()->check() && auth()->user()->hasRole('Admin'));
 
@@ -263,10 +348,14 @@
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
                     const newMain = doc.querySelector('main');
-                    if (newMain) {
+
+                    // Solo reemplazar si encontró un main válido
+                    if (newMain && document.querySelector('main')) {
                         document.querySelector('main').innerHTML = newMain.innerHTML;
                         window.history.pushState({}, '', url);
                         document.title = doc.title;
+
+                        // Re-ejecutar scripts del nuevo contenido
                         document.querySelector('main').querySelectorAll('script').forEach(function(scriptViejo) {
                             const scriptNuevo = document.createElement('script');
                             if (scriptViejo.src) {
@@ -276,6 +365,9 @@
                             }
                             document.body.appendChild(scriptNuevo);
                         });
+                    } else {
+                        // Si no hay main, navegación normal
+                        window.location.href = url;
                     }
 
                     if (bar) {
@@ -289,44 +381,24 @@
                 })
                 .catch(() => {
                     if (progressInterval) clearInterval(progressInterval);
-                    if (bar) {
-                        bar.style.width = '100%';
-                        setTimeout(() => {
-                            bar.style.opacity = '0';
-                            setTimeout(() => {
-                                bar.style.width = '0%';
-                            }, 400);
-                        }, 200);
-                    }
+                    window.location.href = url;
                 });
         }
 
-        if (!esAdmin) {
-            document.addEventListener('click', function(e) {
-                const link = e.target.closest('a[href]');
-                if (!link) return;
-                const url = link.href;
-                if (!url.startsWith(window.location.origin)) return;
-                if (url.includes('logout')) return;
-                if (url.includes('#')) return;
-                if (url.includes('login')) return;
-                if (url.includes('register')) return;
-                if (url.includes('profile')) return;
-                if (url.includes('admin')) return;
-                if (url.includes('dashboard')) return;
-                if (url.includes('eventos')) return;
-                if (url.includes('destinos')) return;
-                if (url.includes('provincia')) return;
+        // Interceptar clicks en enlaces internos
+        document.addEventListener('click', function(e) {
+            const enlace = e.target.closest('a');
+            if (enlace && enlace.href && enlace.origin === window.location.origin && !enlace.hasAttribute('target') && !enlace.classList.contains('no-ajax')) {
                 e.preventDefault();
-                navegarSinRecarga(url);
-            });
+                navegarSinRecarga(enlace.href);
+            }
+        });
 
-            window.addEventListener('popstate', function() {
-                window.location.reload();
-            });
-        }
+        // Manejar navegación con botones del navegador
+        window.addEventListener('popstate', function() {
+            navegarSinRecarga(window.location.href);
+        });
     </script>
 
 </body>
-
 </html>

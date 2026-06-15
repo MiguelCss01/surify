@@ -11,11 +11,15 @@
             <h1 class="text-3xl font-black text-slate-800 tracking-tight">Gastronomía Regional</h1>
             <p class="text-slate-500 text-sm mt-1">Administrá los platos típicos por provincia.</p>
         </div>
+        
+        {{-- 🔐 PERMISO: Crear plato --}}
+        @can('gestionar_gastronomia')
         <button onclick="document.getElementById('modal-agregar').classList.remove('hidden')"
             class="bg-[#28628f] text-white px-5 py-2.5 rounded-xl font-bold hover:bg-[#1a4669] transition-all shadow-sm flex items-center gap-2">
             <span class="material-symbols-outlined text-[18px]">add</span>
             Agregar plato
         </button>
+        @endcan
     </div>
 
     {{-- Filtros --}}
@@ -73,6 +77,9 @@
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#28628f]/10 text-[#28628f] whitespace-nowrap shrink-0">{{ $plato->categoria }}</span>
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 flex-grow">{{ $plato->descripcion }}</p>
+                    
+                    {{-- 🔐 PERMISO: Acciones de Modificar y Eliminar --}}
+                    @can('gestionar_gastronomia')
                     <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100">
                         <button onclick="abrirEditar(this)"
                             data-id="{{ $plato->id }}"
@@ -86,11 +93,12 @@
                             onsubmit="return confirm('¿Eliminar este plato?')">
                             @csrf @method('DELETE')
                             <button type="submit"
-                                class="text-xs font-bold text-rose-500 border border-rose-200 rounded-lg py-1.5 px-3 hover:bg-rose-50 transition-colors">
+                                class="text-xs font-semibold text-rose-500 border border-rose-200 rounded-lg py-1.5 px-3 hover:bg-rose-50 transition-colors">
                                 Eliminar
                             </button>
                         </form>
                     </div>
+                    @endcan
                 </div>
             </div>
             @endforeach
@@ -109,6 +117,8 @@
 
 </div>
 
+{{-- 🔐 ESTRUCTURAS DE MODALES: Solo se renderizan en el HTML si tiene el permiso asignado --}}
+@can('gestionar_gastronomia')
 {{-- Modal Agregar --}}
 <div id="modal-agregar" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
@@ -231,4 +241,6 @@
         document.getElementById('modal-editar').classList.remove('hidden');
     }
 </script>
+@endcan
+
 @endsection
