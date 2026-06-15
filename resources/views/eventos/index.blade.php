@@ -2,10 +2,6 @@
 
 @section('title', 'Surify - Eventos y Festividades')
 
-@extends('layouts.app')
-
-@section('title', 'Surify - Eventos y Festividades')
-
 @section('content')
 <div class="max-w-[1280px] w-full mx-auto py-4">
 
