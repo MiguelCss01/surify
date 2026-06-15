@@ -134,7 +134,7 @@
                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                             </a>
                             <form method="POST" action="{{ route('admin.eventos.destroy', $evento) }}"
-                                onsubmit="return confirm('¿Seguro que querés eliminar {{ $evento->nombre }}?')">
+                                class="form-eliminar">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
@@ -161,5 +161,34 @@
         </table>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const formularios = document.querySelectorAll('.form-eliminar');
+        
+        formularios.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¡No vas a poder revertir esto, el evento se eliminará permanentemente!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+                    color: document.documentElement.classList.contains('dark') ? '#f8fafc' : '#1e293b'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.submit();
+                    }
+                })
+            });
+        });
+    });
+</script>
 
 @endsection
