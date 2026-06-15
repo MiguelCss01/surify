@@ -7,10 +7,18 @@
 <style>
     .hero-gradient {
         background: linear-gradient(to bottom, rgba(247, 249, 252, 0.2), rgba(247, 249, 252, 1));
+        transition: background-color 0.3s ease;
+    }
+    html.dark .hero-gradient {
+        background: linear-gradient(to bottom, rgba(15, 23, 42, 0.2), rgba(15, 23, 42, 1));
     }
     .glass-card {
         background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(12px);
+        transition: background-color 0.3s ease;
+    }
+    html.dark .glass-card {
+        background: rgba(30, 41, 59, 0.7);
     }
     .scroll-hide::-webkit-scrollbar { display: none; }
     html { scroll-behavior: smooth; }
@@ -50,8 +58,8 @@
             <input type="file" id="avatar-input" name="avatar" accept="image/*" class="hidden"
                 onchange="document.getElementById('avatar-form').submit()">
         </form>
-        <h1 class="text-3xl font-black text-slate-800 mt-3" style="font-family: 'Inter', sans-serif;">{{ auth()->user()->name }}</h1>
-        <p class="text-sm text-slate-500">{{ auth()->user()->email }}</p>
+        <h1 class="text-3xl font-black text-slate-800 dark:text-white mt-3" style="font-family: 'Inter', sans-serif;">{{ auth()->user()->name }}</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400">{{ auth()->user()->email }}</p>
         <p class="text-xs text-[#28628f] font-bold uppercase tracking-widest mt-1">
             Miembro desde {{ auth()->user()->created_at->translatedFormat('F Y') }}
         </p>
@@ -64,18 +72,18 @@
     $countResenas = auth()->user()->resenas()->count();
 @endphp
 <div class="max-w-2xl mx-auto -mt-6 relative z-10 mb-8 px-4">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl p-6 grid grid-cols-3 gap-4 text-center">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl p-6 grid grid-cols-3 gap-4 text-center transition-colors duration-300">
         <div>
-            <div class="text-2xl font-bold text-[#28628f]">{{ $countVisitados }}</div>
-            <div class="text-xs text-slate-500 mt-1">Lugares visitados</div>
+            <div class="text-2xl font-bold text-[#28628f] dark:text-sky-400">{{ $countVisitados }}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Lugares visitados</div>
         </div>
-        <div class="border-x border-slate-200">
-            <div class="text-2xl font-bold text-[#28628f]">{{ $countResenas }}</div>
-            <div class="text-xs text-slate-500 mt-1">Reseñas publicadas</div>
+        <div class="border-x border-slate-200 dark:border-slate-700">
+            <div class="text-2xl font-bold text-[#28628f] dark:text-sky-400">{{ $countResenas }}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Reseñas publicadas</div>
         </div>
         <div>
-            <div class="text-2xl font-bold text-[#28628f]">0</div>
-            <div class="text-xs text-slate-500 mt-1">Fotos subidas</div>
+            <div class="text-2xl font-bold text-[#28628f] dark:text-sky-400">0</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Fotos subidas</div>
         </div>
     </div>
 </div>
@@ -87,8 +95,8 @@
     <div class="lg:col-span-8 space-y-6">
 
         {{-- Insignias --}}
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2 mb-4">
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 transition-colors duration-300">
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-4">
                 <span class="material-symbols-outlined text-yellow-500" style="font-variation-settings: 'FILL' 1;">military_tech</span>
                 Mis Insignias
             </h2>
@@ -112,7 +120,7 @@
                 @foreach($insignias as $insignia)
                 <div class="flex-shrink-0 flex flex-col items-center gap-2 {{ $insignia['ganada'] ? '' : 'opacity-40 grayscale' }}" title="{{ $insignia['descripcion'] }}">
                     <div class="w-20 h-20 rounded-full flex items-center justify-center border-2 shadow-sm
-                        {{ $insignia['ganada'] ? 'bg-gradient-to-br from-[#28628f] to-[#1a4669] border-[#28628f]/30' : 'bg-slate-200 border-dashed border-slate-400' }}">
+                        {{ $insignia['ganada'] ? 'bg-gradient-to-br from-[#28628f] to-[#1a4669] border-[#28628f]/30' : 'bg-slate-200 dark:bg-slate-700 border-dashed border-slate-400 dark:border-slate-600' }}">
                         @if(isset($insignia['emoji']))
                             <span class="text-3xl">{{ $insignia['emoji'] }}</span>
                         @else
@@ -120,11 +128,11 @@
                                   style="font-variation-settings: 'FILL' {{ $insignia['ganada'] ? '1' : '0' }};">{{ $insignia['icono'] }}</span>
                         @endif
                     </div>
-                    <span class="text-xs font-semibold text-center max-w-[80px] {{ $insignia['ganada'] ? 'text-slate-700' : 'text-slate-400' }}">{{ $insignia['nombre'] }}</span>
+                    <span class="text-xs font-semibold text-center max-w-[80px] {{ $insignia['ganada'] ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500' }}">{{ $insignia['nombre'] }}</span>
                     @if($insignia['ganada'])
                         <span class="text-[9px] font-bold text-emerald-500 uppercase tracking-wider">✓ Ganada</span>
                     @else
-                        <span class="text-[9px] text-slate-400">Bloqueada</span>
+                        <span class="text-[9px] text-slate-400 dark:text-slate-500">Bloqueada</span>
                     @endif
                 </div>
                 @endforeach
@@ -132,14 +140,14 @@
         </section>
 
         {{-- Lugares visitados --}}
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 transition-colors duration-300">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-slate-800">Mis lugares visitados</h2>
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white">Mis lugares visitados</h2>
                 <div class="flex gap-2">
-                    <button onclick="prevVisitados()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors">
+                    <button onclick="prevVisitados()" class="p-2 rounded-full border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300">
                         <span class="material-symbols-outlined text-sm">chevron_left</span>
                     </button>
-                    <button onclick="nextVisitados()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors">
+                    <button onclick="nextVisitados()" class="p-2 rounded-full border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300">
                         <span class="material-symbols-outlined text-sm">chevron_right</span>
                     </button>
                 </div>
@@ -151,7 +159,7 @@
             <div id="visitados-container" class="grid grid-cols-2 gap-3">
                 @foreach($visitados as $index => $visitado)
                 <a href="{{ route('destinos.show', $visitado->destino->id) }}"
-                    class="visitado-item relative bg-slate-100 rounded-xl overflow-hidden group text-decoration-none {{ $index >= 4 ? 'hidden' : '' }}"
+                    class="visitado-item relative bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden group text-decoration-none {{ $index >= 4 ? 'hidden' : '' }} transition-colors duration-300"
                     data-index="{{ $index }}">
                     <div class="h-24 overflow-hidden relative">
                         <img src="{{ $visitado->destino->imagen_url ?? 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400' }}"
@@ -162,8 +170,8 @@
                         </div>
                     </div>
                     <div class="p-2">
-                        <h4 class="text-xs font-bold text-slate-800 truncate">{{ $visitado->destino->nombre }}</h4>
-                        <p class="text-[10px] text-slate-400">{{ $visitado->destino->provincia->nombre ?? '' }}</p>
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $visitado->destino->nombre }}</h4>
+                        <p class="text-[10px] text-slate-400 dark:text-slate-500">{{ $visitado->destino->provincia->nombre ?? '' }}</p>
                         @if($visitado->visitado_en)
                             <p class="text-[10px] text-emerald-500 font-semibold">{{ \Carbon\Carbon::parse($visitado->visitado_en)->format('d/m/Y') }}</p>
                         @endif
@@ -183,17 +191,17 @@
         </section>
 
         {{-- Festividades --}}
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 transition-colors duration-300">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
                     <span class="material-symbols-outlined text-yellow-500" style="font-variation-settings: 'FILL' 1;">celebration</span>
                     Festividades
                 </h2>
                 <div class="flex gap-2">
-                    <button onclick="prevFestividades()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors">
+                    <button onclick="prevFestividades()" class="p-2 rounded-full border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300">
                         <span class="material-symbols-outlined text-sm">chevron_left</span>
                     </button>
-                    <button onclick="nextFestividades()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors">
+                    <button onclick="nextFestividades()" class="p-2 rounded-full border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300">
                         <span class="material-symbols-outlined text-sm">chevron_right</span>
                     </button>
                 </div>
@@ -204,7 +212,7 @@
             @if($festividades->count() > 0)
             <div id="festividades-container" class="grid grid-cols-2 gap-3">
                 @foreach($festividades as $index => $fav)
-                <div class="festividad-item relative bg-slate-100 rounded-xl overflow-hidden {{ $index >= 4 ? 'hidden' : '' }}" data-index="{{ $index }}">
+                <div class="festividad-item relative bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden {{ $index >= 4 ? 'hidden' : '' }} transition-colors duration-300" data-index="{{ $index }}">
                     <div class="h-24 overflow-hidden relative">
                         <img src="{{ $fav->evento->imagen_url ?? 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400' }}"
                             class="w-full h-full object-cover" alt="{{ $fav->evento->nombre }}">
@@ -217,8 +225,8 @@
                         </div>
                     </div>
                     <div class="p-2">
-                        <h4 class="text-xs font-bold text-slate-800 truncate">{{ $fav->evento->nombre }}</h4>
-                        <p class="text-[10px] text-slate-400">{{ $fav->evento->provincia->nombre ?? '' }}</p>
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $fav->evento->nombre }}</h4>
+                        <p class="text-[10px] text-slate-400 dark:text-slate-500">{{ $fav->evento->provincia->nombre ?? '' }}</p>
                         @if($fav->evento->fecha_inicio)
                             <p class="text-[10px] text-amber-500 font-semibold">{{ \Carbon\Carbon::parse($fav->evento->fecha_inicio)->format('d/m/Y') }}</p>
                         @endif
@@ -238,14 +246,14 @@
         </section>
 
         {{-- Favoritos --}}
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 transition-colors duration-300">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-slate-800">Mis favoritos</h2>
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white">Mis favoritos</h2>
                 <div class="flex gap-2">
-                    <button onclick="prevFavoritos()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors">
+                    <button onclick="prevFavoritos()" class="p-2 rounded-full border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300">
                         <span class="material-symbols-outlined text-sm">chevron_left</span>
                     </button>
-                    <button onclick="nextFavoritos()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-colors">
+                    <button onclick="nextFavoritos()" class="p-2 rounded-full border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300">
                         <span class="material-symbols-outlined text-sm">chevron_right</span>
                     </button>
                 </div>
@@ -257,7 +265,7 @@
             <div id="favoritos-container" class="grid grid-cols-2 gap-3">
                 @foreach($favoritos as $index => $favorito)
                 <a href="{{ route('destinos.show', $favorito->destino->id) }}"
-                    class="favorito-item relative bg-slate-100 rounded-xl overflow-hidden group text-decoration-none {{ $index >= 4 ? 'hidden' : '' }}"
+                    class="favorito-item relative bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden group text-decoration-none {{ $index >= 4 ? 'hidden' : '' }} transition-colors duration-300"
                     data-index="{{ $index }}">
                     <div class="h-24 overflow-hidden">
                         <img src="{{ $favorito->destino->imagen_url ?? 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400' }}"
@@ -266,8 +274,8 @@
                     </div>
                     <div class="p-2 flex justify-between items-center">
                         <div>
-                            <h4 class="text-xs font-bold text-slate-800 truncate">{{ $favorito->destino->nombre }}</h4>
-                            <p class="text-[10px] text-slate-400">{{ $favorito->destino->provincia->nombre ?? '' }}</p>
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $favorito->destino->nombre }}</h4>
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500">{{ $favorito->destino->provincia->nombre ?? '' }}</p>
                         </div>
                         <span class="material-symbols-outlined text-rose-500 text-[16px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
                     </div>
@@ -289,8 +297,8 @@
 
     {{-- Columna derecha - Actividad --}}
     <aside class="lg:col-span-4">
-        <div class="glass-card rounded-2xl border border-slate-200 shadow-md p-6 sticky top-24">
-            <h2 class="text-lg font-bold text-slate-800 mb-6">Mi actividad reciente</h2>
+        <div class="glass-card rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md p-6 sticky top-24">
+            <h2 class="text-lg font-bold text-slate-800 dark:text-white mb-6">Mi actividad reciente</h2>
 
             @php
                 $actividad = collect();
@@ -322,22 +330,22 @@
                 {{-- Cuenta creada siempre al final --}}
                 @foreach($actividad as $item)
                 <div class="relative pl-10">
-                    <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-{{ $item['color'] }}-100 flex items-center justify-center z-10">
+                    <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-{{ $item['color'] }}-100 dark:bg-{{ $item['color'] }}-950/40 flex items-center justify-center z-10">
                         <span class="material-symbols-outlined text-{{ $item['color'] }}-500 text-[14px]" style="font-variation-settings: 'FILL' 1;">{{ $item['icono'] }}</span>
                     </div>
-                    <p class="text-sm text-slate-700">
-                        {{ $item['texto'] }} <span class="font-semibold text-slate-800">{{ $item['nombre'] }}</span>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">
+                        {{ $item['texto'] }} <span class="font-semibold text-slate-800 dark:text-white">{{ $item['nombre'] }}</span>
                     </p>
-                    <p class="text-xs text-slate-400 mt-1">{{ $item['fecha']->diffForHumans() }}</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">{{ $item['fecha']->diffForHumans() }}</p>
                 </div>
                 @endforeach
-
+ 
                 <div class="relative pl-10">
-                    <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-[#28628f]/20 flex items-center justify-center z-10">
+                    <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-[#28628f]/20 dark:bg-[#28628f]/30 flex items-center justify-center z-10">
                         <span class="material-symbols-outlined text-[#28628f] text-[14px]" style="font-variation-settings: 'FILL' 1;">person_add</span>
                     </div>
-                    <p class="text-sm text-slate-700">Cuenta creada en Surify</p>
-                    <p class="text-xs text-slate-400 mt-1">{{ auth()->user()->created_at->diffForHumans() }}</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">Cuenta creada en Surify</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">{{ auth()->user()->created_at->diffForHumans() }}</p>
                 </div>
             </div>
 
@@ -349,9 +357,9 @@
 </div>
 
 {{-- Modal configuración --}}
-<div id="modal-configuracion" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between p-6 border-b border-slate-100 sticky top-0 bg-white rounded-t-2xl z-10">
+<div id="modal-configuracion" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fade-in">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border dark:border-slate-800">
+        <div class="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800 sticky top-0 bg-white dark:bg-slate-900 rounded-t-2xl z-10">
             <h3 class="text-lg font-bold text-[#28628f] flex items-center gap-2">
                 <span class="material-symbols-outlined">settings</span>
                 Configuración
@@ -361,7 +369,7 @@
             </button>
         </div>
         <div class="p-6 space-y-8">
-            <section class="bg-slate-50 rounded-xl p-4 border border-slate-200 flex items-center gap-4">
+            <section class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 flex items-center gap-4">
                 @if(auth()->user()->avatar)
                 <img src="{{ auth()->user()->avatar }}" class="w-14 h-14 rounded-full object-cover border-2 border-[#28628f]/30" alt="Avatar">
                 @else
@@ -370,33 +378,33 @@
                 </div>
                 @endif
                 <div>
-                    <p class="font-bold text-slate-800">{{ auth()->user()->name }}</p>
+                    <p class="font-bold text-slate-800 dark:text-white">{{ auth()->user()->name }}</p>
                     <p class="text-xs text-slate-500">{{ auth()->user()->email }}</p>
                 </div>
             </section>
 
             <section>
-                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Información personal</h4>
-                <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
+                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 px-1">Información personal</h4>
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
                     @include('profile.partials.update-profile-information-form')
                 </div>
             </section>
 
             <section>
-                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Cambiar contraseña</h4>
-                <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
+                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 px-1">Cambiar contraseña</h4>
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
                     @include('profile.partials.update-password-form')
                 </div>
             </section>
 
             <section>
-                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Conexiones Sociales</h4>
-                <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-200">
+                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 px-1">Conexiones Sociales</h4>
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden divide-y divide-slate-200 dark:divide-slate-700">
                     @foreach([['photo_camera','Instagram'],['terminal','X / Twitter'],['public','Facebook']] as [$ico,$red])
-                    <div class="flex items-center justify-between p-4 hover:bg-slate-100 transition-colors">
+                    <div class="flex items-center justify-between p-4 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-slate-500">{{ $ico }}</span>
-                            <span class="text-sm text-slate-700">{{ $red }}</span>
+                            <span class="text-sm text-slate-700 dark:text-slate-200">{{ $red }}</span>
                         </div>
                         <button class="text-[#28628f] text-xs font-semibold hover:underline">Vincular</button>
                     </div>
@@ -405,8 +413,8 @@
             </section>
 
             <section>
-                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Números de Emergencia Argentina</h4>
-                <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-200">
+                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 px-1">Números de Emergencia Argentina</h4>
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden divide-y divide-slate-200 dark:divide-slate-700">
                     @foreach([
                         ['911','Policía / Emergencias','local_police','text-blue-600','bg-blue-50'],
                         ['100','Bomberos','local_fire_department','text-orange-500','bg-orange-50'],
@@ -423,74 +431,70 @@
                                 <span class="material-symbols-outlined {{ $color }} text-[18px]">{{ $icono }}</span>
                             </div>
                             <div>
-                                <p class="text-sm font-bold text-slate-700">{{ $descripcion }}</p>
-                                <p class="text-xs text-slate-400">Llamada gratuita las 24hs</p>
+                                <p class="text-sm font-bold text-slate-700 dark:text-slate-200">{{ $descripcion }}</p>
+                                <p class="text-xs text-slate-400 dark:text-slate-500">Llamada gratuita las 24hs</p>
                             </div>
                         </div>
-                        <a href="tel:{{ $numero }}" class="text-lg font-black text-[#28628f] hover:underline">{{ $numero }}</a>
+                        <a href="tel:{{ $numero }}" class="text-lg font-black text-[#28628f] dark:text-sky-400 hover:underline">{{ $numero }}</a>
                     </div>
                     @endforeach
-                </div>
-            </section>
-
-            <section>
-                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Privacidad & Seguridad</h4>
-                <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-200">
-                    <button class="w-full flex items-center justify-between p-4 hover:bg-slate-100 transition-colors text-left">
+                            <section>
+                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 px-1">Privacidad & Seguridad</h4>
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden divide-y divide-slate-200 dark:divide-slate-700">
+                    <button class="w-full flex items-center justify-between p-4 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-slate-500">visibility</span>
                             <div>
-                                <p class="text-sm text-slate-700">Visibilidad del Perfil</p>
-                                <p class="text-xs text-slate-400">Público</p>
+                                <p class="text-sm text-slate-700 dark:text-slate-200">Visibilidad del Perfil</p>
+                                <p class="text-xs text-slate-400 dark:text-slate-500">Público</p>
                             </div>
                         </div>
                         <span class="material-symbols-outlined text-slate-400">chevron_right</span>
                     </button>
-                    <button class="w-full flex items-center justify-between p-4 hover:bg-slate-100 transition-colors text-left">
+                    <button class="w-full flex items-center justify-between p-4 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-slate-500">verified_user</span>
-                            <p class="text-sm text-slate-700">Autenticación de Dos Factores</p>
+                            <p class="text-sm text-slate-700 dark:text-slate-200">Autenticación de Dos Factores</p>
                         </div>
                         <span class="text-red-400 text-xs font-semibold">Desactivado</span>
                     </button>
                 </div>
             </section>
-
+ 
             <section>
-                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Preferencias</h4>
-                <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-200">
+                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 px-1">Preferencias</h4>
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden divide-y divide-slate-200 dark:divide-slate-700">
                     <div class="p-4">
                         <div class="flex items-center gap-3 mb-3">
                             <span class="material-symbols-outlined text-slate-500">light_mode</span>
-                            <span class="text-sm text-slate-700">Tema</span>
                         </div>
                         <div class="grid grid-cols-3 gap-2">
-                            <button class="py-2 px-3 rounded-lg border border-slate-300 text-slate-500 text-xs hover:border-[#28628f] transition-all theme-btn">Oscuro</button>
-                            <button class="py-2 px-3 rounded-lg border border-[#28628f] bg-[#28628f]/10 text-[#28628f] text-xs font-bold transition-all theme-btn">Claro</button>
-                            <button class="py-2 px-3 rounded-lg border border-slate-300 text-slate-500 text-xs hover:border-[#28628f] transition-all theme-btn">Sistema</button>
+                            <button data-theme="dark" class="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-xs hover:border-[#28628f] transition-all theme-btn">Oscuro</button>
+                            <button data-theme="light" class="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-xs hover:border-[#28628f] transition-all theme-btn">Claro</button>
+                            <button data-theme="system" class="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-xs hover:border-[#28628f] transition-all theme-btn">Sistema</button>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between p-4 hover:bg-slate-100 transition-colors">
+                    <div class="flex items-center justify-between p-4 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-slate-500">notifications</span>
-                            <span class="text-sm text-slate-700">Notificaciones de festividades</span>
+                            <span class="text-sm text-slate-700 dark:text-slate-200">Notificaciones de festividades</span>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer">
-                            <div class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#28628f]"></div>
+                            <div class="w-11 h-6 bg-slate-300 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#28628f]"></div>
                         </label>
                     </div>
                 </div>
             </section>
-
+ 
             <section>
-                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Soporte</h4>
-                <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-200">
+                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 px-1">Soporte</h4>
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden divide-y divide-slate-200 dark:divide-slate-700">
                     @foreach([['help_center','Centro de Ayuda','open_in_new'],['description','Términos de Servicio','chevron_right'],['policy','Política de Privacidad','chevron_right']] as [$ico,$label,$end])
-                    <button class="w-full flex items-center justify-between p-4 hover:bg-slate-100 transition-colors">
+                    <button class="w-full flex items-center justify-between p-4 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-slate-500">{{ $ico }}</span>
-                            <span class="text-sm text-slate-700">{{ $label }}</span>
+                            <span class="text-sm text-slate-700 dark:text-slate-200">{{ $label }}</span>
                         </div>
                         <span class="material-symbols-outlined text-slate-400">{{ $end }}</span>
                     </button>
@@ -654,14 +658,43 @@ function prevFestividades() {
     }
 }
 
+function aplicarTema(themeName) {
+    if (themeName === 'dark') {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+    } else if (themeName === 'light') {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+    } else {
+        localStorage.removeItem('theme');
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }
+    actualizarBotonesTema(themeName);
+}
+
+function actualizarBotonesTema(themeName) {
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+        if (btn.dataset.theme === themeName) {
+            btn.classList.remove('border-slate-300', 'dark:border-slate-700', 'text-slate-500', 'dark:text-slate-400');
+            btn.classList.add('border-[#28628f]', 'bg-[#28628f]/10', 'text-[#28628f]', 'font-bold');
+        } else {
+            btn.classList.remove('border-[#28628f]', 'bg-[#28628f]/10', 'text-[#28628f]', 'font-bold');
+            btn.classList.add('border-slate-300', 'dark:border-slate-700', 'text-slate-500', 'dark:text-slate-400');
+        }
+    });
+}
+
+// Inicializar en carga de página
+const temaGuardado = localStorage.getItem('theme') || 'system';
+actualizarBotonesTema(temaGuardado);
+
 document.querySelectorAll('.theme-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-        document.querySelectorAll('.theme-btn').forEach(b => {
-            b.classList.remove('border-[#28628f]', 'bg-[#28628f]/10', 'text-[#28628f]', 'font-bold');
-            b.classList.add('border-slate-300', 'text-slate-500');
-        });
-        this.classList.remove('border-slate-300', 'text-slate-500');
-        this.classList.add('border-[#28628f]', 'bg-[#28628f]/10', 'text-[#28628f]', 'font-bold');
+        aplicarTema(this.dataset.theme);
     });
 });
 </script>
