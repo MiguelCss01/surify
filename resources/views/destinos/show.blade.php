@@ -61,16 +61,18 @@
             </h2>
             <div class="flex flex-col gap-3">
                 @foreach($destino->eventos as $evento)
-                <div class="flex gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#28628f] transition-colors">
+                <a href="{{ route('eventos.show', $evento->id) }}"
+                    class="flex gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#28628f] hover:shadow-sm transition-all group text-decoration-none">
                     <div class="flex flex-col items-center justify-center bg-[#28628f] text-white w-14 h-14 rounded-xl font-bold shrink-0">
                         <span class="text-[10px] uppercase font-semibold leading-none mb-0.5">{{ \Carbon\Carbon::parse($evento->fecha_inicio)->format('M') }}</span>
                         <span class="text-lg font-black leading-none">{{ \Carbon\Carbon::parse($evento->fecha_inicio)->format('d') }}</span>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800">{{ $evento->nombre }}</h4>
-                        <p class="text-slate-400 text-xs mt-0.5">{{ $evento->descripcion }}</p>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-slate-800 group-hover:text-[#28628f] transition-colors">{{ $evento->nombre }}</h4>
+                        <p class="text-slate-400 text-xs mt-0.5 line-clamp-2">{{ $evento->descripcion }}</p>
                     </div>
-                </div>
+                    <span class="material-symbols-outlined text-slate-300 group-hover:text-[#28628f] self-center transition-colors shrink-0">arrow_forward</span>
+                </a>
                 @endforeach
             </div>
         </section>

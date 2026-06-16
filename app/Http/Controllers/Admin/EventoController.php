@@ -55,8 +55,8 @@ class EventoController extends Controller
     public function edit(Evento $evento)
     {
         $destinos = Destino::orderBy('nombre')->get();
-        // Mapeamos automáticamente la provincia del destino seleccionado para que Blade no rompa
-        return view('admin.eventos.edit', compact('evento', 'destinos'));
+        $provincias = Provincia::orderBy('nombre')->get();
+        return view('admin.eventos.edit', compact('evento', 'destinos', 'provincias'));
     }
 
     public function update(Request $request, Evento $evento)
@@ -107,7 +107,8 @@ class EventoController extends Controller
     public function create()
     {
         $destinos = Destino::orderBy('nombre')->get();
-        return view('admin.eventos.create', compact('destinos'));
+        $provincias = Provincia::orderBy('nombre')->get();
+        return view('admin.eventos.create', compact('destinos', 'provincias'));
     }
 
     public function store(Request $request)

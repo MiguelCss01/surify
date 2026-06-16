@@ -42,14 +42,14 @@
         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Usuarios</p>
         <p class="text-3xl font-black text-slate-800">{{ str_pad($countUsuarios, 2, '0', STR_PAD_LEFT) }}</p>
         <div class="mt-3 flex gap-1 items-end h-8">
-    <div class="w-full rounded-t-sm bg-amber-200" style="height:40%"></div>
-    <div class="w-full rounded-t-sm bg-amber-200" style="height:60%"></div>
-    <div class="w-full rounded-t-sm bg-amber-200" style="height:45%"></div>
-    <div class="w-full rounded-t-sm bg-amber-200" style="height:80%"></div>
-    <div class="w-full rounded-t-sm bg-amber-200" style="height:55%"></div>
-    <div class="w-full rounded-t-sm bg-amber-200" style="height:90%"></div>
-    <div class="w-full rounded-t-sm bg-amber-200" style="height:100%"></div>
-</div>
+            <div class="w-full rounded-t-sm bg-amber-200" style="height:40%"></div>
+            <div class="w-full rounded-t-sm bg-amber-200" style="height:60%"></div>
+            <div class="w-full rounded-t-sm bg-amber-200" style="height:45%"></div>
+            <div class="w-full rounded-t-sm bg-amber-200" style="height:80%"></div>
+            <div class="w-full rounded-t-sm bg-amber-200" style="height:55%"></div>
+            <div class="w-full rounded-t-sm bg-amber-200" style="height:90%"></div>
+            <div class="w-full rounded-t-sm bg-amber-200" style="height:100%"></div>
+        </div>
     </div>
 
     <div class="bg-white rounded-2xl border border-b-4 border-slate-200 border-b-rose-400 shadow-sm p-6 hover:shadow-md transition-all">
@@ -79,8 +79,8 @@
             </a>
         </div>
         @php
-            /** @var \Illuminate\Support\Collection|array $provincias */
-            $provincias = $provincias ?? collect();
+        /** @var \Illuminate\Support\Collection|array $provincias */
+        $provincias = $provincias ?? collect();
         @endphp
         <div class="overflow-x-auto">
             <table class="w-full">
@@ -94,30 +94,29 @@
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @forelse($provincias as $provincia)
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="py-4">
-                                <span class="text-sm font-bold text-slate-800">{{ optional($provincia)->nombre }}</span>
-                            </td>
-                            <td class="py-4">
-                                <span class="text-sm text-slate-500">{{ optional($provincia)->region ?? '—' }}</span>
-                            </td>
-                            <td class="py-4">
-                                <span class="text-sm font-bold text-[#28628f]">{{ optional($provincia)->destinos_count ?? 0 }}</span>
-                            </td>
-                            <td class="py-4 text-right">
-                                <a href="{{ route('provincia.show', optional($provincia)->nombre) }}"
-                                   class="material-symbols-outlined text-[#28628f] hover:scale-110 transition-transform text-[20px]">
-                                    edit_square
-                                </a>
-                            </td>
-                        </tr>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="py-4">
+                            <span class="text-sm font-bold text-slate-800">{{ optional($provincia)->nombre }}</span>
+                        </td>
+                        <td class="py-4">
+                            <span class="text-sm text-slate-500">{{ optional($provincia)->region ?? '—' }}</span>
+                        </td>
+                        <td class="py-4">
+                            <span class="text-sm font-bold text-[#28628f]">{{ optional($provincia)->destinos_count ?? 0 }}</span>
+                        </td>
+                        <td class="py-4 text-right">
+                            <button onclick='abrirEditarProvincia({{ $provincia->id }}, @json($provincia->nombre), @json($provincia->region ?? ''), @json($provincia->descripcion ?? ''), @json($provincia->imagenes->map(fn($i) => [' id'=> $i->id, 'url' => asset('storage/' . $i->url)])) )' class="material-symbols-outlined text-[#28628f] hover:scale-110 transition-transform text-[20px] cursor-pointer bg-transparent border-none">
+                                edit_square
+                            </button>
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="4" class="py-12 text-center">
-                                <span class="material-symbols-outlined text-4xl text-slate-300 block mb-2">folder_open</span>
-                                <p class="text-sm text-slate-400">No hay provincias cargadas todavía.</p>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="4" class="py-12 text-center">
+                            <span class="material-symbols-outlined text-4xl text-slate-300 block mb-2">folder_open</span>
+                            <p class="text-sm text-slate-400">No hay provincias cargadas todavía.</p>
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -135,13 +134,13 @@
             </h3>
             <div class="flex flex-col gap-2">
                 <a href="{{ route('admin.destinos.create') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
-    <span class="material-symbols-outlined text-amber-400 text-[20px]">add_location</span>
-    Agregar Destino
-</a>
-<a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
-    <span class="material-symbols-outlined text-blue-300 text-[20px]">celebration</span>
-    Cargar Evento
-</a>
+                    <span class="material-symbols-outlined text-amber-400 text-[20px]">add_location</span>
+                    Agregar Destino
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
+                    <span class="material-symbols-outlined text-blue-300 text-[20px]">celebration</span>
+                    Cargar Evento
+                </a>
                 <a href="{{ route('admin.roles.index') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
                     <span class="material-symbols-outlined text-emerald-400 text-[20px]">admin_panel_settings</span>
                     Gestionar Roles
@@ -151,8 +150,8 @@
                     Ver Usuarios
                 </a>
                 <a href="{{ route('admin.resenas.index') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
-                     <span class="material-symbols-outlined text-rose-300 text-[20px]">chat_bubble</span>
-                     Moderar Reseñas
+                    <span class="material-symbols-outlined text-rose-300 text-[20px]">chat_bubble</span>
+                    Moderar Reseñas
                 </a>
             </div>
         </div>
@@ -188,4 +187,115 @@
     </aside>
 </div>
 
+{{-- Modal Editar Provincia --}}
+<div id="modal-editar-provincia" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="text-lg font-bold text-slate-800">Editar Provincia</h2>
+            <button onclick="document.getElementById('modal-editar-provincia').classList.add('hidden')"
+                class="text-slate-400 hover:text-slate-600">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <form id="form-editar-provincia" action="" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+            @csrf @method('PUT')
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nombre</label>
+                <input type="text" name="nombre" id="editar-provincia-nombre" required
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Región</label>
+                <input type="text" name="region" id="editar-provincia-region"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Descripción</label>
+                <textarea name="descripcion" id="editar-provincia-descripcion" rows="3"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] resize-none"></textarea>
+            </div>
+
+            {{-- Imágenes existentes --}}
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Imágenes actuales</label>
+                <div id="imagenes-actuales" class="flex flex-wrap gap-2 min-h-[40px]">
+                    <p class="text-xs text-slate-400">No hay imágenes cargadas.</p>
+                </div>
+            </div>
+
+            {{-- Agregar nuevas imágenes --}}
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Agregar imágenes</label>
+                <input type="file" name="imagenes[]" multiple accept="image/*"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">
+                <p class="text-xs text-slate-400">Podés seleccionar varias imágenes a la vez.</p>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button type="submit" class="flex-1 bg-[#28628f] text-white font-bold py-3 rounded-xl hover:bg-[#1a4669] transition-all">
+                    Guardar cambios
+                </button>
+                <button type="button" onclick="document.getElementById('modal-editar-provincia').classList.add('hidden')"
+                    class="flex-1 border border-slate-200 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-50 transition-all">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function abrirEditarProvincia(id, nombre, region, descripcion, imagenes) {
+        document.getElementById('editar-provincia-nombre').value = nombre;
+        document.getElementById('editar-provincia-region').value = region;
+        document.getElementById('editar-provincia-descripcion').value = descripcion;
+        document.getElementById('form-editar-provincia').action = `/admin/provincias/${id}`;
+
+        const container = document.getElementById('imagenes-actuales');
+        container.innerHTML = '';
+
+        if (imagenes && imagenes.length > 0) {
+            imagenes.forEach(img => {
+                agregarImagenAlModal(container, img);
+            });
+        } else {
+            container.innerHTML = '<p class="text-xs text-slate-400">No hay imágenes cargadas todavía.</p>';
+        }
+
+        document.getElementById('modal-editar-provincia').classList.remove('hidden');
+    }
+
+    function agregarImagenAlModal(container, img) {
+        const div = document.createElement('div');
+        div.id = `img-${img.id}`;
+        div.className = 'relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200 group';
+        div.innerHTML = `
+        <img src="${img.url}" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <button type="button" onclick="eliminarImagen(${img.id})"
+                class="text-white text-[10px] font-bold bg-rose-500 px-2 py-1 rounded-lg">
+                Eliminar
+            </button>
+        </div>`;
+        container.appendChild(div);
+    }
+
+    function eliminarImagen(id) {
+        fetch(`/admin/provincias/imagenes/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-HTTP-Method-Override': 'DELETE'
+                }
+            })
+            .then(r => {
+                if (r.ok) {
+                    const el = document.getElementById(`img-${id}`);
+                    if (el) el.remove();
+                }
+            })
+            .catch(() => alert('Error al eliminar la imagen'));
+    }
+</script>
 @endsection

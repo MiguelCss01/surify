@@ -83,4 +83,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return Permiso::whereHas('roles', fn($q) => $q->whereIn('roles.id', $this->roles->pluck('id')))->get();
     }
+
+    public function eventosVisitados(): HasMany
+    {
+        return $this->hasMany(EventoVisitado::class);
+    }
 }

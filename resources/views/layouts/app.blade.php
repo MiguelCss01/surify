@@ -230,7 +230,6 @@
     </div>
 
     <script>
-<<<<<<< Updated upstream
         // Pantalla de carga inicial
         (function() {
             const bar = document.getElementById('loading-bar-screen');
@@ -258,9 +257,6 @@
             document.addEventListener('DOMContentLoaded', ocultarPantalla);
             setTimeout(ocultarPantalla, 5000);
         })();
-
-=======
->>>>>>> Stashed changes
         // Reproductor de música
         document.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('global-surify-song');
@@ -310,9 +306,6 @@
                 }
             });
         });
-<<<<<<< Updated upstream
-=======
-
         // Navegación sin recarga
         var esAdmin = @json(auth()->check() && auth()->user()->hasRole('Admin'));
 
@@ -387,7 +380,6 @@
         window.addEventListener('popstate', function() {
             navegarSinRecarga(window.location.href);
         });
->>>>>>> Stashed changes
     </script>
 
 </body>
