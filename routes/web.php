@@ -192,15 +192,3 @@ Route::middleware('auth')->group(function () {
 
 Route::post('/visitados/toggle', [\App\Http\Controllers\DestinoVisitadoController::class, 'toggle'])->name('visitados.toggle');
 require __DIR__ . '/auth.php';
-
-Route::get('/dame-poderes', function () {
-    $user = \App\Models\User::first();
-    if ($user) {
-        $adminRole = \App\Models\Role::where('nombre', 'Admin')->first();
-        if ($adminRole && !$user->roles()->where('nombre', 'Admin')->exists()) {
-            $user->roles()->attach($adminRole);
-        }
-        return '¡Magia pura! El usuario ' . $user->name . ' (' . $user->email . ') ahora es Administrador Supremo de Surify. Ya podés entrar al panel.';
-    }
-    return 'Error: ¡No hay ningún usuario! Tenés que registrarte primero en la página principal.';
-});
