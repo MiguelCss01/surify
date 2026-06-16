@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Resena;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ResenaController extends Controller
@@ -24,13 +25,15 @@ class ResenaController extends Controller
         ]);
 
         // Aseguramos que el usuario esté autenticado
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->back()->with('error', 'Debes iniciar sesión para dejar una reseña.');
         }
 
+        $user = Auth::user();
+
         // Creamos la reseña
         $resena = new Resena();
-        $resena->user_id = auth()->id();
+        $resena->user_id = $user->id;
         $resena->destino_id = $validated['destino_id'] ?? null;
         $resena->evento_id = $validated['evento_id'] ?? null;
         $resena->calificacion = $validated['calificacion'];

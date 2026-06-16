@@ -5,6 +5,7 @@ use App\Http\Controllers\EventoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\CombustibleController;
+use App\Http\Controllers\EventoVisitadoController;
 use App\Http\Controllers\Admin\RolController;
 use App\Http\Controllers\Admin\DestinoController as AdminDestinoController;
 use App\Http\Controllers\Admin\ResenaController as AdminResenaController;
@@ -13,7 +14,7 @@ use App\Http\Controllers\Admin\EventoController as AdminEventoController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GastronomiaController as AdminGastronomiaController;
-
+use App\Http\Controllers\Admin\ProvinciaController as AdminProvinciaController;
 
 // Solo esta línea limpia tiene que quedar en tu web.php:
 Route::post('/cambiar-modo-vista', [App\Http\Controllers\Admin\RolController::class, 'cambiarModoVista'])->name('admin.cambiar_vista');
@@ -50,6 +51,8 @@ Route::middleware(['auth', 'permiso:gestionar_gastronomia'])->prefix('admin')->n
     Route::post('/gastronomia', [AdminGastronomiaController::class, 'store'])->name('gastronomia.store');
     Route::put('/gastronomia/{gastronomia}', [AdminGastronomiaController::class, 'update'])->name('gastronomia.update');
     Route::delete('/gastronomia/{gastronomia}', [AdminGastronomiaController::class, 'destroy'])->name('gastronomia.destroy');
+    Route::put('/provincias/{provincia}', [AdminProvinciaController::class, 'update'])->name('provincias.update');
+    Route::delete('/provincias/imagenes/{imagen}', [AdminProvinciaController::class, 'destroyImagen'])->name('provincias.imagenes.destroy');
 });
 
 // ==================== PÚBLICO ====================
@@ -159,11 +162,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/herramientas/combustible', [CombustibleController::class, 'index'])->name('combustible.index');
     Route::post('/eventos/sugerir', [\App\Http\Controllers\EventoSugerenciaController::class, 'store'])->name('eventos.sugerir');
+
+    Route::post('/eventos/visitados/toggle', [EventoVisitadoController::class, 'toggle'])->name('eventos.visitados.toggle');
 });
 
 // ==================== DASHBOARD ====================
 Route::get('/dashboard', function () {
-    $provincias = \App\Models\Provincia::withCount('destinos')->get();
+    $provincias = \App\Models\Provincia::withCount('destinos')->with('imagenes')->get();
     $countDestinos = \App\Models\Destino::count();
     $countUsuarios = \App\Models\User::count();
     $countEventos = \App\Models\Evento::count();
@@ -178,7 +183,7 @@ Route::get('/dashboard', function () {
         'countRoles',
         'countPermisos'
     ));
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     // ... las rutas que ya tenés

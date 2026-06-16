@@ -16,14 +16,15 @@ class RolController extends Controller
      */
     public function cambiarModoVista(Request $request)
     {
-        if (session('modo_usuario')) {
-            session()->forget('modo_usuario');
+        if ($request->modo === 'turista') {
+            session(['modo_vista' => 'turista']);
         } else {
-            session(['modo_usuario' => true]);
+            session()->forget('modo_vista');
         }
-        return redirect()->back();
-    }
 
+        return back()->with('status', 'Modo de vista actualizado');
+    }
+    
     // Lista todos los roles
     public function index()
     {

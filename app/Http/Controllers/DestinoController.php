@@ -21,7 +21,7 @@ class DestinoController extends Controller
     {
         $provincia = Provincia::where('nombre', $nombre)
             ->orWhere('nombre', 'like', '%' . $nombre . '%')
-            ->with(['destinos', 'eventos', 'gastronomia'])
+            ->with(['destinos', 'eventos', 'gastronomia', 'imagenes'])
             ->first();
 
         if ($provincia) {

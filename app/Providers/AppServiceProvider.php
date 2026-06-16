@@ -3,43 +3,34 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Gate; // 🌟 IMPORTANTE: Agregamos la fachada Gate
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Register any application services.
+     */
     public function register(): void
     {
         //
     }
 
+    /**
+     * Bootstrap any application services.
+     */
     public function boot(): void
     {
-        // Admin tiene acceso a todo automáticamente
+        // 🛡️ PARACAÍDAS DE SEGURIDAD: Evita que el Admin se quede encerrado en modo turista
         Gate::before(function ($user, $ability) {
-            if ($user->hasRole('admin') || $user->hasRole('Admin')) {
-                return true;
+            if ($user->hasRole('Admin')) {
+                // Si la URL actual contiene "admin" o "dashboard", rompemos la simulación
+                if (str_contains(request()->url(), 'admin') || str_contains(request()->url(), 'dashboard')) {
+                    if (session('modo_vista') === 'turista') {
+                        session()->forget('modo_vista');
+                    }
+                    return true; // Habilita todos los @can automáticamente en zona de admin
+                }
             }
         });
-
-        // Todos los permisos del sistema
-        $permisos = [
-            'crear_destino',
-            'modificar_destino',
-            'eliminar_destino',
-            'administrar_destinos_sugeridos',
-            'crear_evento',
-            'modificar_evento',
-            'eliminar_evento',
-            'administrar_eventos_sugeridos',
-            'administrar_resena',
-            'eliminar_comentario',
-            'gestionar_gastronomia',
-        ];
-
-        foreach ($permisos as $permiso) {
-            Gate::define($permiso, function ($user) use ($permiso) {
-                return $user->hasPermiso($permiso);
-            });
-        }
     }
 }

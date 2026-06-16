@@ -141,7 +141,7 @@
                             @endif
 
                             <form method="POST" action="{{ route('admin.resenas.destroy', $resena) }}"
-                                  class="form-eliminar" data-title="¿Eliminar reseña?" data-text="¿Seguro que querés eliminar esta reseña permanentemente?">
+                                  onsubmit="return confirm('¿Seguro que querés eliminar esta reseña permanentemente?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"

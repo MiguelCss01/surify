@@ -39,7 +39,7 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Tarjeta Grande (Ej: Chipá) -->
+                <!-- Tarjeta Grande (Ej: Chipa) -->
                 <div class="md:col-span-2 group rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-2xs hover:shadow-md transition-all duration-300 relative min-h-[320px]">
                     <img alt="Plato tradicional" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-102" src="https://images.unsplash.com/photo-1608797178974-15b35a61d121?auto=format&fit=crop&w=1000&q=80"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>

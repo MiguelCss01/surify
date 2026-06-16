@@ -45,21 +45,24 @@
 
             {{-- Galería derecha --}}
             <div class="lg:col-span-7 grid grid-cols-2 grid-rows-2 gap-3 h-[450px]">
+                @php
+                $imgs = $provincia->imagenes ?? collect();
+                $img1 = $imgs->get(0)?->url ? asset('storage/' . $imgs->get(0)->url) : 'https://images.unsplash.com/photo-1589307775553-9f62f3a61dfc?auto=format&fit=crop&w=1200&q=80';
+                $img2 = $imgs->get(1)?->url ? asset('storage/' . $imgs->get(1)->url) : 'https://images.unsplash.com/photo-1513026705753-bc31df43b444?auto=format&fit=crop&w=600&q=80';
+                $img3 = $imgs->get(2)?->url ? asset('storage/' . $imgs->get(2)->url) : 'https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80';
+                @endphp
                 <div class="col-span-2 row-span-1 rounded-2xl overflow-hidden relative group shadow-sm">
                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                        src="{{ $provincia && $provincia->imagen_url ? asset('storage/' . $provincia->imagen_url) : 'https://images.unsplash.com/photo-1589307775553-9f62f3a61dfc?auto=format&fit=crop&w=1200&q=80' }}"
-                        alt="Banner {{ $nombre }}">
+                        src="{{ $img1 }}" alt="Banner {{ $nombre }}">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                 </div>
                 <div class="col-span-1 row-span-1 rounded-2xl overflow-hidden group shadow-sm bg-slate-100">
                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        src="{{ $destinos->count() > 0 && $destinos[0]->imagen_url ? asset('storage/' . $destinos[0]->imagen_url) : 'https://images.unsplash.com/photo-1513026705753-bc31df43b444?auto=format&fit=crop&w=600&q=80' }}"
-                        alt="Detalle 1">
+                        src="{{ $img2 }}" alt="Detalle 1">
                 </div>
                 <div class="col-span-1 row-span-1 rounded-2xl overflow-hidden group shadow-sm bg-slate-100">
                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        src="{{ $destinos->count() > 1 && $destinos[1]->imagen_url ? asset('storage/' . $destinos[1]->imagen_url) : 'https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80' }}"
-                        alt="Detalle 2">
+                        src="{{ $img3 }}" alt="Detalle 2">
                 </div>
             </div>
         </div>
@@ -127,10 +130,13 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @if(isset($destinos) && $destinos->count() > 0)
             @foreach($destinos as $destino)
-            <div class="destino-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:scale-[1.01] transition-all border border-slate-200 flex flex-col group" data-precio="{{ $destino->rango_precio }}">
+            {{-- ✅ Tarjeta entera clickeable --}}
+            <a href="{{ route('destinos.show', ['id' => $destino->id]) }}"
+                class="destino-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:scale-[1.01] transition-all border border-slate-200 flex flex-col group text-decoration-none"
+                data-precio="{{ $destino->rango_precio }}">
                 <div class="h-60 bg-slate-100 overflow-hidden relative">
                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        src="{{ $destino->imagen_url ? asset('storage/' . $destino->imagen_url) : 'https://images.unsplash.com/photo-1544198365-f5d60b6d8190?auto=format&fit=crop&w=600&q=80' }}"
+                        src="{{ $destino->imagen_url ? (str_starts_with($destino->imagen_url, 'http') ? $destino->imagen_url : asset('storage/' . $destino->imagen_url)) : 'https://images.unsplash.com/photo-1544198365-f5d60b6d8190?auto=format&fit=crop&w=600&q=80' }}"
                         alt="{{ $destino->nombre }}">
                     <div class="absolute top-4 left-4 flex gap-1.5 flex-wrap">
                         <span class="bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full font-bold text-[10px] text-slate-700 uppercase border border-slate-200 tracking-wider">
@@ -157,14 +163,14 @@
                             <span class="material-symbols-outlined text-[14px]">location_on</span>
                             {{ $destino->ubicacion ? 'Mapeado' : 'Ver ubicación' }}
                         </span>
-                        <a class="text-[#28628f] font-bold text-xs inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform text-decoration-none"
-                            href="{{ route('destinos.show', ['id' => $destino->id]) }}">
+                        <span class="text-[#28628f] font-bold text-xs inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                             <span>Ver Detalles</span>
                             <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
-                        </a>
+                        </span>
                     </div>
                 </div>
-            </div>
+            </a>
+            {{-- ✅ FIN tarjeta clickeable --}}
             @endforeach
             @else
             <div class="col-span-1 md:col-span-3 bg-white border border-slate-200 p-12 rounded-2xl text-center">
@@ -189,8 +195,6 @@
                 Clima en {{ $nombre }} ahora
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {{-- Clima actual --}}
                 <div class="bg-gradient-to-br from-[#28628f] to-[#1a4669] rounded-2xl p-6 text-white flex items-center gap-6">
                     <div class="text-center">
                         <img src="https://openweathermap.org/img/wn/{{ $clima['weather'][0]['icon'] }}@2x.png"
@@ -216,8 +220,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- Pronóstico --}}
                 @if($pronostico)
                 <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
                     <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Próximas horas</p>
@@ -236,7 +238,6 @@
                     </div>
                 </div>
                 @endif
-
             </div>
         </div>
     </section>
@@ -256,7 +257,9 @@
                 <div class="flex flex-col gap-3">
                     @if(isset($provincia) && $provincia->eventos && $provincia->eventos->count() > 0)
                     @foreach($provincia->eventos as $evento)
-                    <div class="flex gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#28628f] transition-colors cursor-pointer group">
+                    {{-- ✅ Evento clickeable --}}
+                    <a href="{{ route('eventos.show', $evento->id) }}"
+                        class="flex gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#28628f] hover:shadow-sm transition-all group text-decoration-none">
                         <div class="flex flex-col items-center justify-center bg-[#28628f] text-white w-14 h-14 rounded-xl font-bold shrink-0 shadow-sm">
                             <span class="text-[10px] uppercase font-semibold leading-none mb-0.5">{{ \Carbon\Carbon::parse($evento->fecha_inicio)->format('M') }}</span>
                             <span class="text-lg font-black leading-none">{{ \Carbon\Carbon::parse($evento->fecha_inicio)->format('d') }}</span>
@@ -268,10 +271,12 @@
                                 {{ $evento->ubicacion ?? 'Centro' }}
                             </p>
                         </div>
-                    </div>
+                        <span class="material-symbols-outlined text-slate-300 group-hover:text-[#28628f] ml-auto self-center transition-colors shrink-0">arrow_forward</span>
+                    </a>
+                    {{-- ✅ FIN evento clickeable --}}
                     @endforeach
                     @else
-                    {{-- Placeholder eventos --}}
+                    {{-- Placeholder eventos (no clickeables, son estáticos) --}}
                     @foreach([['SEP','07','Fiesta Nacional del Inmigrante','Oberá'],['NOV','14','Música Nacional del Litoral','Posadas'],['DIC','05','Fiesta de la Yerba Mate','Apóstoles']] as $ev)
                     <div class="flex gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex flex-col items-center justify-center bg-[#28628f] text-white w-14 h-14 rounded-xl font-bold shrink-0 shadow-sm">
@@ -329,6 +334,7 @@
     </section>
 
 </div>
+
 {{-- ========== RESEÑAS ========== --}}
 <section class="py-12 max-w-7xl mx-auto px-4 md:px-8">
     <h2 class="text-3xl font-black text-slate-800 tracking-tight mb-8 flex items-center gap-2" style="font-family: 'Inter', sans-serif;">
@@ -338,7 +344,6 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        {{-- Comentarios existentes --}}
         <div class="lg:col-span-7 flex flex-col gap-4">
             @php
             $resenas = \App\Models\Resena::whereHas('destino', function($q) use ($provincia) {
@@ -368,14 +373,13 @@
                                 @for($i = 1; $i <= 5; $i++)
                                     <span class="material-symbols-outlined text-[14px] {{ $i <= $resena->calificacion ? 'text-amber-400' : 'text-slate-200' }}"
                                     style="font-variation-settings: 'FILL' 1;">star</span>
-                                    @endfor
+                                @endfor
                             </div>
                         </div>
                         @if($resena->titulo)
                         <p class="font-semibold text-slate-700 text-sm mb-1">{{ $resena->titulo }}</p>
                         @endif
                         <p class="text-slate-500 text-sm leading-relaxed">{{ $resena->comentario }}</p>
-
                         @if($resena->imagenes && $resena->imagenes->count() > 0)
                         <div class="flex gap-2 mt-3 flex-wrap">
                             @foreach($resena->imagenes as $img)
@@ -385,7 +389,6 @@
                             @endforeach
                         </div>
                         @endif
-
                         <p class="text-xs text-slate-300 mt-2">{{ $resena->created_at->diffForHumans() }}</p>
                     </div>
                 </div>
@@ -400,13 +403,11 @@
             @endif
         </div>
 
-        {{-- Columna formulario --}}
         <div class="lg:col-span-5">
             <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm sticky top-24 text-center">
                 <span class="material-symbols-outlined text-5xl text-[#28628f] block mb-3">rate_review</span>
                 <h3 class="text-lg font-bold text-slate-800 mb-2">¿Ya visitaste esta provincia?</h3>
                 <p class="text-slate-500 text-sm mb-6">Compartí tu experiencia y ayudá a otros viajeros a descubrir lo mejor de Argentina.</p>
-
                 @auth
                 <button onclick="document.getElementById('modal-resena').classList.remove('hidden')"
                     class="bg-[#28628f] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#1a4669] transition-all shadow-sm inline-flex items-center gap-2">
@@ -422,15 +423,12 @@
                 @endauth
             </div>
         </div>
-
     </div>
 </section>
 
 {{-- Modal reseña --}}
 <div id="modal-resena" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-
-        {{-- Header --}}
         <div class="px-6 py-5 border-b border-slate-100">
             <div class="flex items-center justify-between mb-1">
                 <nav class="flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
@@ -446,12 +444,8 @@
             <h2 class="text-xl font-bold text-slate-800">Compartí tu experiencia en {{ $nombre }}</h2>
             <p class="text-sm text-slate-500 mt-1">Ayudá a otros viajeros a descubrir lo mejor de esta provincia.</p>
         </div>
-
-        {{-- Formulario --}}
         <form action="{{ route('resenas.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
             @csrf
-
-            {{-- Destino a calificar --}}
             <div class="space-y-2">
                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Destino turistico a calificar</label>
                 <select name="destino_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] transition-colors font-semibold text-slate-700">
@@ -460,8 +454,6 @@
                     @endforeach
                 </select>
             </div>
-
-            {{-- Calificación y título --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Calificación General</label>
@@ -470,7 +462,7 @@
                             <button type="button" onclick="setCalificacionModal({{ $i }})"
                             class="estrella-modal material-symbols-outlined text-[32px] text-amber-400 cursor-pointer transition-colors"
                             style="font-variation-settings: 'FILL' 1;" data-valor="{{ $i }}">star</button>
-                            @endfor
+                        @endfor
                     </div>
                     <input type="hidden" name="calificacion" id="calificacion-modal" value="5">
                     <p class="text-xs text-slate-400">Hacé clic en una estrella para calificar</p>
@@ -481,8 +473,6 @@
                         class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] transition-colors">
                 </div>
             </div>
-
-            {{-- Categorías --}}
             <div class="space-y-2">
                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Categorías</label>
                 <div class="flex flex-wrap gap-2">
@@ -494,16 +484,12 @@
                     @endforeach
                 </div>
             </div>
-
-            {{-- Comentario --}}
             <div class="space-y-2">
                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Tu Comentario</label>
                 <textarea name="comentario" rows="5" required
                     placeholder="¿Cuál fue lo mejor de tu visita? ¿Tenés consejos para otros viajeros?"
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] transition-colors resize-none"></textarea>
             </div>
-
-            {{-- Fotos --}}
             <div class="space-y-2">
                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Fotos</label>
                 <div onclick="document.getElementById('fotos-input-modal').click()"
@@ -516,13 +502,8 @@
                 </div>
                 <input type="file" id="fotos-input-modal" name="imagenes[]" multiple accept="image/*"
                     class="hidden" onchange="previewFotosModal(this)">
-
-                {{-- Preview fotos --}}
-                <div id="fotos-preview-modal" class="flex gap-3 overflow-x-auto pb-2 mt-2 hidden">
-                </div>
+                <div id="fotos-preview-modal" class="flex gap-3 overflow-x-auto pb-2 mt-2 hidden"></div>
             </div>
-
-            {{-- Anónimo --}}
             <div class="flex items-start gap-3 py-2 border-t border-slate-100">
                 <input type="checkbox" name="anonima" value="1" id="anonima-modal"
                     class="mt-1 w-5 h-5 rounded border-slate-300 text-[#28628f] focus:ring-[#28628f]">
@@ -531,8 +512,6 @@
                     <span class="block text-xs text-slate-400 mt-0.5 italic">Tu nombre y foto no serán visibles para otros viajeros.</span>
                 </label>
             </div>
-
-            {{-- Botones --}}
             <div class="flex flex-col md:flex-row-reverse gap-3 pt-2">
                 <button type="submit"
                     class="w-full md:w-auto px-8 py-3 bg-[#28628f] text-white font-bold rounded-xl hover:bg-[#1a4669] transition-all shadow-sm">
@@ -574,9 +553,7 @@
         document.getElementById('modal-plato-img').src = imagen || 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80';
         document.getElementById('modal-plato').classList.remove('hidden');
     }
-</script>
 
-<script>
     function setCalificacionModal(valor) {
         document.getElementById('calificacion-modal').value = valor;
         document.querySelectorAll('.estrella-modal').forEach(function(e) {
@@ -599,7 +576,6 @@
         const preview = document.getElementById('fotos-preview-modal');
         preview.innerHTML = '';
         preview.classList.remove('hidden');
-
         Array.from(input.files).slice(0, 5).forEach(function(file) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -638,11 +614,7 @@
 
         const sinResultados = document.getElementById('sin-resultados-precio');
         if (sinResultados) {
-            if (count === 0) {
-                sinResultados.classList.remove('hidden');
-            } else {
-                sinResultados.classList.add('hidden');
-            }
+            sinResultados.classList.toggle('hidden', count > 0);
         }
     }
 </script>
