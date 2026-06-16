@@ -14,6 +14,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // Admin tiene acceso a todo automáticamente
         Gate::before(function ($user, $ability) {
             if ($user->hasRole('admin') || $user->hasRole('Admin')) {
