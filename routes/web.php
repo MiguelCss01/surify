@@ -199,6 +199,7 @@ Route::get('/magic-restore', function () {
         \Illuminate\Support\Facades\DB::unprepared(file_get_contents(base_path('bd.sql')));
         return '¡Base de datos restaurada con éxito a la velocidad de la luz! Ya podés volver a la página principal.';
     } catch (\Exception $e) {
-        return 'Error: ' . $e->getMessage();
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return 'Error REAL del archivo SQL: ' . $e->getMessage();
     }
 });
