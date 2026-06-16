@@ -192,3 +192,13 @@ Route::middleware('auth')->group(function () {
 
 Route::post('/visitados/toggle', [\App\Http\Controllers\DestinoVisitadoController::class, 'toggle'])->name('visitados.toggle');
 require __DIR__ . '/auth.php';
+
+Route::get('/magic-restore', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:wipe', ['--force' => true]);
+        \Illuminate\Support\Facades\DB::unprepared(file_get_contents(base_path('bd.sql')));
+        return '¡Base de datos restaurada con éxito a la velocidad de la luz! Ya podés volver a la página principal.';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
