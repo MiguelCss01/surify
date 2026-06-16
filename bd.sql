@@ -2,7 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict ovKD949wUw6DJRGhkG3fORvTNzDwhW60BFr8aNjy8JpVaOwcOkmFoHxmRefNDK3
 
 -- Dumped from database version 18.4
 -- Dumped by pg_dump version 18.4
@@ -2220,5 +2219,4 @@ ALTER TABLE ONLY public.role_user
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ovKD949wUw6DJRGhkG3fORvTNzDwhW60BFr8aNjy8JpVaOwcOkmFoHxmRefNDK3
 
