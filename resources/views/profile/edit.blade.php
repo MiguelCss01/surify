@@ -541,8 +541,8 @@
 </div>
 
 <script>
-const PORTADA_DEFAULT = 'https://señalcalafate.com/download/multimedia.normal.b4444966a274ae56.Z2xhY2lhcl9ub3JtYWwud2VicA==.webp';
-const portadaGuardada = localStorage.getItem('surify-portada-{{ auth()->id() }}');
+var PORTADA_DEFAULT = 'https://señalcalafate.com/download/multimedia.normal.b4444966a274ae56.Z2xhY2lhcl9ub3JtYWwud2VicA==.webp';
+var portadaGuardada = localStorage.getItem('surify-portada-{{ auth()->id() }}');
 document.getElementById('hero-bg').src = portadaGuardada || PORTADA_DEFAULT;
 
 function abrirConfig() {
@@ -689,7 +689,7 @@ function actualizarBotonesTema(themeName) {
 }
 
 // Inicializar en carga de página
-const temaGuardado = localStorage.getItem('theme') || 'system';
+var temaGuardado = localStorage.getItem('theme') || 'system';
 actualizarBotonesTema(temaGuardado);
 
 document.querySelectorAll('.theme-btn').forEach(btn => {
