@@ -401,6 +401,9 @@
                 .addTo(mapaInstance)
                 .on('click', function() {
                     mostrarCard(destino);
+                    mapaInstance.flyTo([destino.lat, destino.lng], 14, {
+                        duration: 1.5
+                    });
                 });
 
             marker.bindTooltip(destino.nombre, {
@@ -460,7 +463,12 @@
         btn.style.color = '#28628f';
 
         if (!navigator.geolocation) {
-            alert('Tu navegador no soporta geolocalización.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de Geolocalización',
+                text: 'Tu navegador no soporta geolocalización.',
+                confirmButtonColor: '#28628f'
+            });
             return;
         }
 
@@ -503,7 +511,12 @@
             btn.style.color = '#e11d48';
 
         }, function() {
-            alert('No se pudo obtener tu ubicación. Verificá los permisos del navegador.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Permiso Denegado',
+                text: 'No se pudo obtener tu ubicación. Verificá los permisos del navegador.',
+                confirmButtonColor: '#28628f'
+            });
             btn.style.color = '#475569';
         });
     }
@@ -521,7 +534,12 @@
 
     async function buscarServicios(tipo) {
         if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-            alert('El SDK de Google Maps no está cargado. Verifica tu API Key en el archivo .env.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'SDK no disponible',
+                text: 'El SDK de Google Maps no está cargado. Verifica tu API Key en el archivo .env.',
+                confirmButtonColor: '#28628f'
+            });
             return;
         }
 
@@ -606,11 +624,31 @@
 
                 mapaInstance.setView([lat, lng], 14);
             } else {
-                alert('No se encontraron servicios de este tipo en un radio de 5km de esta zona.');
+                Swal.fire({
+                    icon: 'info',
+                    title: '¿Cómo buscar servicios cercanos?',
+                    html: `
+                        <div style="text-align: left; font-family: 'Outfit', sans-serif; font-size: 14px; line-height: 1.6; color: #475569;">
+                            <p>Para ver restaurantes, alojamientos o estaciones de servicio:</p>
+                            <ol style="margin-top: 8px; padding-left: 20px; display: flex; flex-direction: column; gap: 6px;">
+                                <li>Haz clic en el <strong>marcador de cualquier destino turístico</strong> en el mapa para centrar la zona.</li>
+                                <li>O presiona el botón de tu <strong>ubicación actual</strong> que se encuentra a la derecha.</li>
+                                <li>Luego, selecciona el servicio que deseas buscar en el menú de la izquierda.</li>
+                            </ol>
+                        </div>
+                    `,
+                    confirmButtonText: '¡Entendido!',
+                    confirmButtonColor: '#28628f'
+                });
             }
         } catch (error) {
             console.error('Error al buscar servicios cercanos:', error);
-            alert('Error al buscar servicios cercanos: ' + error.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de Búsqueda',
+                text: 'Error al buscar servicios cercanos: ' + error.message,
+                confirmButtonColor: '#28628f'
+            });
         }
     }
 </script>

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Surify - Gestión de Eventos')
 
@@ -134,7 +134,7 @@
                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                             </a>
                             <form method="POST" action="{{ route('admin.eventos.destroy', $evento) }}"
-                                onsubmit="return confirm('¿Seguro que querés eliminar {{ $evento->nombre }}?')">
+                                class="form-eliminar">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
