@@ -139,7 +139,7 @@
     </h2>
     <p class="text-xs text-slate-500 mb-4">Eliminar este destino borrará también todas sus reseñas y favoritos asociados.</p>
     <form method="POST" action="{{ route('admin.destinos.destroy', $destino) }}"
-          onsubmit="return confirm('¿Seguro que querés eliminar {{ $destino->nombre }}? Esta acción no se puede deshacer.')">
+          class="form-eliminar" data-title="¿Eliminar destino?" data-text="¿Seguro que querés eliminar {{ $destino->nombre }}? Esta acción no se puede deshacer.">
         @csrf
         @method('DELETE')
         <button type="submit"

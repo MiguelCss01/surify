@@ -303,6 +303,34 @@
                 }
             });
         });
+        // Interceptor global para formularios de eliminación con SweetAlert2
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('submit', function(e) {
+                if (e.target && e.target.classList.contains('form-eliminar')) {
+                    e.preventDefault();
+                    const form = e.target;
+                    const titleText = form.dataset.title || '¿Estás seguro?';
+                    const warningText = form.dataset.text || '¡No vas a poder revertir esto!';
+                    
+                    Swal.fire({
+                        title: titleText,
+                        text: warningText,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar',
+                        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+                        color: document.documentElement.classList.contains('dark') ? '#f8fafc' : '#1e293b'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                }
+            });
+        });
     </script>
 
 </body>

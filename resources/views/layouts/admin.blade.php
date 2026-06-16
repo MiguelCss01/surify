@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -318,6 +319,37 @@
         window.addEventListener('popstate', function() {
             window.location.reload();
         });
+         // Interceptor global para formularios de eliminación con SweetAlert2
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('submit', function(e) {
+                if (e.target && e.target.classList.contains('form-eliminar')) {
+                    e.preventDefault();
+                    const form = e.target;
+                    const titleText = form.dataset.title || '¿Estás seguro?';
+                    const warningText = form.dataset.text || '¡No vas a poder revertir esto!';
+                    
+                    Swal.fire({
+                        title: titleText,
+                        text: warningText,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar',
+                        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+                        color: document.documentElement.classList.contains('dark') ? '#f8fafc' : '#1e293b'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
     </script>
 
 </body>

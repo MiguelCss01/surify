@@ -137,7 +137,7 @@
                             {{-- 🔐 PERMISO: Eliminar Destino --}}
                             @can('eliminar_destino')
                             <form method="POST" action="{{ route('admin.destinos.destroy', $destino) }}"
-                                onsubmit="return confirm('¿Seguro que querés eliminar {{ $destino->nombre }}?')">
+                               class="form-eliminar" data-title="¿Eliminar destino?" data-text="¿Seguro que querés eliminar {{ $destino->nombre }}?">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"

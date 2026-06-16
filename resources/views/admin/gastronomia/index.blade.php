@@ -90,7 +90,7 @@
                             Editar
                         </button>
                         <form action="{{ route('admin.gastronomia.destroy', $plato->id) }}" method="POST"
-                            onsubmit="return confirm('¿Eliminar este plato?')">
+                            class="form-eliminar" data-title="¿Eliminar destino?" data-text="¿Seguro que querés eliminar {{ $destino->nombre }}?">
                             @csrf @method('DELETE')
                             <button type="submit"
                                 class="text-xs font-semibold text-rose-500 border border-rose-200 rounded-lg py-1.5 px-3 hover:bg-rose-50 transition-colors">
