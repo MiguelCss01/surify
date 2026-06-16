@@ -21,7 +21,7 @@ class DestinoController extends Controller
     {
         $provincia = Provincia::where('nombre', $nombre)
             ->orWhere('nombre', 'like', '%' . $nombre . '%')
-            ->with(['destinos', 'eventos', 'gastronomia', 'imagenes'])
+            ->with(['destinos', 'eventos', 'gastronomia'])
             ->first();
 
         if ($provincia) {
@@ -63,8 +63,13 @@ class DestinoController extends Controller
         $pronostico = null;
         if (isset($coordenadasCapitales[$nombre])) {
             [$lat, $lng] = $coordenadasCapitales[$nombre];
-            $clima = $this->weather->getCurrentWeather($lat, $lng);
-            $pronostico = $this->weather->getForecast($lat, $lng);
+            try {
+                $clima = $this->weather->getCurrentWeather($lat, $lng);
+                $pronostico = $this->weather->getForecast($lat, $lng);
+            } catch (\Exception $e) {
+                $clima = null;
+                $pronostico = null;
+            }
         }
 
         return view('provincia', compact('destinos', 'provincia', 'nombre', 'clima', 'pronostico', 'gastronomia'));

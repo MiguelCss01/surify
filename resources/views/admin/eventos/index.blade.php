@@ -106,10 +106,16 @@
                         @endif
                     </td>
                     <td class="px-6 py-4">
-                        @if($evento->activo)
-                        <span class="text-xs font-bold px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">Activo</span>
+                        @if($evento->pasado)
+                        <span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-400 rounded-full border border-slate-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400 inline-block"></span>
+                            Pasado
+                        </span>
                         @else
-                        <span class="text-xs font-bold px-2.5 py-1 bg-amber-50 text-amber-600 rounded-full border border-amber-100">Pendiente</span>
+                        <span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                            Próximo
+                        </span>
                         @endif
                     </td>
                     <td class="px-6 py-4 text-right">

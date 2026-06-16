@@ -46,10 +46,9 @@
             {{-- Galería derecha --}}
             <div class="lg:col-span-7 grid grid-cols-2 grid-rows-2 gap-3 h-[450px]">
                 @php
-                $imgs = $provincia->imagenes ?? collect();
-                $img1 = $imgs->get(0)?->url ? asset('storage/' . $imgs->get(0)->url) : 'https://images.unsplash.com/photo-1589307775553-9f62f3a61dfc?auto=format&fit=crop&w=1200&q=80';
-                $img2 = $imgs->get(1)?->url ? asset('storage/' . $imgs->get(1)->url) : 'https://images.unsplash.com/photo-1513026705753-bc31df43b444?auto=format&fit=crop&w=600&q=80';
-                $img3 = $imgs->get(2)?->url ? asset('storage/' . $imgs->get(2)->url) : 'https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80';
+                $img1 = 'https://images.unsplash.com/photo-1589307775553-9f62f3a61dfc?auto=format&fit=crop&w=1200&q=80';
+                $img2 = 'https://images.unsplash.com/photo-1513026705753-bc31df43b444?auto=format&fit=crop&w=600&q=80';
+                $img3 = 'https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80';
                 @endphp
                 <div class="col-span-2 row-span-1 rounded-2xl overflow-hidden relative group shadow-sm">
                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -373,7 +372,7 @@
                                 @for($i = 1; $i <= 5; $i++)
                                     <span class="material-symbols-outlined text-[14px] {{ $i <= $resena->calificacion ? 'text-amber-400' : 'text-slate-200' }}"
                                     style="font-variation-settings: 'FILL' 1;">star</span>
-                                @endfor
+                                    @endfor
                             </div>
                         </div>
                         @if($resena->titulo)
@@ -462,7 +461,7 @@
                             <button type="button" onclick="setCalificacionModal({{ $i }})"
                             class="estrella-modal material-symbols-outlined text-[32px] text-amber-400 cursor-pointer transition-colors"
                             style="font-variation-settings: 'FILL' 1;" data-valor="{{ $i }}">star</button>
-                        @endfor
+                            @endfor
                     </div>
                     <input type="hidden" name="calificacion" id="calificacion-modal" value="5">
                     <p class="text-xs text-slate-400">Hacé clic en una estrella para calificar</p>
