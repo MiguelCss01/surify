@@ -4,6 +4,14 @@
 
 @section('content')
 
+@if($errors->any())
+    <div class="mb-4 p-4 bg-rose-50 border border-rose-200 rounded-xl">
+        @foreach($errors->all() as $error)
+            <p class="text-rose-600 text-sm">⚠️ {{ $error }}</p>
+        @endforeach
+    </div>
+@endif
+
 <div class="mb-8 flex items-end justify-between">
     <div>
         <nav class="flex items-center gap-1 text-xs font-bold uppercase tracking-wider mb-2">
