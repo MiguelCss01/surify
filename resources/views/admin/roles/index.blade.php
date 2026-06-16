@@ -73,7 +73,7 @@
                     Editar Permisos
                 </a>
                 <form method="POST" action="{{ route('admin.roles.destroy', $rol) }}"
-                      class="form-eliminar" data-title="¿Eliminar rol?" data-text="¿Seguro que querés eliminar el rol {{ $rol->nombre }}?">
+                      onsubmit="return confirm('¿Seguro que querés eliminar el rol {{ $rol->nombre }}?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit"

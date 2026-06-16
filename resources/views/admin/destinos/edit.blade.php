@@ -115,30 +115,7 @@
         </label>
     </div>
 
-<<<<<<< HEAD
     {{-- Botones guardar --}}
-=======
-    {{-- Zona peligro --}}
-    <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6">
-        <h2 class="text-base font-black text-rose-500 mb-3 flex items-center gap-2">
-            <span class="material-symbols-outlined">warning</span>
-            Zona de Peligro
-        </h2>
-        <p class="text-xs text-slate-500 mb-4">Eliminar este destino borrará también todas sus reseñas y favoritos asociados.</p>
-        <form method="POST" action="{{ route('admin.destinos.destroy', $destino) }}"
-              class="form-eliminar" data-title="¿Eliminar destino?" data-text="¿Seguro que querés eliminar {{ $destino->nombre }}? Esta acción no se puede deshacer.">
-            @csrf
-            @method('DELETE')
-            <button type="submit"
-                class="inline-flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all">
-                <span class="material-symbols-outlined text-[16px]">delete</span>
-                Eliminar Destino
-            </button>
-        </form>
-    </div>
-
-    {{-- Botones --}}
->>>>>>> 50e379366820a8c7a5386e9758428d6dcdd0e910
     <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
         <a href="{{ route('admin.destinos.index') }}"
            class="w-full sm:w-auto px-8 py-3 rounded-full border border-slate-200 text-slate-500 font-bold text-sm hover:bg-slate-50 transition-all text-center text-decoration-none">

@@ -183,7 +183,7 @@ Route::get('/dashboard', function () {
         'countRoles',
         'countPermisos'
     ));
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     // ... las rutas que ya tenés

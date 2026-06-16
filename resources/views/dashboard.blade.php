@@ -4,7 +4,6 @@
 
 @section('content')
 
-
 {{-- Bienvenida --}}
 <section class="mb-8">
     <p class="text-xs font-bold uppercase tracking-widest text-amber-600 mb-2">Panel de Control</p>
@@ -135,7 +134,6 @@
             </h3>
             <div class="flex flex-col gap-2">
                 <a href="{{ route('admin.destinos.create') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
-<<<<<<< HEAD
                     <span class="material-symbols-outlined text-amber-400 text-[20px]">add_location</span>
                     Agregar Destino
                 </a>
@@ -143,15 +141,6 @@
                     <span class="material-symbols-outlined text-blue-300 text-[20px]">celebration</span>
                     Cargar Evento
                 </a>
-=======
-    <span class="material-symbols-outlined text-amber-400 text-[20px]">add_location</span>
-    Agregar Destino
-</a>
-<a href="{{ url('/admin/eventos/create') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
-    <span class="material-symbols-outlined text-blue-300 text-[20px]">celebration</span>
-    Cargar Evento
-</a>
->>>>>>> 50e379366820a8c7a5386e9758428d6dcdd0e910
                 <a href="{{ route('admin.roles.index') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white text-sm font-medium text-decoration-none">
                     <span class="material-symbols-outlined text-emerald-400 text-[20px]">admin_panel_settings</span>
                     Gestionar Roles

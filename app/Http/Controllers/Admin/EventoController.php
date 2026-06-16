@@ -7,7 +7,7 @@ use App\Models\Evento;
 use App\Models\Provincia;
 use App\Models\Destino;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage; // 📸 Importante para borrar fotos viejas
+use Illuminate\Support\Facades\Storage; // 🌟 Importante para borrar fotos viejas
 
 class EventoController extends Controller
 {
@@ -52,7 +52,6 @@ class EventoController extends Controller
         ));
     }
 
-<<<<<<< HEAD
     public function edit(Evento $evento)
     {
         $destinos = Destino::orderBy('nombre')->get();
@@ -105,17 +104,10 @@ class EventoController extends Controller
             ->with('success', 'Evento actualizado correctamente.');
     }
 
-=======
->>>>>>> 50e379366820a8c7a5386e9758428d6dcdd0e910
     public function create()
     {
-        // 🌟 CORREGIDO: Cargamos los destinos y también las provincias para el select del formulario
         $destinos = Destino::orderBy('nombre')->get();
         $provincias = Provincia::orderBy('nombre')->get();
-<<<<<<< HEAD
-=======
-        
->>>>>>> 50e379366820a8c7a5386e9758428d6dcdd0e910
         return view('admin.eventos.create', compact('destinos', 'provincias'));
     }
 
@@ -155,57 +147,9 @@ class EventoController extends Controller
             ->with('success', 'Evento creado correctamente.');
     }
 
-    public function edit(Evento $evento)
-    {
-        // 🌟 CORREGIDO: Inyectamos provincias acá también por si la vista de edición las necesita para el select
-        $destinos = Destino::orderBy('nombre')->get();
-        $provincias = Provincia::orderBy('nombre')->get(); 
-        
-        return view('admin.eventos.edit', compact('evento', 'destinos', 'provincias'));
-    }
-
-    public function update(Request $request, Evento $evento)
-    {
-        $request->validate([
-            'nombre'       => 'required|string|max:255',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin'    => 'nullable|date|after_or_equal:fecha_inicio',
-            'destino_id'   => 'required|exists:destinos,id',
-            'precio_tipo'  => 'required|string|max:255', 
-            'descripcion'  => 'required|string',         
-            'imagen'       => 'nullable|image|max:2048', 
-        ]);
-
-        $destino = Destino::find($request->destino_id);
-        $provinciaId = $destino ? $destino->provincia_id : null;
-
-        $rutaImagen = $evento->imagen_url;
-
-        if ($request->hasFile('imagen')) {
-            if ($evento->imagen_url && Storage::disk('public')->exists($evento->imagen_url)) {
-                Storage::disk('public')->delete($evento->imagen_url);
-            }
-            $rutaImagen = $request->file('imagen')->store('eventos', 'public');
-        }
-
-        $evento->update([
-            'nombre'       => $request->nombre,
-            'fecha_inicio' => $request->fecha_inicio,
-            'fecha_fin'    => $request->fecha_fin,
-            'provincia_id' => $provinciaId, 
-            'destino_id'   => $request->destino_id,
-            'rango_precio' => $request->precio_tipo, 
-            'imagen_url'   => $rutaImagen,           
-            'descripcion'  => $request->descripcion,
-            'activo'       => true,                  
-        ]);
-
-        return redirect()->route('admin.eventos.index')
-            ->with('success', 'Evento actualizado correctamente.');
-    }
-
     public function destroy(Evento $evento)
     {
+        // Al borrar el evento, limpiamos su foto del almacenamiento
         if ($evento->imagen_url && Storage::disk('public')->exists($evento->imagen_url)) {
             Storage::disk('public')->delete($evento->imagen_url);
         }

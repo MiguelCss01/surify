@@ -16,15 +16,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -33,20 +24,12 @@
             background-color: #f8fafc;
             color: #1e293b;
             font-family: 'Outfit', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
-
-        html.dark body {
-            background-color: #0f172a;
-            color: #f8fafc;
-        }
-
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             display: inline-block;
             line-height: 1;
         }
-
         #top-loading-bar {
             position: fixed;
             top: 0;
@@ -59,7 +42,6 @@
             opacity: 0;
             pointer-events: none;
         }
-
         #loading-screen {
             position: fixed;
             inset: 0;
@@ -71,11 +53,6 @@
             justify-content: center;
             transition: opacity 0.5s ease;
         }
-
-        html.dark #loading-screen {
-            background: #0f172a;
-        }
-
         #loading-screen.oculto {
             opacity: 0;
             pointer-events: none;
@@ -90,7 +67,7 @@
         <div style="display:flex;flex-direction:column;align-items:center;gap:24px">
             <div style="display:flex;align-items:center;gap:8px">
                 <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;font-size:40px;color:#28628f">explore</span>
-                <span class="dark:text-white" style="font-family:'Inter',sans-serif;font-size:2.5rem;font-weight:900;color:#191c1d;letter-spacing:-0.05em">Surify</span>
+                <span style="font-family:'Inter',sans-serif;font-size:2.5rem;font-weight:900;color:#191c1d;letter-spacing:-0.05em">Surify</span>
             </div>
             <div style="width:192px;height:4px;background:#f1f5f9;border-radius:9999px;overflow:hidden">
                 <div id="loading-bar-screen" style="height:100%;background:#28628f;border-radius:9999px;width:0%;transition:width 0.3s"></div>
@@ -101,103 +78,85 @@
 
     <div id="top-loading-bar"></div>
 
-    <header class="border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md sticky top-0 z-50 shadow-sm transition-colors duration-300">
+    <header class="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
 
             <!-- Logo -->
             <div class="flex items-center gap-2 shrink-0">
-                <a href="{{ route('home') }}" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm select-none hover:opacity-95 transition-opacity text-decoration-none">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-sm select-none hover:opacity-95 transition-opacity text-decoration-none">
                     <span class="material-symbols-outlined text-[24px] text-[#28628f]" style="font-variation-settings: 'FILL' 1;">explore</span>
-                    <span class="text-xl font-black text-[#191c1d] dark:text-white tracking-tighter" style="font-family: 'Inter', sans-serif;">Surify</span>
+                    <span class="text-xl font-black text-[#191c1d] tracking-tighter" style="font-family: 'Inter', sans-serif;">Surify</span>
                 </a>
             </div>
 
             <!-- Buscador central -->
             <div class="relative flex-grow max-w-md hidden md:block" id="search-container">
-                <div class="flex items-center bg-slate-100 dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-full px-4 py-2 gap-2 focus-within:border-[#28628f] focus-within:bg-white dark:focus-within:bg-slate-900 transition-all">
+                <div class="flex items-center bg-slate-100 border border-transparent rounded-full px-4 py-2 gap-2 focus-within:border-[#28628f] focus-within:bg-white transition-all">
                     <span class="material-symbols-outlined text-slate-400 text-[18px]">search</span>
                     <input id="search-input" type="text" placeholder="Destinos, festivales, provincias..."
-                        class="bg-transparent border-none p-0 focus:ring-0 text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 w-full" autocomplete="off">
+                        class="bg-transparent border-none p-0 focus:ring-0 text-sm text-slate-700 placeholder:text-slate-400 w-full" autocomplete="off">
                 </div>
-                <div id="search-dropdown" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
+                <div id="search-dropdown" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-200 z-50 overflow-hidden">
                     <div id="search-results" class="max-h-80 overflow-y-auto"></div>
-                    <div id="search-empty" class="hidden px-4 py-6 text-center text-sm text-slate-400 dark:text-slate-500">No se encontraron resultados</div>
+                    <div id="search-empty" class="hidden px-4 py-6 text-center text-sm text-slate-400">No se encontraron resultados</div>
                 </div>
             </div>
 
             <!-- Nav links -->
             <nav class="hidden md:flex items-center gap-1 shrink-0">
                 @auth
-                @php
-                $user = auth()->user();
-                $modoUsuario = session('modo_usuario', false);
-                $esAdmin = !$modoUsuario && ($user->hasRole('admin') || $user->hasRole('Admin'));
-                $permisosUsuario = $user->permisos()->pluck('nombre')->toArray();
-                $tieneAlguno = fn(array $perms) => !$modoUsuario && ($esAdmin || count(array_intersect($perms, $permisosUsuario)) > 0);
-                $esOperador = !$modoUsuario && ($esAdmin || count($permisosUsuario) > 0);
-                @endphp
+                    @php $user = auth()->user(); @endphp
 
-                {{-- Links públicos: solo si NO es operador, o si está en modo usuario --}}
-                @if(!$esOperador || $modoUsuario)
-                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">home</span> Inicio
-                </a>
-                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">map</span> Mapa
-                </a>
-                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">event</span> Eventos
-                </a>
-                <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">local_gas_station</span> Combustible
-                </a>
-                @endif
+                    {{-- Links exclusivos del Admin --}}
+                    @if($user->hasRole('Admin'))
+                        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
+                        </a>
+                        <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
+                        </a>
+                        <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
+                        </a>
+                        <a href="{{ route('admin.gastronomia.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">restaurant</span> Gastronomía
+                        </a>
+                    @endif
 
-                @if($esOperador)
-                <span class="h-5 w-px bg-slate-200 dark:bg-slate-700 mx-1"></span>
-                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
-                </a>
-                @endif
+                    {{-- Eventos: Admin o quien tenga permiso --}}
+                    @if($user->hasRole('Admin') || $user->hasPermiso('crear_evento') || $user->hasPermiso('modificar_evento'))
+                        <a href="{{ route('admin.eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">celebration</span> Eventos
+                        </a>
+                    @endif
 
-                @if($esAdmin)
-                <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
-                </a>
-                <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
-                </a>
-                @endif
+                    {{-- Destinos: Admin o quien tenga permiso --}}
+                    @if($user->hasRole('Admin') || $user->hasPermiso('crear_destino') || $user->hasPermiso('modificar_destino'))
+                        <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
+                        </a>
+                    @endif
 
-                @if($tieneAlguno(['crear_destino', 'modificar_destino', 'eliminar_destino', 'administrar_destinos_sugeridos']))
-                <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
-                </a>
-                @endif
+                    {{-- Reseñas: Admin o quien tenga permiso --}}
+                    @if($user->hasRole('Admin') || $user->hasPermiso('administrar_resenas'))
+                        <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
+                        </a>
+                    @endif
 
-                @if($tieneAlguno(['crear_evento', 'modificar_evento', 'eliminar_evento', 'administrar_eventos_sugeridos']))
-                <a href="/admin/eventos" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">celebration</span> Festivales
-                </a>
-                @endif
-
-                @if($tieneAlguno(['administrar_resena', 'administrar_resenas', 'eliminar_comentario']))
-                <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
-                </a>
-                @endif
-
-                @if($tieneAlguno(['gestionar_gastronomia']))
-                <a href="{{ route('admin.gastronomia.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">restaurant</span> Gastronomía
-                </a>
-                @endif
+                    {{-- Navbar usuario Turista (sin permisos admin) --}}
+                    @if($user->hasRole('Turista') && !$user->hasRole('Admin'))
+                        <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
+                        <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
+                        <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
+                        <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Combustible</a>
+                    @endif
 
                 @else
-                {{-- Invitado --}}
-                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1"><span class="material-symbols-outlined text-[16px] hidden">home</span> Inicio</a>
-                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1"><span class="material-symbols-outlined text-[16px] hidden">map</span> Mapa</a>
-                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1"><span class="material-symbols-outlined text-[16px] hidden">event</span> Eventos</a>
+                    {{-- Invitado --}}
+                    <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Inicio</a>
+                    <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Mapa</a>
+                    <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none">Eventos</a>
                 @endauth
             </nav>
 
@@ -205,38 +164,26 @@
             <div class="flex items-center gap-3 shrink-0">
                 @auth
                 <div class="flex items-center gap-3">
-
-                    {{-- Botón Ver como usuario / Vista Admin --}}
-                    @if(isset($esOperador) && ($esOperador || session('modo_usuario')))
-                    <form method="POST" action="{{ route('admin.cambiar_vista') }}">
-                        @csrf
-                        <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#28628f] text-slate-500 dark:text-slate-400 hover:text-[#28628f] dark:hover:text-white transition-all bg-white dark:bg-slate-800 cursor-pointer flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[14px]">{{ session('modo_usuario') ? 'admin_panel_settings' : 'visibility' }}</span>
-                            {{ session('modo_usuario') ? 'Vista Admin' : 'Ver como usuario' }}
-                        </button>
-                    </form>
-                    @endif
-
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 hover:opacity-80 transition-all text-decoration-none">
                         @if(auth()->user()->avatar)
-                        <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full border border-[#28628f]">
+                            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full border border-[#28628f]">
                         @else
-                        <div class="w-8 h-8 rounded-full bg-[#28628f] text-white flex items-center justify-center text-sm font-bold">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
+                            <div class="w-8 h-8 rounded-full bg-[#28628f] text-white flex items-center justify-center text-sm font-bold">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            </div>
                         @endif
-                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300 hidden lg:block">{{ auth()->user()->name }}</span>
+                        <span class="text-sm font-medium text-slate-700 hidden lg:block">{{ auth()->user()->name }}</span>
                     </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#28628f] text-slate-500 dark:text-slate-400 hover:text-[#28628f] dark:hover:text-white transition-all bg-white dark:bg-slate-800 cursor-pointer">
+                        <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 hover:border-[#28628f] text-slate-500 hover:text-[#28628f] transition-all bg-white cursor-pointer">
                             Cerrar Sesión
                         </button>
                     </form>
                 </div>
                 @else
-                <a href="{{ route('login') }}" class="text-xs font-semibold px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 hover:border-[#28628f] text-slate-600 dark:text-slate-300 hover:text-[#28628f] dark:hover:text-white transition-all bg-white dark:bg-slate-800 text-decoration-none">Iniciar Sesión</a>
-                <a href="{{ route('register') }}" class="text-xs font-semibold px-4 py-2 rounded-full bg-[#28628f] hover:bg-[#1a4669] text-white transition-all shadow-sm text-decoration-none">Registrarse</a>
+                    <a href="{{ route('login') }}" class="text-xs font-semibold px-4 py-2 rounded-full border border-slate-200 hover:border-[#28628f] text-slate-600 hover:text-[#28628f] transition-all bg-white text-decoration-none">Iniciar Sesión</a>
+                    <a href="{{ route('register') }}" class="text-xs font-semibold px-4 py-2 rounded-full bg-[#28628f] hover:bg-[#1a4669] text-white transition-all shadow-sm text-decoration-none">Registrarse</a>
                 @endauth
             </div>
         </div>
@@ -262,20 +209,20 @@
         @yield('content')
     </main>
 
-    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-8 mt-12 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-400 dark:text-slate-500">
+    <footer class="border-t border-slate-200 bg-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-400">
             <p>&copy; {{ date('Y') }} Surify. Todos los derechos reservados. Desarrollado con 💖 por Casasola, Gómez y Martínez para la UCP 🌸.</p>
         </div>
     </footer>
 
     <!-- Reproductor Himno -->
-    <div class="fixed bottom-6 right-6 z-50 flex items-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-full shadow-xl gap-3 max-w-xs transition-all duration-300 hover:border-[#28628f]">
+    <div class="fixed bottom-6 right-6 z-50 flex items-center bg-white border border-slate-200 p-3 rounded-full shadow-xl gap-3 max-w-xs transition-all duration-300 hover:border-[#28628f]">
         <button id="global-music-btn" class="w-10 h-10 rounded-full bg-[#28628f] text-white flex items-center justify-center hover:bg-[#1a4669] transition-transform active:scale-95 shadow-sm">
             <span id="global-music-icon" class="material-symbols-outlined">play_arrow</span>
         </button>
         <div class="flex flex-col pr-4 select-none">
-            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight truncate max-w-[120px]">Himno Surify</span>
-            <span id="global-music-status" class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold tracking-wide">Pausado</span>
+            <span class="text-xs font-bold text-slate-800 leading-tight truncate max-w-[120px]">Himno Surify</span>
+            <span id="global-music-status" class="text-[10px] text-slate-400 font-semibold tracking-wide">Pausado</span>
         </div>
         <audio id="global-surify-song" loop>
             <source src="{{ asset('audio/cancion_surify.mpeg') }}" type="audio/mpeg">
@@ -303,19 +250,13 @@
                 bar.style.width = '100%';
                 setTimeout(() => {
                     screen.classList.add('oculto');
-                    setTimeout(() => {
-                        if (screen.parentNode) screen.remove();
-                    }, 500);
+                    setTimeout(() => { if (screen.parentNode) screen.remove(); }, 500);
                 }, 200);
             }
 
             document.addEventListener('DOMContentLoaded', ocultarPantalla);
             setTimeout(ocultarPantalla, 5000);
         })();
-<<<<<<< HEAD
-=======
-
->>>>>>> 50e379366820a8c7a5386e9758428d6dcdd0e910
         // Reproductor de música
         document.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('global-surify-song');
@@ -345,9 +286,7 @@
                         status.className = "text-[10px] text-amber-500 font-bold tracking-wide animate-pulse";
                     });
                 }
-            }, {
-                once: true
-            });
+            }, { once: true });
 
             btn.addEventListener('click', function() {
                 if (audio.paused) {
@@ -367,10 +306,6 @@
                 }
             });
         });
-<<<<<<< HEAD
-=======
-
->>>>>>> 50e379366820a8c7a5386e9758428d6dcdd0e910
         // Navegación sin recarga
         var esAdmin = @json(auth()->check() && auth()->user()->hasRole('Admin'));
 
@@ -445,40 +380,7 @@
         window.addEventListener('popstate', function() {
             navegarSinRecarga(window.location.href);
         });
-<<<<<<< HEAD
-=======
-
-        // Interceptor global para formularios de eliminación con SweetAlert2
-        document.addEventListener('DOMContentLoaded', function() {
-            document.body.addEventListener('submit', function(e) {
-                if (e.target && e.target.classList.contains('form-eliminar')) {
-                    e.preventDefault();
-                    const form = e.target;
-                    const titleText = form.dataset.title || '¿Estás seguro?';
-                    const warningText = form.dataset.text || '¡No vas a poder revertir esto!';
-                    
-                    Swal.fire({
-                        title: titleText,
-                        text: warningText,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Sí, eliminar',
-                        cancelButtonText: 'Cancelar',
-                        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
-                        color: document.documentElement.classList.contains('dark') ? '#f8fafc' : '#1e293b'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                }
-            });
-        });
->>>>>>> 50e379366820a8c7a5386e9758428d6dcdd0e910
     </script>
 
 </body>
-
 </html>
