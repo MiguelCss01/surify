@@ -143,28 +143,22 @@
             </div>
             @endforeach
             @else
-            <!-- Tarjetas fijas de respaldo en modo claro con URLs seguras -->
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                <div class="h-56"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=600&auto=format&fit=crop" /></div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-slate-800">Glaciar Perito Moreno</h3>
-                    <p class="text-sm text-slate-500 mt-2">Espectáculo natural de hielos eternos en la Patagonia.</p>
+            {{-- Mostrar destinos reales de la BD --}}
+            @foreach($destinos->take(6) as $destino)
+            <a href="{{ route('destinos.show', $destino['id']) }}"
+                class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 text-decoration-none">
+                <div class="h-56 overflow-hidden">
+                    <img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                        src="{{ $destino['imagen_url'] ?? 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80' }}"
+                        alt="{{ $destino['nombre'] }}">
                 </div>
-            </div>
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                <div class="h-56"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1606293926075-69a00dbfde81?q=80&w=600&auto=format&fit=crop" /></div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold text-slate-800">Quebrada de Humahuaca</h3>
-                    <p class="text-sm text-slate-500 mt-2">Cerros multiculturales de colores vivos en el norte argentino.</p>
+                    <span class="text-xs font-bold text-[#28628f] uppercase tracking-wider">{{ $destino['provincia'] }}</span>
+                    <h3 class="text-xl font-bold text-slate-800 mt-1 group-hover:text-[#28628f] transition-colors">{{ $destino['nombre'] }}</h3>
+                    <p class="text-sm text-slate-500 mt-2 line-clamp-2">{{ $destino['descripcion'] }}</p>
                 </div>
-            </div>
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                <div class="h-56"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=600&auto=format&fit=crop" /></div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-slate-800">Ruta del Vino</h3>
-                    <p class="text-sm text-slate-500 mt-2">Los mejores viñedos boutique a los pies de la cordillera de los Andes.</p>
-                </div>
-            </div>
+            </a>
+            @endforeach
             @endif
         </div>
     </section>
@@ -245,7 +239,7 @@
         document.getElementById('seccion-cercanos').style.display = 'block';
     }
 
-    var usuarioLogueado = @json(auth()->check());
+    var usuarioLogueado = @json(auth() -> check());
 
     if (usuarioLogueado && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
