@@ -426,6 +426,13 @@
         document.getElementById('card-categoria').textContent = destino.categoria;
         document.getElementById('card-link').href = '/destinos/' + destino.id;
         document.getElementById('card-destino').classList.add('visible');
+        
+        // Volar (hacer zoom) hacia el destino
+        if (mapaInstance && destino.lat && destino.lng) {
+            mapaInstance.flyTo([destino.lat, destino.lng], 12, {
+                duration: 1.5
+            });
+        }
     }
 
     function filtrarCategoria(categoria) {
@@ -481,7 +488,11 @@
                 iconAnchor: [8, 8],
             });
 
-            L.marker([lat, lng], {
+            if (window.marcadorUsuario) {
+                mapaInstance.removeLayer(window.marcadorUsuario);
+            }
+            
+            window.marcadorUsuario = L.marker([lat, lng], {
                     icon: iconoUsuario
                 })
                 .addTo(mapaInstance)

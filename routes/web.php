@@ -129,7 +129,7 @@ Route::get('/', function () {
 
 Route::get('/mapa', function () {
     $provincias = \App\Models\Provincia::all();
-    $destinos = \App\Models\Destino::where('activo', true)->with('provincia')->get()->map(function ($d) {
+    $destinos = \App\Models\Destino::where('activo', true)->whereNotNull('ubicacion')->with('provincia')->get()->map(function ($d) {
         $coords = DB::select('SELECT ST_Y(ubicacion::geometry) as lat, ST_X(ubicacion::geometry) as lng FROM destinos WHERE id = ?', [$d->id])[0];
         return [
             'id' => $d->id,
