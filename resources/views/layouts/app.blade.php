@@ -58,6 +58,14 @@
             pointer-events: none;
         }
     </style>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
 
 <body class="flex flex-col min-h-screen antialiased">
