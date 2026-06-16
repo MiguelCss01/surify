@@ -418,12 +418,7 @@ document.getElementById('btn-calcular').addEventListener('click', function() {
     const destino = document.getElementById('input-destino').value.trim();
 
     if (!distancia || !consumo) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Faltan datos',
-            text: 'Ingresá al menos la distancia y el consumo del vehículo.',
-            confirmButtonColor: '#28628f'
-        });
+        alert('Ingresá al menos la distancia y el consumo del vehículo.');
         return;
     }
 

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use App\Models\ProvinciaImagen;
 class Provincia extends Model
 {
     use HasFactory;
@@ -40,4 +40,9 @@ class Provincia extends Model
     {
         return $this->hasMany(Gastronomia::class);
     }
+
+    public function imagenes(): HasMany
+{
+    return $this->hasMany(ProvinciaImagen::class)->orderBy('orden');
+}
 }

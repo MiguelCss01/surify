@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Surify Admin - Editar Evento')
 
@@ -14,7 +14,7 @@
     </div>
 
     {{-- Control de Permisos a nivel de Vista --}}
-   @if(auth()->user()->hasRole('admin') || auth()->user()->hasPermiso('modificar_evento'))
+    @can('modificar_evento')
     
     {{-- Encabezado --}}
     <div class="mb-8">
@@ -145,7 +145,7 @@
             Volver al listado seguro
         </a>
     </div>
-    @endif
+    @endcan
 
 </div>
 @endsection
