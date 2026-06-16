@@ -295,7 +295,14 @@
                     if (el) el.remove();
                 }
             })
-            .catch(() => alert('Error al eliminar la imagen'));
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al eliminar la imagen',
+                    confirmButtonColor: '#28628f'
+                });
+            });
     }
 </script>
 @endsection

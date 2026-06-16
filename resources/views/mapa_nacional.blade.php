@@ -467,7 +467,12 @@
         btn.style.color = '#28628f';
 
         if (!navigator.geolocation) {
-            alert('Tu navegador no soporta geolocalización.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Geolocalización no soportada',
+                text: 'Tu navegador no soporta geolocalización.',
+                confirmButtonColor: '#28628f'
+            });
             return;
         }
 
@@ -514,7 +519,12 @@
             btn.style.color = '#e11d48';
 
         }, function() {
-            alert('No se pudo obtener tu ubicación. Verificá los permisos del navegador.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de ubicación',
+                text: 'No se pudo obtener tu ubicación. Verificá los permisos del navegador.',
+                confirmButtonColor: '#28628f'
+            });
             btn.style.color = '#475569';
         });
     }
@@ -532,7 +542,12 @@
 
     async function buscarServicios(tipo) {
         if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-            alert('El SDK de Google Maps no está cargado. Verifica tu API Key en el archivo .env.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de SDK',
+                text: 'El SDK de Google Maps no está cargado. Verifica tu API Key en el archivo .env.',
+                confirmButtonColor: '#28628f'
+            });
             return;
         }
 
@@ -617,11 +632,21 @@
 
                 mapaInstance.setView([lat, lng], 14);
             } else {
-                alert('No se encontraron servicios de este tipo en un radio de 5km de esta zona.');
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Sin resultados',
+                    text: 'No se encontraron servicios de este tipo en un radio de 5km de esta zona.',
+                    confirmButtonColor: '#28628f'
+                });
             }
         } catch (error) {
             console.error('Error al buscar servicios cercanos:', error);
-            alert('Error al buscar servicios cercanos: ' + error.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de búsqueda',
+                text: 'Error al buscar servicios cercanos: ' + error.message,
+                confirmButtonColor: '#28628f'
+            });
         }
     }
 </script>
