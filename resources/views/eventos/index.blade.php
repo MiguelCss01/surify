@@ -63,8 +63,8 @@
                 @forelse($eventos as $index => $evento)
 
                 {{-- ✅ CAMBIADO: div onclick → <a href> --}}
-                <a href="{{ route('eventos.show', $evento->id) }}"
-                    class="bg-white rounded-2xl p-4 border {{ $index === 0 ? 'border-[#28628f] ring-1 ring-[#28628f]/20' : 'border-slate-200' }} hover:border-[#28628f] hover:shadow-xs transition-all group relative overflow-hidden text-decoration-none block">
+                <div onclick="abrirModalEvento({{ $evento->id }}, '{{ addslashes($evento->nombre) }}', '{{ addslashes($evento->tipo ?? 'Festival') }}', '{{ $evento->fecha_inicio->format('d/m/Y') }}', '{{ $evento->fecha_fin ? $evento->fecha_fin->format('d/m/Y') : '' }}', '{{ addslashes($evento->descripcion ?? '') }}', '{{ addslashes($evento->imagen_url ?? '') }}', '{{ addslashes($evento->provincia->nombre ?? '') }}', '{{ addslashes($evento->destino->nombre ?? '') }}', '{{ addslashes($evento->rango_precio ?? '') }}')"
+                    class="bg-white rounded-2xl p-4 border {{ $index === 0 ? 'border-[#28628f] ring-1 ring-[#28628f]/20' : 'border-slate-200' }} hover:border-[#28628f] hover:shadow-xs transition-all group relative overflow-hidden text-decoration-none block cursor-pointer">
                     @if($index === 0)
                     <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#28628f]"></div>
                     @endif
@@ -87,7 +87,7 @@
                             @endif
                         </div>
                     </div>
-                </a>
+                </div>
                 {{-- ✅ FIN cambio sidebar --}}
 
                 @empty
@@ -131,11 +131,11 @@
 
                     @if($eventoDelDia)
                     {{-- ✅ CAMBIADO: div onclick → <a href> --}}
-                    <a href="{{ route('eventos.show', $eventoDelDia->id) }}"
-                        class="bg-emerald-50/40 min-h-[100px] p-2 border-2 border-emerald-500/30 hover:bg-emerald-50 transition-colors block text-decoration-none">
+                    <div onclick="abrirModalEvento({{ $eventoDelDia->id }}, '{{ addslashes($eventoDelDia->nombre) }}', '{{ addslashes($eventoDelDia->tipo ?? 'Festival') }}', '{{ $eventoDelDia->fecha_inicio->format('d/m/Y') }}', '{{ $eventoDelDia->fecha_fin ? $eventoDelDia->fecha_fin->format('d/m/Y') : '' }}', '{{ addslashes($eventoDelDia->descripcion ?? '') }}', '{{ addslashes($eventoDelDia->imagen_url ?? '') }}', '{{ addslashes($eventoDelDia->provincia->nombre ?? '') }}', '{{ addslashes($eventoDelDia->destino->nombre ?? '') }}', '{{ addslashes($eventoDelDia->rango_precio ?? '') }}')"
+                        class="bg-emerald-50/40 min-h-[100px] p-2 border-2 border-emerald-500/30 hover:bg-emerald-50 transition-colors block text-decoration-none cursor-pointer">
                         <span class="text-xs font-bold text-emerald-700">{{ $d }}</span>
                         <div class="mt-1 bg-emerald-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded truncate">{{ Str::limit($eventoDelDia->nombre, 12) }}</div>
-                    </a>
+                    </div>
                     {{-- ✅ FIN cambio calendario --}}
                     @else
                     <div class="bg-white min-h-[100px] p-2 hover:bg-slate-50/80 transition-colors {{ $hoy ? 'ring-2 ring-inset ring-[#28628f]' : '' }}">
@@ -175,11 +175,12 @@
 
         const img = document.getElementById('modal-evento-img');
         img.src = imagen || 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800';
+        
         document.getElementById('modal-evento-link').href = `/eventos/${id}`;
 
         document.getElementById('modal-evento').classList.remove('hidden');
     }
-    
+
     function previewFotosEvento(input) {
         const preview = document.getElementById('fotos-evento-preview');
         preview.innerHTML = '';
