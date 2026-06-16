@@ -31,4 +31,14 @@ class EventoController extends Controller
 
         return view('eventos.index', compact('eventos', 'provincias', 'año', 'mes'));
     }
+    public function show(int $id)
+{
+    $evento = Evento::with(['provincia', 'destino', 'resenas.user'])->findOrFail($id);
+    $eventosRelacionados = Evento::with('provincia')
+        ->where('id', '!=', $id)
+        ->where('provincia_id', $evento->provincia_id)
+        ->limit(3)
+        ->get();
+    return view('eventos.show', compact('evento', 'eventosRelacionados'));
+}
 }

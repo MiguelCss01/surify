@@ -166,6 +166,7 @@
 
         const img = document.getElementById('modal-evento-img');
         img.src = imagen || 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800';
+        document.getElementById('modal-evento-link').href = `/eventos/${id}`;
 
         document.getElementById('modal-evento').classList.remove('hidden');
     }
@@ -186,5 +187,44 @@
         });
     }
 </script>
+
+{{-- Modal Evento --}}
+<div id="modal-evento" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="document.getElementById('modal-evento').classList.add('hidden')"></div>
+    <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden z-10">
+        <img id="modal-evento-img" src="" class="w-full h-52 object-cover" alt="">
+        <button onclick="document.getElementById('modal-evento').classList.add('hidden')"
+            class="absolute top-3 right-3 w-8 h-8 bg-black/40 text-white rounded-full flex items-center justify-center hover:bg-black/60 transition-all">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+        <div class="p-6 space-y-3">
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <span id="modal-evento-tipo" class="text-[10px] font-bold text-[#28628f] uppercase tracking-wider bg-[#28628f]/10 px-2 py-0.5 rounded-full"></span>
+                    <h3 id="modal-evento-nombre" class="text-xl font-black text-slate-800 mt-1" style="font-family: 'Inter', sans-serif;"></h3>
+                </div>
+                <span id="modal-evento-precio" class="shrink-0 text-xs font-bold bg-amber-50 text-amber-600 px-2.5 py-1 rounded-lg border border-amber-100"></span>
+            </div>
+            <p id="modal-evento-descripcion" class="text-sm text-slate-500 leading-relaxed line-clamp-3"></p>
+            <div class="flex items-center gap-4 text-xs text-slate-400 font-semibold">
+                <span id="modal-evento-provincia" class="flex items-center gap-1"></span>
+                <span id="modal-evento-destino"></span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-500 pt-1">
+                <span class="material-symbols-outlined text-[14px] text-[#28628f]">calendar_today</span>
+                <span id="modal-evento-fecha-inicio"></span>
+                <span>→</span>
+                <span id="modal-evento-fecha-fin"></span>
+            </div>
+            <div class="pt-2">
+                <a id="modal-evento-link" href="#"
+                   class="w-full bg-[#28628f] text-white font-bold py-3 rounded-xl hover:bg-[#1a4669] transition-all text-sm flex items-center justify-center gap-2 text-decoration-none">
+                    <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                    Ver detalles completos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
