@@ -194,7 +194,7 @@
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col gap-3">
             <button id="btn-favorito" data-evento-id="{{ $evento->id }}"
                 onclick="toggleFavorito(this.dataset.eventoId)"
-                class="{{ $esFavorito ? 'bg-rose-500 text-white border-rose-500' : 'bg-white text-slate-600 border-slate-200 hover:border-rose-400 hover:text-rose-500' }} w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm">
+                class="{{ $esFavorito ? 'bg-pink-400 text-white border-pink-400' : 'bg-white text-slate-600 border-slate-200 hover:border-pink-300 hover:text-pink-400' }} w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm">
                 <span id="icon-favorito" class="material-symbols-outlined text-[18px]" style='font-variation-settings: "FILL" {{ $esFavorito ? 1 : 0 }};'>
                     favorite
                 </span>
@@ -331,11 +331,11 @@
                 const texto = document.getElementById('texto-favorito');
 
                 if (data.favorito) {
-                    btn.className = 'bg-rose-500 text-white border-rose-500 w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm';
+                    btn.className = 'bg-pink-400 text-white border-pink-400 w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm';
                     icon.style.fontVariationSettings = "'FILL' 1";
                     texto.textContent = 'En favoritos ♥';
                 } else {
-                    btn.className = 'bg-white text-slate-600 border-slate-200 hover:border-rose-400 hover:text-rose-500 w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm';
+                    btn.className = 'bg-white text-slate-600 border-slate-200 hover:border-pink-300 hover:text-pink-400 w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm';
                     icon.style.fontVariationSettings = "'FILL' 0";
                     texto.textContent = 'Agregar a favoritos';
                 }
