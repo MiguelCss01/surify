@@ -151,6 +151,8 @@ Route::get('/destinos/{id}', [DestinoController::class, 'show'])->name('destinos
 Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
 Route::get('/eventos/{id}', [EventoController::class, 'show'])->name('eventos.show');
 
+Route::get('/buscar', [\App\Http\Controllers\BusquedaController::class, 'buscar'])->name('busqueda.buscar');
+
 // ==================== AUTH ====================
 Route::middleware('auth')->group(function () {
     Route::post('/resenas', [ResenaController::class, 'store'])->name('resenas.store');
@@ -164,6 +166,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/eventos/sugerir', [\App\Http\Controllers\EventoSugerenciaController::class, 'store'])->name('eventos.sugerir');
 
     Route::post('/eventos/visitados/toggle', [EventoVisitadoController::class, 'toggle'])->name('eventos.visitados.toggle');
+
 });
 
 // ==================== DASHBOARD ====================

@@ -243,24 +243,24 @@
         $esFavorito = auth()->user()->favoritos->where('destino_id', $destino->id)->count() > 0;
         $esVisitado = auth()->user()->destinosVisitados->where('destino_id', $destino->id)->count() > 0;
         @endphp
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2 flex-1">
-                <button id="btn-favorito" onclick="toggleFavorito({{ $destino->id }})"
-                    class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all font-semibold text-sm
-                    {{ $esFavorito ? 'border-rose-400 bg-rose-50 text-rose-500' : 'border-slate-200 text-slate-400 hover:border-rose-400 hover:text-rose-400' }}">
-                    <span id="icono-favorito" class="material-symbols-outlined text-[18px]"
-                        style="font-variation-settings: 'FILL' {{ $esFavorito ? 1 : 0 }};">favorite</span>
-                    <span id="texto-favorito">{{ $esFavorito ? 'Guardado' : 'Favorito' }}</span>
-                </button>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col gap-3">
+            <button id="btn-favorito"
+                onclick="toggleFavorito({{ $destino->id }})"
+                class="{{ $esFavorito ? 'bg-pink-400 text-white border-pink-400' : 'bg-white text-slate-600 border-slate-200 hover:border-pink-300 hover:text-pink-400' }} w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm">
+                <span id="icono-favorito" class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' {{ $esFavorito ? 1 : 0 }};">
+                    favorite
+                </span>
+                <span id="texto-favorito">{{ $esFavorito ? 'En favoritos ♥' : 'Agregar a favoritos' }}</span>
+            </button>
 
-                <button id="btn-visitado" onclick="toggleVisitado({{ $destino->id }})"
-                    class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all font-semibold text-sm
-                    {{ $esVisitado ? 'border-emerald-400 bg-emerald-50 text-emerald-500' : 'border-slate-200 text-slate-400 hover:border-emerald-400 hover:text-emerald-400' }}">
-                    <span id="icono-visitado" class="material-symbols-outlined text-[18px]"
-                        style="font-variation-settings: 'FILL' {{ $esVisitado ? 1 : 0 }};">check_circle</span>
-                    <span id="texto-visitado">{{ $esVisitado ? 'Visitado' : 'Marcar visitado' }}</span>
-                </button>
-            </div>
+            <button id="btn-visitado"
+                onclick="toggleVisitado({{ $destino->id }})"
+                class="{{ $esVisitado ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-slate-600 border-slate-200 hover:border-[#28628f] hover:text-[#28628f]' }} w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm">
+                <span id="icono-visitado" class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' {{ $esVisitado ? 1 : 0 }};">
+                    verified
+                </span>
+                <span id="texto-visitado">{{ $esVisitado ? 'Visitado ✓' : 'Marcar como visitado' }}</span>
+            </button>
         </div>
         @endauth
         {{-- Compartir --}}
@@ -496,14 +496,45 @@
             .then(data => {
                 const btn = document.getElementById('btn-favorito');
                 const icono = document.getElementById('icono-favorito');
+                const texto = document.getElementById('texto-favorito');
+
                 if (data.favorito) {
-                    btn.classList.add('border-rose-400', 'bg-rose-50', 'text-rose-500');
-                    btn.classList.remove('border-slate-200', 'text-slate-400');
+                    btn.className = 'bg-pink-400 text-white border-pink-400 w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm';
                     icono.style.fontVariationSettings = "'FILL' 1";
+                    texto.textContent = 'En favoritos ♥';
                 } else {
-                    btn.classList.remove('border-rose-400', 'bg-rose-50', 'text-rose-500');
-                    btn.classList.add('border-slate-200', 'text-slate-400');
+                    btn.className = 'bg-white text-slate-600 border-slate-200 hover:border-pink-300 hover:text-pink-400 w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm';
                     icono.style.fontVariationSettings = "'FILL' 0";
+                    texto.textContent = 'Agregar a favoritos';
+                }
+            });
+    }
+
+    function toggleVisitado(destinoId) {
+        fetch('/visitados/toggle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    destino_id: destinoId
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                const btn = document.getElementById('btn-visitado');
+                const icono = document.getElementById('icono-visitado');
+                const texto = document.getElementById('texto-visitado');
+
+                if (data.visitado) {
+                    btn.className = 'bg-emerald-500 text-white border-emerald-500 w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm';
+                    icono.style.fontVariationSettings = "'FILL' 1";
+                    texto.textContent = 'Visitado ✓';
+                } else {
+                    btn.className = 'bg-white text-slate-600 border-slate-200 hover:border-[#28628f] hover:text-[#28628f] w-full px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 justify-center border text-sm';
+                    icono.style.fontVariationSettings = "'FILL' 0";
+                    texto.textContent = 'Marcar como visitado';
                 }
             });
     }

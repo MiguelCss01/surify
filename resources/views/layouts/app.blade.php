@@ -824,6 +824,70 @@
         });
     </script>
 
+    <script>
+        (function() {
+            const input = document.getElementById('search-input');
+            const dropdown = document.getElementById('search-dropdown');
+            const resultsContainer = document.getElementById('search-results');
+            const emptyMsg = document.getElementById('search-empty');
+            let debounceTimer = null;
+
+            if (!input) return;
+
+            input.addEventListener('input', function() {
+                const query = this.value.trim();
+                clearTimeout(debounceTimer);
+
+                if (query.length < 2) {
+                    dropdown.classList.add('hidden');
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    fetch(`{{ route('busqueda.buscar') }}?q=${encodeURIComponent(query)}`)
+                        .then(r => r.json())
+                        .then(data => {
+                            resultsContainer.innerHTML = '';
+                            if (data.resultados.length === 0) {
+                                emptyMsg.classList.remove('hidden');
+                            } else {
+                                emptyMsg.classList.add('hidden');
+                                data.resultados.forEach(item => {
+                                    const a = document.createElement('a');
+                                    a.href = item.url;
+                                    a.className = 'flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0 text-decoration-none';
+                                    a.innerHTML = `
+                                <span class="material-symbols-outlined text-[#28628f] text-[20px]">${item.icono}</span>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-bold text-slate-700 truncate">${item.nombre}</p>
+                                    <p class="text-xs text-slate-400">${item.tipo} ${item.subtitulo ? '• ' + item.subtitulo : ''}</p>
+                                </div>`;
+                                    resultsContainer.appendChild(a);
+                                });
+                            }
+                            dropdown.classList.remove('hidden');
+                        })
+                        .catch(() => dropdown.classList.add('hidden'));
+                }, 300);
+            });
+
+            // Cerrar dropdown al hacer click afuera
+            document.addEventListener('click', function(e) {
+                if (!document.getElementById('search-container').contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+
+            // Cerrar con Escape
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    dropdown.classList.add('hidden');
+                    input.blur();
+                }
+            });
+        })();
+    </script>
+
 </body>
 
 </html>
