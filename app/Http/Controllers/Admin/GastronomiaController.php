@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Gastronomia;
 use App\Models\Provincia;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class GastronomiaController extends Controller
 {
@@ -37,20 +36,15 @@ class GastronomiaController extends Controller
             'nombre'       => 'required|string|max:255',
             'descripcion'  => 'required|string',
             'categoria'    => 'required|string|max:100',
-            'imagen'       => 'nullable|image|max:2048',
+            'imagen_url'   => 'nullable|url|max:2048',
         ]);
-
-        $imagenUrl = null;
-        if ($request->hasFile('imagen')) {
-            $imagenUrl = $request->file('imagen')->store('gastronomia', 'public');
-        }
 
         Gastronomia::create([
             'provincia_id' => $request->provincia_id,
             'nombre'       => $request->nombre,
             'descripcion'  => $request->descripcion,
             'categoria'    => $request->categoria,
-            'imagen_url'   => $imagenUrl,
+            'imagen_url'   => $request->imagen_url,
         ]);
 
         return back()->with('success', 'Plato agregado correctamente.');
@@ -62,21 +56,14 @@ class GastronomiaController extends Controller
             'nombre'      => 'required|string|max:255',
             'descripcion' => 'required|string',
             'categoria'   => 'required|string|max:100',
-            'imagen'      => 'nullable|image|max:2048',
+            'imagen_url'  => 'nullable|url|max:2048',
         ]);
-
-        if ($request->hasFile('imagen')) {
-            if ($gastronomia->imagen_url) {
-                Storage::disk('public')->delete($gastronomia->imagen_url);
-            }
-            $gastronomia->imagen_url = $request->file('imagen')->store('gastronomia', 'public');
-        }
 
         $gastronomia->update([
             'nombre'      => $request->nombre,
             'descripcion' => $request->descripcion,
             'categoria'   => $request->categoria,
-            'imagen_url'  => $gastronomia->imagen_url,
+            'imagen_url'  => $request->imagen_url,
         ]);
 
         return back()->with('success', 'Plato actualizado correctamente.');
@@ -84,10 +71,8 @@ class GastronomiaController extends Controller
 
     public function destroy(Gastronomia $gastronomia)
     {
-        if ($gastronomia->imagen_url) {
-            Storage::disk('public')->delete($gastronomia->imagen_url);
-        }
         $gastronomia->delete();
+
         return back()->with('success', 'Plato eliminado correctamente.');
     }
 }

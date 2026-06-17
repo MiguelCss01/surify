@@ -104,8 +104,14 @@
                         <td class="py-4">
                             <span class="text-sm font-bold text-[#28628f]">{{ optional($provincia)->destinos_count ?? 0 }}</span>
                         </td>
+                        @php
+                            $imagenes = $provincia->imagenes->map(function ($i) {
+                                return ['id' => $i->id, 'url' => $i->url];
+                            });
+                        @endphp
                         <td class="py-4 text-right">
-                            <button onclick='abrirEditarProvincia({{ $provincia->id }}, @json($provincia->nombre), @json($provincia->region ?? ''), @json($provincia->descripcion ?? ''), @json($provincia->imagenes->map(fn($i) => [' id'=> $i->id, 'url' => asset('storage/' . $i->url)])) )' class="material-symbols-outlined text-[#28628f] hover:scale-110 transition-transform text-[20px] cursor-pointer bg-transparent border-none">
+                            <button onclick='abrirEditarProvincia({{ $provincia->id }}, @json($provincia->nombre), @json($provincia->region ?? ''), @json($provincia->descripcion ?? ''), @json($imagenes))'
+                                class="material-symbols-outlined text-[#28628f] hover:scale-110 transition-transform text-[20px] cursor-pointer bg-transparent border-none">
                                 edit_square
                             </button>
                         </td>
@@ -197,7 +203,7 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-        <form id="form-editar-provincia" action="" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+        <form id="form-editar-provincia" action="" method="POST" class="p-6 space-y-4">
             @csrf @method('PUT')
             <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nombre</label>
@@ -223,12 +229,17 @@
                 </div>
             </div>
 
-            {{-- Agregar nuevas imágenes --}}
-            <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Agregar imágenes</label>
-                <input type="file" name="imagenes[]" multiple accept="image/*"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">
-                <p class="text-xs text-slate-400">Podés seleccionar varias imágenes a la vez.</p>
+            {{-- Agregar nuevas imágenes por URL --}}
+            <div class="space-y-1" id="nuevas-imagenes-urls-container">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Agregar imágenes (URL)</label>
+                <div class="flex flex-col gap-2" id="inputs-urls">
+                    <input type="text" name="imagenes_urls[]" placeholder="https://ejemplo.com/foto1.jpg"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">
+                </div>
+                <button type="button" onclick="agregarInputUrl()"
+                    class="text-xs font-bold text-[#28628f] hover:underline mt-1">
+                    + Agregar otra URL
+                </button>
             </div>
 
             <div class="flex gap-3 pt-2">
@@ -262,7 +273,23 @@
             container.innerHTML = '<p class="text-xs text-slate-400">No hay imágenes cargadas todavía.</p>';
         }
 
+        // Reset de inputs de URLs nuevas
+        const inputsUrls = document.getElementById('inputs-urls');
+        inputsUrls.innerHTML = `
+            <input type="text" name="imagenes_urls[]" placeholder="https://ejemplo.com/foto1.jpg"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">`;
+
         document.getElementById('modal-editar-provincia').classList.remove('hidden');
+    }
+
+    function agregarInputUrl() {
+        const inputsUrls = document.getElementById('inputs-urls');
+        const nuevoInput = document.createElement('input');
+        nuevoInput.type = 'text';
+        nuevoInput.name = 'imagenes_urls[]';
+        nuevoInput.placeholder = 'https://ejemplo.com/foto.jpg';
+        nuevoInput.className = 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]';
+        inputsUrls.appendChild(nuevoInput);
     }
 
     function agregarImagenAlModal(container, img) {

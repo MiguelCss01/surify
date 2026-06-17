@@ -11,7 +11,7 @@
             <h1 class="text-3xl font-black text-slate-800 tracking-tight">Gastronomía Regional</h1>
             <p class="text-slate-500 text-sm mt-1">Administrá los platos típicos por provincia.</p>
         </div>
-        
+
         {{-- 🔐 PERMISO: Crear plato --}}
         @can('gestionar_gastronomia')
         <button onclick="document.getElementById('modal-agregar').classList.remove('hidden')"
@@ -68,7 +68,7 @@
             @foreach($provincia->gastronomia as $plato)
             <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
                 <div class="h-36 bg-slate-100 overflow-hidden">
-                    <img src="{{ $plato->imagen_url ? asset('storage/' . $plato->imagen_url) : 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80' }}"
+                    <img src="{{ $plato->imagen_url ?: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80' }}"
                         class="w-full h-full object-cover" alt="{{ $plato->nombre }}">
                 </div>
                 <div class="p-4 flex flex-col flex-grow">
@@ -77,7 +77,7 @@
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#28628f]/10 text-[#28628f] whitespace-nowrap shrink-0">{{ $plato->categoria }}</span>
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 flex-grow">{{ $plato->descripcion }}</p>
-                    
+
                     {{-- 🔐 PERMISO: Acciones de Modificar y Eliminar --}}
                     @can('gestionar_gastronomia')
                     <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100">
@@ -86,6 +86,7 @@
                             data-nombre="{{ $plato->nombre }}"
                             data-descripcion="{{ $plato->descripcion }}"
                             data-categoria="{{ $plato->categoria }}"
+                            data-imagen="{{ $plato->imagen_url }}"
                             class="flex-1 text-xs font-bold text-[#28628f] border border-[#28628f] rounded-lg py-1.5 hover:bg-blue-50 transition-colors">
                             Editar
                         </button>
@@ -129,7 +130,7 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-        <form action="{{ route('admin.gastronomia.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+        <form action="{{ route('admin.gastronomia.store') }}" method="POST" class="p-6 space-y-4">
             @csrf
             <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Provincia *</label>
@@ -162,8 +163,8 @@
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] resize-none"></textarea>
             </div>
             <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Imagen (opcional)</label>
-                <input type="file" name="imagen" accept="image/*"
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">URL de la imagen (opcional)</label>
+                <input type="url" name="imagen_url" placeholder="https://ejemplo.com/foto-plato.jpg"
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">
             </div>
             <div class="flex gap-3 pt-2">
@@ -190,7 +191,7 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-        <form id="form-editar" action="" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+        <form id="form-editar" action="" method="POST" class="p-6 space-y-4">
             @csrf @method('PUT')
             <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nombre *</label>
@@ -214,8 +215,8 @@
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f] resize-none"></textarea>
             </div>
             <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nueva imagen (opcional)</label>
-                <input type="file" name="imagen" accept="image/*"
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">URL de la imagen (opcional)</label>
+                <input type="url" name="imagen_url" id="editar-imagen" placeholder="https://ejemplo.com/foto-plato.jpg"
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">
             </div>
             <div class="flex gap-3 pt-2">
@@ -237,6 +238,7 @@
         document.getElementById('editar-nombre').value = btn.dataset.nombre;
         document.getElementById('editar-descripcion').value = btn.dataset.descripcion;
         document.getElementById('editar-categoria').value = btn.dataset.categoria;
+        document.getElementById('editar-imagen').value = btn.dataset.imagen || '';
         document.getElementById('form-editar').action = `/admin/gastronomia/${btn.dataset.id}`;
         document.getElementById('modal-editar').classList.remove('hidden');
     }

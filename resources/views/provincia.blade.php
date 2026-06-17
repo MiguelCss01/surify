@@ -46,25 +46,16 @@
             {{-- Galería derecha --}}
             <div class="lg:col-span-7 grid grid-cols-2 grid-rows-2 gap-3 h-[450px]">
                 @php
-                $destinosConImg = $destinos->whereNotNull('imagen_url')->values();
+                $imagenesProvincia = $provincia ? $provincia->imagenes->take(3)->values() : collect();
 
-                $img1 = $destinosConImg->get(0)?->imagen_url
-                ? (str_starts_with($destinosConImg->get(0)->imagen_url, 'http')
-                ? $destinosConImg->get(0)->imagen_url
-                : asset('storage/' . $destinosConImg->get(0)->imagen_url))
-                : 'https://images.unsplash.com/photo-1589307775553-9f62f3a61dfc?auto=format&fit=crop&w=1200&q=80';
+                $img1 = $imagenesProvincia->get(0)?->url
+                ?? 'https://images.unsplash.com/photo-1589307775553-9f62f3a61dfc?auto=format&fit=crop&w=1200&q=80';
 
-                $img2 = $destinosConImg->get(1)?->imagen_url
-                ? (str_starts_with($destinosConImg->get(1)->imagen_url, 'http')
-                ? $destinosConImg->get(1)->imagen_url
-                : asset('storage/' . $destinosConImg->get(1)->imagen_url))
-                : 'https://images.unsplash.com/photo-1513026705753-bc31df43b444?auto=format&fit=crop&w=600&q=80';
+                $img2 = $imagenesProvincia->get(1)?->url
+                ?? 'https://images.unsplash.com/photo-1513026705753-bc31df43b444?auto=format&fit=crop&w=600&q=80';
 
-                $img3 = $destinosConImg->get(2)?->imagen_url
-                ? (str_starts_with($destinosConImg->get(2)->imagen_url, 'http')
-                ? $destinosConImg->get(2)->imagen_url
-                : asset('storage/' . $destinosConImg->get(2)->imagen_url))
-                : 'https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80';
+                $img3 = $imagenesProvincia->get(2)?->url
+                ?? 'https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80';
                 @endphp
                 <div class="col-span-2 row-span-1 rounded-2xl overflow-hidden relative group shadow-sm">
                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -321,10 +312,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @if($gastronomia->count() > 0)
                     @foreach($gastronomia as $plato)
-                    <div onclick="abrirModalPlato('{{ addslashes($plato->nombre) }}', '{{ addslashes($plato->descripcion) }}', '{{ addslashes($plato->categoria) }}', '{{ $plato->imagen_url ? asset('storage/' . $plato->imagen_url) : '' }}')"
+                    <div onclick="abrirModalPlato('{{ addslashes($plato->nombre) }}', '{{ addslashes($plato->descripcion) }}', '{{ addslashes($plato->categoria) }}', '{{ $plato->imagen_url ?: '' }}')"
                         class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col cursor-pointer hover:border-[#28628f] hover:shadow-md transition-all">
                         <div class="h-36 bg-slate-200 overflow-hidden">
-                            <img src="{{ $plato->imagen_url ? asset('storage/' . $plato->imagen_url) : 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80' }}"
+                            <img src="{{ $plato->imagen_url ?: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80' }}"
                                 class="w-full h-full object-cover" alt="{{ $plato->nombre }}">
                         </div>
                         <div class="p-4 flex-grow">

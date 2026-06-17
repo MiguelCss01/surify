@@ -6,19 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Provincia;
 use App\Models\ProvinciaImagen;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProvinciaController extends Controller
 {
     public function update(Request $request, Provincia $provincia)
     {
-
         $request->validate([
-            'nombre'      => 'required|string|max:255',
-            'region'      => 'nullable|string|max:255',
-            'descripcion' => 'nullable|string',
-            'imagenes'    => 'nullable|array',
-            'imagenes.*'  => 'image|max:4096',
+            'nombre'        => 'required|string|max:255',
+            'region'        => 'nullable|string|max:255',
+            'descripcion'   => 'nullable|string',
+            'imagenes_urls' => 'nullable|array',
+            'imagenes_urls.*' => 'nullable|url|max:2048',
         ]);
 
         $provincia->update([
@@ -27,15 +25,16 @@ class ProvinciaController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        if ($request->hasFile('imagenes')) {
+        if ($request->filled('imagenes_urls')) {
             $orden = $provincia->imagenes()->max('orden') ?? 0;
-            foreach ($request->file('imagenes') as $img) {
-                $url = $img->store('provincias', 'public');
-                ProvinciaImagen::create([
-                    'provincia_id' => $provincia->id,
-                    'url'          => $url,
-                    'orden'        => ++$orden,
-                ]);
+            foreach ($request->imagenes_urls as $url) {
+                if (!empty($url)) {
+                    ProvinciaImagen::create([
+                        'provincia_id' => $provincia->id,
+                        'url'          => $url,
+                        'orden'        => ++$orden,
+                    ]);
+                }
             }
         }
 
@@ -44,8 +43,8 @@ class ProvinciaController extends Controller
 
     public function destroyImagen(ProvinciaImagen $imagen)
     {
-        Storage::disk('public')->delete($imagen->url);
         $imagen->delete();
+
         return response()->json(['ok' => true]);
     }
 }
