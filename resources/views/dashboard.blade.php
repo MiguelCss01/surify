@@ -105,12 +105,12 @@
                             <span class="text-sm font-bold text-[#28628f]">{{ optional($provincia)->destinos_count ?? 0 }}</span>
                         </td>
                         @php
-                            $imagenes = $provincia->imagenes->map(function ($i) {
-                                return ['id' => $i->id, 'url' => $i->url];
-                            });
+                        $imagenes = $provincia->imagenes->map(function ($i) {
+                            return ['id' => $i->id, 'url' => $i->url];
+                        });
                         @endphp
                         <td class="py-4 text-right">
-                            <button onclick='abrirEditarProvincia({{ $provincia->id }}, @json($provincia->nombre), @json($provincia->region ?? ''), @json($provincia->descripcion ?? ''), @json($imagenes))'
+                            <button onclick='abrirEditarProvincia({{ $provincia->id }}, @json($provincia->nombre), @json($provincia->region ?? ""), @json($provincia->descripcion ?? ""), @json($imagenes))'
                                 class="material-symbols-outlined text-[#28628f] hover:scale-110 transition-transform text-[20px] cursor-pointer bg-transparent border-none">
                                 edit_square
                             </button>
@@ -273,23 +273,54 @@
             container.innerHTML = '<p class="text-xs text-slate-400">No hay imágenes cargadas todavía.</p>';
         }
 
+        // Guardamos cuántas imágenes ya existen para controlar el límite
+        window.imagenesActualesCount = imagenes ? imagenes.length : 0;
+
         // Reset de inputs de URLs nuevas
         const inputsUrls = document.getElementById('inputs-urls');
-        inputsUrls.innerHTML = `
+        inputsUrls.innerHTML = '';
+
+        const boton = document.querySelector('#nuevas-imagenes-urls-container button');
+
+        if (window.imagenesActualesCount >= 3) {
+            inputsUrls.innerHTML = '<p class="text-xs text-amber-600 font-semibold">Ya alcanzaste el máximo de 3 imágenes. Eliminá alguna para agregar otra.</p>';
+            if (boton) boton.classList.add('hidden');
+        } else {
+            inputsUrls.innerHTML = `
             <input type="text" name="imagenes_urls[]" placeholder="https://ejemplo.com/foto1.jpg"
                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">`;
+            if (boton) boton.classList.remove('hidden');
+        }
 
         document.getElementById('modal-editar-provincia').classList.remove('hidden');
     }
 
     function agregarInputUrl() {
         const inputsUrls = document.getElementById('inputs-urls');
+        const inputsActuales = inputsUrls.querySelectorAll('input').length;
+        const totalConNuevos = (window.imagenesActualesCount || 0) + inputsActuales;
+
+        if (totalConNuevos >= 3) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Límite alcanzado',
+                text: 'Una provincia puede tener un máximo de 3 imágenes.',
+                confirmButtonColor: '#28628f'
+            });
+            return;
+        }
+
         const nuevoInput = document.createElement('input');
         nuevoInput.type = 'text';
         nuevoInput.name = 'imagenes_urls[]';
         nuevoInput.placeholder = 'https://ejemplo.com/foto.jpg';
         nuevoInput.className = 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]';
         inputsUrls.appendChild(nuevoInput);
+
+        const boton = document.querySelector('#nuevas-imagenes-urls-container button');
+        if ((window.imagenesActualesCount || 0) + inputsUrls.querySelectorAll('input').length >= 3 && boton) {
+            boton.classList.add('hidden');
+        }
     }
 
     function agregarImagenAlModal(container, img) {
@@ -320,6 +351,18 @@
                 if (r.ok) {
                     const el = document.getElementById(`img-${id}`);
                     if (el) el.remove();
+
+                    window.imagenesActualesCount = Math.max(0, (window.imagenesActualesCount || 0) - 1);
+
+                    const boton = document.querySelector('#nuevas-imagenes-urls-container button');
+                    if (boton) boton.classList.remove('hidden');
+
+                    const inputsUrls = document.getElementById('inputs-urls');
+                    if (inputsUrls.querySelector('p')) {
+                        inputsUrls.innerHTML = `
+                        <input type="text" name="imagenes_urls[]" placeholder="https://ejemplo.com/foto1.jpg"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28628f]">`;
+                    }
                 }
             })
             .catch(() => {
@@ -334,21 +377,21 @@
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.contador').forEach(function(el) {
-        var target = parseInt(el.getAttribute('data-target'));
-        var duration = 1500;
-        var step = target / (duration / 16);
-        var current = 0;
-        var timer = setInterval(function() {
-            current += step;
-            if (current >= target) {
-                current = target;
-                clearInterval(timer);
-            }
-            el.textContent = String(Math.floor(current)).padStart(2, '0');
-        }, 16);
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.contador').forEach(function(el) {
+            var target = parseInt(el.getAttribute('data-target'));
+            var duration = 1500;
+            var step = target / (duration / 16);
+            var current = 0;
+            var timer = setInterval(function() {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                el.textContent = String(Math.floor(current)).padStart(2, '0');
+            }, 16);
+        });
     });
-});
 </script>
 @endsection
