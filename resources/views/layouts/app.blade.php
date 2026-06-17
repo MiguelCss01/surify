@@ -16,10 +16,34 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        body { background-color: #f8fafc; color: #1e293b; font-family: 'Outfit', sans-serif; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; display: inline-block; line-height: 1; }
-        #loading-screen { position: fixed; inset: 0; z-index: 9999; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
-        #loading-screen.oculto { opacity: 0; pointer-events: none; }
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        #loading-screen.oculto {
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 
     <script>
@@ -30,6 +54,467 @@
         }
     </script>
 </head>
+
+{{-- ============================================
+     PANEL DE ACCESIBILIDAD SURIFY
+     ============================================ --}}
+
+<style>
+    .acc-fab {
+        position: fixed;
+        bottom: 24px;
+        left: 24px;
+        z-index: 9998;
+    }
+
+    .acc-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #28628f;
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+        transition: background 0.2s;
+    }
+
+    .acc-btn:hover {
+        background: #1a4669;
+    }
+
+    .acc-panel {
+        position: fixed;
+        bottom: 84px;
+        left: 24px;
+        z-index: 9997;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 20px;
+        width: 260px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        display: none;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .acc-panel.open {
+        display: flex;
+    }
+
+    .acc-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0;
+    }
+
+    .acc-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .acc-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .acc-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .text-btn {
+        flex: 1;
+        padding: 6px 0;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        font-weight: 700;
+        color: #28628f;
+        transition: all 0.15s;
+    }
+
+    .text-btn:hover {
+        background: #f0f7ff;
+        border-color: #28628f;
+    }
+
+    .text-btn.active {
+        background: #28628f;
+        color: white;
+        border-color: #28628f;
+    }
+
+    .reader-btn {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: white;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        color: #28628f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.15s;
+    }
+
+    .reader-btn:hover {
+        background: #f0f7ff;
+        border-color: #28628f;
+    }
+
+    .reader-btn.active {
+        background: #28628f;
+        color: white;
+    }
+
+    .tour-btn {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        background: #28628f;
+        color: white;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.15s;
+    }
+
+    .tour-btn:hover {
+        background: #1a4669;
+    }
+
+    .acc-divider {
+        height: 1px;
+        background: #f1f5f9;
+        margin: 0;
+    }
+
+    .tour-highlight {
+        position: fixed;
+        border: 3px solid #28628f;
+        border-radius: 12px;
+        z-index: 9996;
+        box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.45);
+        transition: all 0.4s ease;
+        pointer-events: none;
+        display: none;
+    }
+
+    .tour-tooltip {
+        position: fixed;
+        z-index: 9999;
+        background: white;
+        border-radius: 14px;
+        padding: 18px 20px;
+        width: 280px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        border: 1px solid #e2e8f0;
+        display: none;
+    }
+
+    .tour-tooltip h3 {
+        margin: 0 0 6px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .tour-tooltip p {
+        margin: 0 0 14px;
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.5;
+    }
+
+    .tour-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .tour-step-info {
+        font-size: 12px;
+        color: #94a3b8;
+        font-weight: 600;
+    }
+
+    .tour-next {
+        padding: 8px 16px;
+        background: #28628f;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .tour-next:hover {
+        background: #1a4669;
+    }
+
+    .tour-skip {
+        font-size: 12px;
+        color: #94a3b8;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .tour-skip:hover {
+        color: #64748b;
+    }
+
+    .reader-status {
+        font-size: 11px;
+        color: #94a3b8;
+        text-align: center;
+        display: none;
+    }
+</style>
+
+{{-- Botón flotante y panel --}}
+<div class="acc-fab">
+    <div class="acc-panel" id="accPanel" role="dialog" aria-label="Panel de accesibilidad">
+
+        <p class="acc-title">♿ Accesibilidad</p>
+
+        {{-- Tamaño de texto --}}
+        <div class="acc-section">
+            <span class="acc-label">Tamaño de texto</span>
+            <div class="acc-row">
+                <button class="text-btn" onclick="surifyAccTexto('small')" id="acc-btn-small" style="font-size:12px" aria-label="Texto pequeño">A−</button>
+                <button class="text-btn active" onclick="surifyAccTexto('normal')" id="acc-btn-normal" style="font-size:15px" aria-label="Texto normal">A</button>
+                <button class="text-btn" onclick="surifyAccTexto('large')" id="acc-btn-large" style="font-size:18px" aria-label="Texto grande">A+</button>
+                <button class="text-btn" onclick="surifyAccTexto('xlarge')" id="acc-btn-xlarge" style="font-size:21px" aria-label="Texto muy grande">A++</button>
+            </div>
+        </div>
+
+        <div class="acc-divider"></div>
+
+        {{-- Lector de pantalla --}}
+        <div class="acc-section">
+            <span class="acc-label">Lector de pantalla</span>
+            <button class="reader-btn" id="accReaderBtn" onclick="surifyToggleLector()" aria-pressed="false">
+                <span aria-hidden="true">🔊</span>
+                <span id="accReaderLabel">Activar lector</span>
+            </button>
+            <p class="reader-status" id="accReaderStatus" role="status">
+                Hacé clic en cualquier texto para escucharlo
+            </p>
+        </div>
+
+        <div class="acc-divider"></div>
+
+        {{-- Tour guiado --}}
+        <div class="acc-section">
+            <span class="acc-label">Tour guiado</span>
+            <button class="tour-btn" onclick="surifyIniciarTour()" aria-label="Iniciar recorrido guiado por la página">
+                <span aria-hidden="true">🗺️</span>
+                <span>Recorrer la página</span>
+            </button>
+        </div>
+
+    </div>
+
+    <button class="acc-btn" onclick="surifyTogglePanel()" aria-label="Abrir opciones de accesibilidad" title="Accesibilidad">
+        ♿
+    </button>
+</div>
+
+{{-- Tour overlay --}}
+<div class="tour-highlight" id="tourHighlight" aria-hidden="true"></div>
+<div class="tour-tooltip" id="tourTooltip" role="dialog" aria-live="polite">
+    <h3 id="tourTitle"></h3>
+    <p id="tourDesc"></p>
+    <div class="tour-nav">
+        <button class="tour-skip" onclick="surifyCerrarTour()">Saltar tour</button>
+        <span class="tour-step-info" id="tourStepInfo"></span>
+        <button class="tour-next" id="tourNextBtn" onclick="surifySiguientePaso()">Siguiente →</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        var panelAbierto = false;
+        var lectorActivo = false;
+        var pasoActual = 0;
+
+        var tamanos = {
+            small: '14px',
+            normal: '16px',
+            large: '19px',
+            xlarge: '22px'
+        };
+
+        var pasosTour = [{
+                selector: 'header',
+                titulo: '🧭 Barra de navegación',
+                desc: 'Desde acá podés acceder a todas las secciones: Inicio, Mapa interactivo, Eventos y Combustible. Si tenés una cuenta con permisos, también verás el panel de administración.'
+            },
+            {
+                selector: '#search-container',
+                titulo: '🔍 Buscador',
+                desc: 'Buscá destinos, festivales o provincias directamente desde acá. Los resultados aparecen en tiempo real mientras escribís.'
+            },
+            {
+                selector: 'main',
+                titulo: '🌎 Contenido principal',
+                desc: 'Acá encontrás los destinos destacados, el clima en tiempo real de distintas regiones y las regiones más icónicas de Argentina.'
+            },
+            {
+                selector: 'footer',
+                titulo: '📌 Pie de página',
+                desc: 'Información sobre el proyecto Surify. Podés volver al inicio desde el logo en la parte superior.'
+            },
+            {
+                selector: '.fixed.bottom-6.right-6',
+                titulo: '🎵 Reproductor de música',
+                desc: 'Reproducí el himno de Surify mientras explorás la plataforma. Podés pausarlo o reanudarlo en cualquier momento.'
+            }
+        ];
+
+        window.surifyTogglePanel = function() {
+            panelAbierto = !panelAbierto;
+            document.getElementById('accPanel').classList.toggle('open', panelAbierto);
+        };
+
+        window.surifyAccTexto = function(size) {
+            document.documentElement.style.fontSize = tamanos[size];
+            ['small', 'normal', 'large', 'xlarge'].forEach(function(s) {
+                document.getElementById('acc-btn-' + s).classList.toggle('active', s === size);
+            });
+            localStorage.setItem('surify-text-size', size);
+        };
+
+        window.surifyToggleLector = function() {
+            lectorActivo = !lectorActivo;
+            var btn = document.getElementById('accReaderBtn');
+            var label = document.getElementById('accReaderLabel');
+            var status = document.getElementById('accReaderStatus');
+
+            btn.classList.toggle('active', lectorActivo);
+            btn.setAttribute('aria-pressed', lectorActivo);
+            label.textContent = lectorActivo ? 'Desactivar lector' : 'Activar lector';
+            status.style.display = lectorActivo ? 'block' : 'none';
+            document.body.style.cursor = lectorActivo ? 'text' : '';
+
+            if (lectorActivo) {
+                document.addEventListener('click', surifyLeerElemento, true);
+            } else {
+                document.removeEventListener('click', surifyLeerElemento, true);
+                window.speechSynthesis && window.speechSynthesis.cancel();
+            }
+        };
+
+        function surifyLeerElemento(e) {
+            if (!lectorActivo) return;
+
+            // No bloquear el botón de desactivar ni el panel
+            if (e.target.closest('#accPanel') || e.target.closest('.acc-fab')) return;
+
+            var texto = (e.target.innerText || e.target.textContent || e.target.alt || e.target.placeholder || '').trim();
+            if (texto.length > 2) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    var utt = new SpeechSynthesisUtterance(texto);
+                    utt.lang = 'es-ES';
+                    utt.rate = 0.9;
+                    window.speechSynthesis.speak(utt);
+                }
+            }
+        }
+
+        window.surifyIniciarTour = function() {
+            pasoActual = 0;
+            surifyTogglePanel();
+            surifyMostrarPaso();
+        };
+
+        function surifyMostrarPaso() {
+            if (pasoActual >= pasosTour.length) {
+                surifyCerrarTour();
+                return;
+            }
+
+            var paso = pasosTour[pasoActual];
+            var el = document.querySelector(paso.selector);
+            var highlight = document.getElementById('tourHighlight');
+            var tooltip = document.getElementById('tourTooltip');
+
+            document.getElementById('tourTitle').textContent = paso.titulo;
+            document.getElementById('tourDesc').textContent = paso.desc;
+            document.getElementById('tourStepInfo').textContent = (pasoActual + 1) + ' de ' + pasosTour.length;
+            document.getElementById('tourNextBtn').textContent = pasoActual === pasosTour.length - 1 ? 'Finalizar ✓' : 'Siguiente →';
+
+            if (el) {
+                var rect = el.getBoundingClientRect();
+                highlight.style.display = 'block';
+                highlight.style.top = (rect.top - 6) + 'px';
+                highlight.style.left = (rect.left - 6) + 'px';
+                highlight.style.width = (rect.width + 12) + 'px';
+                highlight.style.height = (rect.height + 12) + 'px';
+
+                var tooltipTop = rect.bottom + 16;
+                if (tooltipTop + 200 > window.innerHeight) tooltipTop = rect.top - 210;
+                if (tooltipTop < 10) tooltipTop = 10;
+                if (tooltipTop + 200 > window.innerHeight) tooltipTop = window.innerHeight - 220;
+                tooltip.style.top = tooltipTop + 'px';
+                tooltip.style.left = Math.min(Math.max(10, rect.left), window.innerWidth - 300) + 'px';
+
+                window.scrollTo({
+                    top: Math.max(0, rect.top + window.scrollY - 150),
+                    behavior: 'smooth'
+                });
+            }
+
+            tooltip.style.display = 'block';
+        }
+
+        window.surifySiguientePaso = function() {
+            pasoActual++;
+            surifyMostrarPaso();
+        };
+
+        window.surifyCerrarTour = function() {
+            document.getElementById('tourHighlight').style.display = 'none';
+            document.getElementById('tourTooltip').style.display = 'none';
+        };
+
+        // Restaurar tamaño guardado
+        document.addEventListener('DOMContentLoaded', function() {
+            var savedSize = localStorage.getItem('surify-text-size');
+            if (savedSize) surifyAccTexto(savedSize);
+        });
+    })();
+</script>
 
 <body class="flex flex-col min-h-screen antialiased">
 
@@ -75,71 +560,71 @@
             <nav class="hidden md:flex items-center gap-1 shrink-0">
                 @auth
                 @php
-                    $user = auth()->user();
-                    $modoUsuario = session('modo_usuario', false);
-                    $esAdmin = !$modoUsuario && ($user->hasRole('admin') || $user->hasRole('Admin'));
-                    $permisosUsuario = $user->permisos()->pluck('nombre')->toArray();
-                    $tieneAlguno = fn(array $perms) => !$modoUsuario && ($esAdmin || count(array_intersect($perms, $permisosUsuario)) > 0);
-                    $esOperador = !$modoUsuario && ($esAdmin || count($permisosUsuario) > 0);
+                $user = auth()->user();
+                $modoUsuario = session('modo_usuario', false);
+                $esAdmin = !$modoUsuario && ($user->hasRole('admin') || $user->hasRole('Admin'));
+                $permisosUsuario = $user->permisos()->pluck('nombre')->toArray();
+                $tieneAlguno = fn(array $perms) => !$modoUsuario && ($esAdmin || count(array_intersect($perms, $permisosUsuario)) > 0);
+                $esOperador = !$modoUsuario && ($esAdmin || count($permisosUsuario) > 0);
                 @endphp
 
                 {{-- Links públicos: solo si NO es operador o está en modo usuario --}}
                 @if(!$esOperador || $modoUsuario)
-                    <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">home</span> Inicio
-                    </a>
-                    <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">map</span> Mapa
-                    </a>
-                    <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">event</span> Eventos
-                    </a>
-                    <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">local_gas_station</span> Combustible
-                    </a>
+                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">home</span> Inicio
+                </a>
+                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">map</span> Mapa
+                </a>
+                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">event</span> Eventos
+                </a>
+                <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">local_gas_station</span> Combustible
+                </a>
                 @endif
 
                 {{-- Dashboard --}}
                 @if($esOperador)
-                    <span class="h-5 w-px bg-slate-200 mx-1"></span>
-                    <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
-                    </a>
+                <span class="h-5 w-px bg-slate-200 mx-1"></span>
+                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
+                </a>
                 @endif
 
                 {{-- Solo Admin --}}
                 @if($esAdmin)
-                    <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
-                    </a>
-                    <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
-                    </a>
+                <a href="{{ route('admin.roles.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Roles
+                </a>
+                <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">group</span> Usuarios
+                </a>
                 @endif
 
                 {{-- Dinámico por permisos --}}
                 @if($tieneAlguno(['crear_destino', 'modificar_destino', 'eliminar_destino', 'administrar_destinos_sugeridos']))
-                    <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
-                    </a>
+                <a href="{{ route('admin.destinos.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">landscape</span> Destinos
+                </a>
                 @endif
 
                 @if($tieneAlguno(['crear_evento', 'modificar_evento', 'eliminar_evento', 'administrar_eventos_sugeridos']))
-                    <a href="/admin/eventos" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">celebration</span> Festivales
-                    </a>
+                <a href="/admin/eventos" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">celebration</span> Festivales
+                </a>
                 @endif
 
                 @if($tieneAlguno(['administrar_resena', 'administrar_resenas', 'eliminar_comentario']))
-                    <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
-                    </a>
+                <a href="{{ route('admin.resenas.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reseñas
+                </a>
                 @endif
 
                 @if($tieneAlguno(['gestionar_gastronomia']))
-                    <a href="{{ route('admin.gastronomia.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">restaurant</span> Gastronomía
-                    </a>
+                <a href="{{ route('admin.gastronomia.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#28628f] hover:bg-slate-50 px-3 py-2 rounded-lg transition-all text-decoration-none flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">restaurant</span> Gastronomía
+                </a>
                 @endif
 
                 @else
@@ -157,22 +642,22 @@
 
                     {{-- Botón Ver como usuario / Vista Admin --}}
                     @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('Admin') || count(auth()->user()->permisos()->pluck('nombre')->toArray()) > 0)
-                        <form method="POST" action="{{ route('admin.cambiar_vista') }}">
-                            @csrf
-                            <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 hover:border-[#28628f] text-slate-500 hover:text-[#28628f] transition-all bg-white cursor-pointer flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">{{ session('modo_usuario') ? 'admin_panel_settings' : 'visibility' }}</span>
-                                {{ session('modo_usuario') ? 'Vista Admin' : 'Ver como usuario' }}
-                            </button>
-                        </form>
+                    <form method="POST" action="{{ route('admin.cambiar_vista') }}">
+                        @csrf
+                        <button type="submit" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 hover:border-[#28628f] text-slate-500 hover:text-[#28628f] transition-all bg-white cursor-pointer flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px]">{{ session('modo_usuario') ? 'admin_panel_settings' : 'visibility' }}</span>
+                            {{ session('modo_usuario') ? 'Vista Admin' : 'Ver como usuario' }}
+                        </button>
+                    </form>
                     @endif
 
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 hover:opacity-80 transition-all text-decoration-none">
                         @if(auth()->user()->avatar)
-                            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full border border-[#28628f]">
+                        <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full border border-[#28628f]">
                         @else
-                            <div class="w-8 h-8 rounded-full bg-[#28628f] text-white flex items-center justify-center text-sm font-bold">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                            </div>
+                        <div class="w-8 h-8 rounded-full bg-[#28628f] text-white flex items-center justify-center text-sm font-bold">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </div>
                         @endif
                         <span class="text-sm font-medium text-slate-700 hidden lg:block">{{ auth()->user()->name }}</span>
                     </a>
@@ -184,8 +669,8 @@
                     </form>
                 </div>
                 @else
-                    <a href="{{ route('login') }}" class="text-xs font-semibold px-4 py-2 rounded-full border border-slate-200 hover:border-[#28628f] text-slate-600 hover:text-[#28628f] transition-all bg-white text-decoration-none">Iniciar Sesión</a>
-                    <a href="{{ route('register') }}" class="text-xs font-semibold px-4 py-2 rounded-full bg-[#28628f] hover:bg-[#1a4669] text-white transition-all shadow-sm text-decoration-none">Registrarse</a>
+                <a href="{{ route('login') }}" class="text-xs font-semibold px-4 py-2 rounded-full border border-slate-200 hover:border-[#28628f] text-slate-600 hover:text-[#28628f] transition-all bg-white text-decoration-none">Iniciar Sesión</a>
+                <a href="{{ route('register') }}" class="text-xs font-semibold px-4 py-2 rounded-full bg-[#28628f] hover:bg-[#1a4669] text-white transition-all shadow-sm text-decoration-none">Registrarse</a>
                 @endauth
             </div>
         </div>
@@ -242,6 +727,7 @@
                 if (progress > 85) progress = 85;
                 bar.style.width = progress + '%';
             }, 100);
+
             function ocultarPantalla() {
                 if (oculto) return;
                 oculto = true;
@@ -249,7 +735,9 @@
                 bar.style.width = '100%';
                 setTimeout(() => {
                     screen.classList.add('oculto');
-                    setTimeout(() => { if (screen.parentNode) screen.remove(); }, 500);
+                    setTimeout(() => {
+                        if (screen.parentNode) screen.remove();
+                    }, 500);
                 }, 200);
             }
             document.addEventListener('DOMContentLoaded', ocultarPantalla);
@@ -284,7 +772,9 @@
                         status.className = "text-[10px] text-amber-500 font-bold tracking-wide animate-pulse";
                     });
                 }
-            }, { once: true });
+            }, {
+                once: true
+            });
 
             btn.addEventListener('click', function() {
                 if (audio.paused) {
@@ -312,7 +802,7 @@
                     const form = e.target;
                     const titleText = form.dataset.title || '¿Estás seguro?';
                     const warningText = form.dataset.text || '¡No vas a poder revertir esto!';
-                    
+
                     Swal.fire({
                         title: titleText,
                         text: warningText,
@@ -335,4 +825,5 @@
     </script>
 
 </body>
+
 </html>
