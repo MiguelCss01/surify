@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Evento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventoController extends Controller
 {
@@ -43,6 +44,19 @@ class EventoController extends Controller
             ->limit(3)
             ->get();
 
-        return view('eventos.show', compact('evento', 'eventosRelacionados'));
+        $esVisitado = false;
+        $esFavorito = false;
+
+        if (Auth::check()) {
+            $esVisitado = \App\Models\EventoVisitado::where('user_id', Auth::id())
+                ->where('evento_id', $evento->id)
+                ->exists();
+
+            $esFavorito = \App\Models\Favorito::where('user_id', Auth::id())
+                ->where('evento_id', $evento->id)
+                ->exists();
+        }
+
+        return view('eventos.show', compact('evento', 'eventosRelacionados', 'esVisitado', 'esFavorito'));
     }
 }
