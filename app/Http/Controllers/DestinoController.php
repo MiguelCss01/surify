@@ -89,8 +89,13 @@ class DestinoController extends Controller
 
         if ($destino->ubicacion) {
             $coords = DB::select('SELECT ST_Y(ubicacion::geometry) as lat, ST_X(ubicacion::geometry) as lng FROM destinos WHERE id = ?', [$destino->id])[0];
-            $clima = $this->weather->getCurrentWeather($coords->lat, $coords->lng);
-            $pronostico = $this->weather->getForecast($coords->lat, $coords->lng);
+            try {
+                $clima = $this->weather->getCurrentWeather($coords->lat, $coords->lng);
+                $pronostico = $this->weather->getForecast($coords->lat, $coords->lng);
+            } catch (\Exception $e) {
+                $clima = null;
+                $pronostico = null;
+            }
         }
 
         return view('destinos.show', compact('destino', 'clima', 'pronostico'));

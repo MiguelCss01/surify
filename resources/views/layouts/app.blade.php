@@ -55,6 +55,495 @@
     </script>
 </head>
 
+{{-- ============================================
+     PANEL DE ACCESIBILIDAD SURIFY
+     ============================================ --}}
+
+<style>
+    .acc-fab {
+        position: fixed;
+        bottom: 24px;
+        left: 24px;
+        z-index: 9998;
+    }
+
+    .acc-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #28628f;
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+        transition: background 0.2s;
+    }
+
+    .acc-btn:hover {
+        background: #1a4669;
+    }
+
+    .acc-panel {
+        position: fixed;
+        bottom: 84px;
+        left: 24px;
+        z-index: 9997;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 20px;
+        width: 260px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        display: none;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .acc-panel.open {
+        display: flex;
+    }
+
+    .acc-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0;
+    }
+
+    .acc-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .acc-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .acc-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .text-btn {
+        flex: 1;
+        padding: 6px 0;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        font-weight: 700;
+        color: #28628f;
+        transition: all 0.15s;
+    }
+
+    .text-btn:hover {
+        background: #f0f7ff;
+        border-color: #28628f;
+    }
+
+    .text-btn.active {
+        background: #28628f;
+        color: white;
+        border-color: #28628f;
+    }
+
+    .reader-btn {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: white;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        color: #28628f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.15s;
+    }
+
+    .reader-btn:hover {
+        background: #f0f7ff;
+        border-color: #28628f;
+    }
+
+    .reader-btn.active {
+        background: #28628f;
+        color: white;
+    }
+
+    .tour-btn {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        background: #28628f;
+        color: white;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.15s;
+    }
+
+    .tour-btn:hover {
+        background: #1a4669;
+    }
+
+    .acc-divider {
+        height: 1px;
+        background: #f1f5f9;
+        margin: 0;
+    }
+
+    .tour-highlight {
+        position: fixed;
+        border: 3px solid #28628f;
+        border-radius: 12px;
+        z-index: 9996;
+        box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.45);
+        transition: all 0.4s ease;
+        pointer-events: none;
+        display: none;
+    }
+
+    .tour-tooltip {
+        position: fixed;
+        z-index: 9999;
+        background: white;
+        border-radius: 14px;
+        padding: 18px 20px;
+        width: 280px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        border: 1px solid #e2e8f0;
+        display: none;
+    }
+
+    .tour-tooltip h3 {
+        margin: 0 0 6px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .tour-tooltip p {
+        margin: 0 0 14px;
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.5;
+    }
+
+    .tour-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .tour-step-info {
+        font-size: 12px;
+        color: #94a3b8;
+        font-weight: 600;
+    }
+
+    .tour-next {
+        padding: 8px 16px;
+        background: #28628f;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .tour-next:hover {
+        background: #1a4669;
+    }
+
+    .tour-skip {
+        font-size: 12px;
+        color: #94a3b8;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .tour-skip:hover {
+        color: #64748b;
+    }
+
+    .reader-status {
+        font-size: 11px;
+        color: #94a3b8;
+        text-align: center;
+        display: none;
+    }
+</style>
+
+{{-- Botón flotante y panel --}}
+<div class="acc-fab">
+    <div class="acc-panel" id="accPanel" role="dialog" aria-label="Panel de accesibilidad">
+
+        <p class="acc-title">♿ Accesibilidad</p>
+
+        {{-- Tamaño de texto --}}
+        <div class="acc-section">
+            <span class="acc-label">Tamaño de texto</span>
+            <div class="acc-row">
+                <button class="text-btn" onclick="surifyAccTexto('small')" id="acc-btn-small" style="font-size:12px" aria-label="Texto pequeño">A−</button>
+                <button class="text-btn active" onclick="surifyAccTexto('normal')" id="acc-btn-normal" style="font-size:15px" aria-label="Texto normal">A</button>
+                <button class="text-btn" onclick="surifyAccTexto('large')" id="acc-btn-large" style="font-size:18px" aria-label="Texto grande">A+</button>
+                <button class="text-btn" onclick="surifyAccTexto('xlarge')" id="acc-btn-xlarge" style="font-size:21px" aria-label="Texto muy grande">A++</button>
+            </div>
+        </div>
+
+        <div class="acc-divider"></div>
+
+        {{-- Lector de pantalla --}}
+        <div class="acc-section">
+            <span class="acc-label">Lector de pantalla</span>
+            <button class="reader-btn" id="accReaderBtn" onclick="surifyToggleLector()" aria-pressed="false">
+                <span aria-hidden="true">🔊</span>
+                <span id="accReaderLabel">Activar lector</span>
+            </button>
+            <p class="reader-status" id="accReaderStatus" role="status">
+                Hacé clic en cualquier texto para escucharlo
+            </p>
+        </div>
+
+        <div class="acc-divider"></div>
+
+        {{-- Tour guiado --}}
+        <div class="acc-section">
+            <span class="acc-label">Tour guiado</span>
+            <button class="tour-btn" onclick="surifyIniciarTour()" aria-label="Iniciar recorrido guiado por la página">
+                <span aria-hidden="true">🗺️</span>
+                <span>Recorrer la página</span>
+            </button>
+        </div>
+
+    </div>
+
+    <button class="acc-btn" onclick="surifyTogglePanel()" aria-label="Abrir opciones de accesibilidad" title="Accesibilidad">
+        ♿
+    </button>
+</div>
+
+{{-- Tour overlay --}}
+<div class="tour-highlight" id="tourHighlight" aria-hidden="true"></div>
+<div class="tour-tooltip" id="tourTooltip" role="dialog" aria-live="polite">
+    <h3 id="tourTitle"></h3>
+    <p id="tourDesc"></p>
+    <div class="tour-nav">
+        <button class="tour-skip" onclick="surifyCerrarTour()">Saltar tour</button>
+        <span class="tour-step-info" id="tourStepInfo"></span>
+        <button class="tour-next" id="tourNextBtn" onclick="surifySiguientePaso()">Siguiente →</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        var panelAbierto = false;
+        var lectorActivo = false;
+        var pasoActual = 0;
+
+        var tamanos = {
+            small: '14px',
+            normal: '16px',
+            large: '19px',
+            xlarge: '22px'
+        };
+
+        var pasosTour = [{
+                selector: 'header',
+                titulo: '🧭 Barra de navegación',
+                desc: 'Desde acá podés acceder a todas las secciones: Inicio, Mapa interactivo, Eventos y Combustible. Si tenés una cuenta con permisos, también verás el panel de administración.'
+            },
+            {
+                selector: '#search-container',
+                titulo: '🔍 Buscador',
+                desc: 'Buscá destinos, festivales o provincias directamente desde acá. Los resultados aparecen en tiempo real mientras escribís.'
+            },
+            {
+                selector: 'main',
+                titulo: '🌎 Contenido principal',
+                desc: 'Acá encontrás los destinos destacados, el clima en tiempo real de distintas regiones y las regiones más icónicas de Argentina.'
+            },
+            {
+                selector: 'footer',
+                titulo: '📌 Pie de página',
+                desc: 'Información sobre el proyecto Surify. Podés volver al inicio desde el logo en la parte superior.'
+            },
+            {
+                selector: '.fixed.bottom-6.right-6',
+                titulo: '🎵 Reproductor de música',
+                desc: 'Reproducí el himno de Surify mientras explorás la plataforma. Podés pausarlo o reanudarlo en cualquier momento.'
+            }
+        ];
+
+        window.surifyTogglePanel = function() {
+            panelAbierto = !panelAbierto;
+            document.getElementById('accPanel').classList.toggle('open', panelAbierto);
+        };
+
+        window.surifyAccTexto = function(size) {
+            document.documentElement.style.fontSize = tamanos[size];
+            ['small', 'normal', 'large', 'xlarge'].forEach(function(s) {
+                document.getElementById('acc-btn-' + s).classList.toggle('active', s === size);
+            });
+            localStorage.setItem('surify-text-size', size);
+        };
+
+        window.surifyToggleLector = function() {
+            lectorActivo = !lectorActivo;
+            var btn = document.getElementById('accReaderBtn');
+            var label = document.getElementById('accReaderLabel');
+            var status = document.getElementById('accReaderStatus');
+
+            btn.classList.toggle('active', lectorActivo);
+            btn.setAttribute('aria-pressed', lectorActivo);
+            label.textContent = lectorActivo ? 'Desactivar lector' : 'Activar lector';
+            status.style.display = lectorActivo ? 'block' : 'none';
+            document.body.style.cursor = lectorActivo ? 'text' : '';
+
+            if (lectorActivo) {
+                document.addEventListener('click', surifyLeerElemento, true);
+            } else {
+                document.removeEventListener('click', surifyLeerElemento, true);
+                window.speechSynthesis && window.speechSynthesis.cancel();
+            }
+        };
+
+        function surifyLeerElemento(e) {
+            if (!lectorActivo) return;
+
+            // No bloquear el botón de desactivar ni el panel
+            if (e.target.closest('#accPanel') || e.target.closest('.acc-fab')) return;
+
+            var texto = (e.target.innerText || e.target.textContent || e.target.alt || e.target.placeholder || '').trim();
+            if (texto.length > 2) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    var utt = new SpeechSynthesisUtterance(texto);
+                    utt.lang = 'es-ES';
+                    utt.rate = 0.9;
+                    window.speechSynthesis.speak(utt);
+                }
+            }
+        }
+
+        window.surifyIniciarTour = function() {
+            pasoActual = 0;
+            surifyTogglePanel();
+            surifyMostrarPaso();
+        };
+
+        function surifyMostrarPaso() {
+            if (pasoActual >= pasosTour.length) {
+                surifyCerrarTour();
+                return;
+            }
+
+            var paso = pasosTour[pasoActual];
+            var el = document.querySelector(paso.selector);
+            var highlight = document.getElementById('tourHighlight');
+            var tooltip = document.getElementById('tourTooltip');
+
+            document.getElementById('tourTitle').textContent = paso.titulo;
+            document.getElementById('tourDesc').textContent = paso.desc;
+            document.getElementById('tourStepInfo').textContent = (pasoActual + 1) + ' de ' + pasosTour.length;
+            document.getElementById('tourNextBtn').textContent = pasoActual === pasosTour.length - 1 ? 'Finalizar ✓' : 'Siguiente →';
+
+            if (el) {
+                var rect = el.getBoundingClientRect();
+                highlight.style.display = 'block';
+                highlight.style.top = (rect.top - 6) + 'px';
+                highlight.style.left = (rect.left - 6) + 'px';
+                highlight.style.width = (rect.width + 12) + 'px';
+                highlight.style.height = (rect.height + 12) + 'px';
+
+                var tooltipTop = rect.bottom + 16;
+                if (tooltipTop + 200 > window.innerHeight) tooltipTop = rect.top - 210;
+                if (tooltipTop < 10) tooltipTop = 10;
+                if (tooltipTop + 200 > window.innerHeight) tooltipTop = window.innerHeight - 220;
+                tooltip.style.top = tooltipTop + 'px';
+                tooltip.style.left = Math.min(Math.max(10, rect.left), window.innerWidth - 300) + 'px';
+
+                window.scrollTo({
+                    top: Math.max(0, rect.top + window.scrollY - 150),
+                    behavior: 'smooth'
+                });
+            }
+
+            tooltip.style.display = 'block';
+        }
+
+        window.surifySiguientePaso = function() {
+            pasoActual++;
+            surifyMostrarPaso();
+        };
+
+        window.surifyCerrarTour = function() {
+            document.getElementById('tourHighlight').style.display = 'none';
+            document.getElementById('tourTooltip').style.display = 'none';
+        };
+
+        // Restaurar tamaño guardado
+        document.addEventListener('DOMContentLoaded', function() {
+            var savedSize = localStorage.getItem('surify-text-size');
+            if (savedSize) surifyAccTexto(savedSize);
+        });
+    })();
+</script>
+
+<style>
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(function(el) {
+            observer.observe(el);
+        });
+    });
+</script>
+
 <body class="flex flex-col min-h-screen antialiased">
 
     {{-- Pantalla de carga --}}
