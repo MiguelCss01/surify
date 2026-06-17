@@ -53,7 +53,7 @@ class DestinoController extends Controller
             'provincia_id' => 'required|exists:provincias,id',
             'descripcion'  => 'nullable|string',
             'categoria'    => 'nullable|string|max:255',
-            'rango_precio' => 'nullable|string|max:255',
+            'rango_precio' => 'required|string|max:255',
             'imagen_url'   => 'nullable|string|max:255',
         ]);
 
@@ -84,7 +84,7 @@ class DestinoController extends Controller
             'provincia_id' => 'required|exists:provincias,id',
             'descripcion'  => 'nullable|string',
             'categoria'    => 'nullable|string|max:255',
-            'rango_precio' => 'nullable|string|max:255',
+            'rango_precio' => 'required|string|max:255',
             'imagen_url'   => 'nullable|string|max:255',
         ]);
 
