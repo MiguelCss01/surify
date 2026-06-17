@@ -5,7 +5,7 @@
 @section('content')
 <div class="antialiased min-h-screen">
 
-    <!-- ==================== HERO BANNER CON CARRUSEL DINÁMICO ==================== -->
+    <!--HERO BANNER CON CARRUSEL DINÁMICO-->
     <section class="relative w-full h-[550px] flex items-center justify-center overflow-hidden rounded-2xl shadow-xl mx-auto max-w-7xl bg-slate-900 border border-slate-200/10">
 
         <!-- Contenedor del Carrusel -->
@@ -16,7 +16,7 @@
                 class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 {{ $index == 0 ? 'opacity-100' : 'opacity-0' }} filter brightness-[0.65]" alt="{{ $banner->titulo }}">
             @endforeach
             @else
-            <!-- CORRECCIÓN: URLs optimizadas de respaldo con compresión automática y carga garantizada -->
+            <!--URLs optimizadas-->
             <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920&auto=format&fit=crop" class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100 filter brightness-[0.65]" alt="Iguazú">
             <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1920&auto=format&fit=crop" class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0 filter brightness-[0.65]" alt="Perito Moreno">
             <img src="https://images.unsplash.com/photo-1606293926075-69a00dbfde81?q=80&w=1920&auto=format&fit=crop" class="carousel-item absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0 filter brightness-[0.65]" alt="Humahuaca">
@@ -52,7 +52,7 @@
             </div>
         </div>
     </section>
-    {{-- ========== DESTINOS CERCANOS ========== --}}
+    {{--DESTINOS CERCANOS--}}
     @auth
     <section class="max-w-7xl mx-auto px-6 md:px-12 py-8" id="seccion-cercanos" style="display:none;">
         <div class="flex items-center justify-between mb-6">
@@ -66,8 +66,8 @@
         </div>
     </section>
     @endauth
-    <!-- ==================== CLIMA EN MODO CLARO (OPENWEATHER API) ==================== -->
-    <section class="max-w-7xl mx-auto px-6 md:px-12 py-12">
+    <!--CLIMA EN MODO CLARO (OPENWEATHER API)-->
+    <section class="max-w-7xl mx-auto px-6 md:px-12 py-12 reveal">
         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm backdrop-blur-xl">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-slate-800 tracking-tight">Clima actual en tiempo real</h3>
@@ -77,7 +77,7 @@
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                 @if(isset($climaData))
                 @foreach($climaData as $clima)
-                <div class="bg-slate-50 p-4 rounded-xl flex flex-col items-center text-center border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer">
+                <div class="bg-slate-50 p-4 rounded-xl flex flex-col items-center text-center border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer reveal">
                     <span class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-2">{{ $clima['provincia'] }}</span>
                     <img src="https://openweathermap.org/img/wn/{{ $clima['icono'] }}@2x.png" class="w-12 h-12" alt="Weather icon">
                     <span class="text-2xl font-black text-slate-800">{{ round($clima['temp']) }}°C</span>
@@ -86,19 +86,19 @@
                 @endforeach
                 @else
                 <!-- Tarjetas Mock de Respaldo Adaptadas a Fondo Claro -->
-                <div class="bg-slate-50 p-4 rounded-xl flex flex-col items-center text-center border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer">
+                <div class="bg-slate-50 p-4 rounded-xl flex flex-col items-center text-center border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer reveal">
                     <span class="text-xs text-slate-500 font-bold tracking-wider uppercase mb-1">Patagonia</span>
                     <span class="material-symbols-outlined text-3xl text-sky-600 my-2">ac_unit</span>
                     <span class="text-2xl font-bold text-slate-800">2°C</span>
                     <span class="text-xs text-slate-500">Bariloche</span>
                 </div>
-                <div class="bg-slate-50 p-4 rounded-xl flex flex-col items-center text-center border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer">
+                <div class="bg-slate-50 p-4 rounded-xl flex flex-col items-center text-center border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer reveal">
                     <span class="text-xs text-slate-500 font-bold tracking-wider uppercase mb-1">Cuyo</span>
                     <span class="material-symbols-outlined text-3xl text-amber-500 my-2">light_mode</span>
                     <span class="text-2xl font-bold text-slate-800">24°C</span>
                     <span class="text-xs text-slate-500">Mendoza</span>
                 </div>
-                <div class="bg-slate-50 p-4 rounded-xl flex flex-col items-center text-center border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer">
+                <div class="bg-slate-50 p-4 rounded-xl flex flex-col items-center text-center border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer reveal">
                     <span class="text-xs text-slate-500 font-bold tracking-wider uppercase mb-1">Norte</span>
                     <span class="material-symbols-outlined text-3xl text-amber-600 my-2">partly_cloudy_day</span>
                     <span class="text-2xl font-bold text-slate-800">28°C</span>
@@ -121,8 +121,8 @@
         </div>
     </section>
 
-    <!-- ==================== REGIONES DESTACADAS EN MODO CLARO ==================== -->
-    <section class="max-w-7xl mx-auto px-6 md:px-12 pb-24">
+    <!--REGIONES DESTACADAS EN MODO CLARO-->
+    <section class="max-w-7xl mx-auto px-6 md:px-12 pb-24 reveal">
         <h2 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Regiones destacadas</h2>
         <p class="text-slate-500 mb-8">Explora los paisajes más icónicos de Argentina.</p>
 
@@ -146,7 +146,7 @@
             {{-- Mostrar destinos reales de la BD --}}
             @foreach($destinos->take(6) as $destino)
             <a href="{{ route('destinos.show', $destino['id']) }}"
-                class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 text-decoration-none">
+                class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 text-decoration-none reveal">
                 <div class="h-56 overflow-hidden">
                     <img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                         src="{{ $destino['imagen_url'] ?? 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80' }}"

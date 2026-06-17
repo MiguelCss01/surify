@@ -26,7 +26,7 @@
             </span>
         </div>
         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Destinos</p>
-        <p class="text-3xl font-black text-slate-800">{{ str_pad($countDestinos, 2, '0', STR_PAD_LEFT) }}</p>
+        <p class="text-3xl font-black text-slate-800 contador" data-target="{{ $countDestinos }}">00</p>
         <div class="mt-3 h-1 bg-slate-100 rounded-full overflow-hidden">
             <div class="h-full bg-[#28628f] w-3/4 rounded-full"></div>
         </div>
@@ -40,7 +40,7 @@
             <span class="text-xs font-bold text-slate-400">Total registrados</span>
         </div>
         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Usuarios</p>
-        <p class="text-3xl font-black text-slate-800">{{ str_pad($countUsuarios, 2, '0', STR_PAD_LEFT) }}</p>
+        <p class="text-3xl font-black text-slate-800 contador" data-target="{{ $countUsuarios }}">00</p>
         <div class="mt-3 flex gap-1 items-end h-8">
             <div class="w-full rounded-t-sm bg-amber-200" style="height:40%"></div>
             <div class="w-full rounded-t-sm bg-amber-200" style="height:60%"></div>
@@ -60,7 +60,7 @@
             <span class="text-[10px] font-bold px-2 py-1 bg-rose-50 text-rose-500 rounded-full border border-rose-100">PRÓXIMOS</span>
         </div>
         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Eventos</p>
-        <p class="text-3xl font-black text-slate-800">{{ str_pad($countEventos, 2, '0', STR_PAD_LEFT) }}</p>
+        <p class="text-3xl font-black text-slate-800 contador" data-target="{{ $countEventos }}">00</p>
         <a href="{{ route('eventos.index') }}" class="mt-3 text-rose-400 text-xs font-bold flex items-center gap-1 hover:underline text-decoration-none">
             Ver todos <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
         </a>
@@ -304,5 +304,24 @@
                 });
             });
     }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.contador').forEach(function(el) {
+        var target = parseInt(el.getAttribute('data-target'));
+        var duration = 1500;
+        var step = target / (duration / 16);
+        var current = 0;
+        var timer = setInterval(function() {
+            current += step;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            el.textContent = String(Math.floor(current)).padStart(2, '0');
+        }, 16);
+    });
+});
 </script>
 @endsection
