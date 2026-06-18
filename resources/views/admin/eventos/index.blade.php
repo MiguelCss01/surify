@@ -134,21 +134,26 @@
                                 </button>
                             </form>
                             @endif
+                            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('Admin') || auth()->user()->hasPermiso('modificar_evento'))
                             <a href="{{ route('admin.eventos.edit', $evento) }}"
                                 class="w-9 h-9 bg-slate-100 hover:bg-[#28628f]/10 hover:text-[#28628f] text-slate-400 rounded-lg flex items-center justify-center transition-all text-decoration-none"
                                 title="Editar">
                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                             </a>
-                            <form method="POST" action="{{ route('admin.eventos.destroy', $evento) }}"
-                                onsubmit="return confirm('¿Seguro que querés eliminar {{ $evento->nombre }}?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="w-9 h-9 bg-slate-100 hover:bg-rose-50 hover:text-rose-500 text-slate-400 rounded-lg flex items-center justify-center transition-all"
-                                    title="Eliminar">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span>
-                                </button>
-                            </form>
+                            @endif
+                            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('Admin') || auth()->user()->hasPermiso('eliminar_evento'))
+
+                                <form method="POST" action="{{ route('admin.eventos.destroy', $evento) }}"
+                                    onsubmit="return confirm('¿Seguro que querés eliminar {{ $evento->nombre }}?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="w-9 h-9 bg-slate-100 hover:bg-rose-50 hover:text-rose-500 text-slate-400 rounded-lg flex items-center justify-center transition-all"
+                                        title="Eliminar">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    </button>
+                                </form>
+                            @endif    
                         </div>
                     </td>
                 </tr>
