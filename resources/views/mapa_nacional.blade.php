@@ -172,7 +172,7 @@
     <div class="ui-overlay">
         <div style="display: flex; justify-content: space-between; width: 100%;">
 
-            <div class="interactuable">
+            <div class="interactuable" id="mobile-sidebar-container">
                 <aside class="light-panel" style="border-radius: 16px; padding: 16px; width: 230px; max-height: 450px; overflow-y: auto;">
                     <p class="menu-label">Explorador</p>
                     <ul class="menu-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;">
@@ -232,6 +232,11 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Botón flotante solo para celulares -->
+        <button id="btn-toggle-sidebar" class="md:hidden interactuable light-panel" style="position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); border-radius: 99px; padding: 10px 20px; font-weight: 800; font-size: 13px; color: #28628f !important; display: flex; align-items: center; gap: 8px; cursor: pointer; border: 2px solid #28628f; z-index: 50;">
+            <i class="fa-solid fa-eye-slash"></i> Ocultar Explorador
+        </button>
     </div>
 </div>
 
@@ -652,5 +657,49 @@
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_KEY') }}&libraries=places"></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnToggle = document.getElementById('btn-toggle-sidebar');
+        const sidebar = document.getElementById('mobile-sidebar-container');
+        let sidebarVisible = true;
+        
+        if(btnToggle && sidebar) {
+            btnToggle.addEventListener('click', function() {
+                sidebarVisible = !sidebarVisible;
+                if(sidebarVisible) {
+                    sidebar.style.display = 'block';
+                    btnToggle.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Explorador';
+                } else {
+                    sidebar.style.display = 'none';
+                    btnToggle.innerHTML = '<i class="fa-solid fa-list"></i> Ver Explorador';
+                }
+            });
+        }
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnToggle = document.getElementById('btn-toggle-sidebar');
+        const sidebar = document.getElementById('mobile-sidebar-container');
+        let sidebarVisible = true;
+        
+        if(btnToggle && sidebar) {
+            btnToggle.addEventListener('click', function() {
+                sidebarVisible = !sidebarVisible;
+                if(sidebarVisible) {
+                    sidebar.style.display = 'block';
+                    btnToggle.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Explorador';
+                } else {
+                    sidebar.style.display = 'none';
+                    btnToggle.innerHTML = '<i class="fa-solid fa-list"></i> Ver Explorador';
+                }
+            });
+        }
+    });
+</script>
 
 @endsection
