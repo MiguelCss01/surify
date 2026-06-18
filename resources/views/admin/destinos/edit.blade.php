@@ -42,9 +42,9 @@
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-[#28628f] focus:border-[#28628f]">
                     <option value="">Seleccioná una provincia</option>
                     @foreach($provincias as $provincia)
-                        <option value="{{ $provincia->id }}" {{ old('provincia_id', $destino->provincia_id) == $provincia->id ? 'selected' : '' }}>
-                            {{ $provincia->nombre }}
-                        </option>
+                    <option value="{{ $provincia->id }}" {{ old('provincia_id', $destino->provincia_id) == $provincia->id ? 'selected' : '' }}>
+                        {{ $provincia->nombre }}
+                    </option>
                     @endforeach
                 </select>
                 @error('provincia_id') <p class="text-rose-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -54,14 +54,14 @@
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Categoría</label>
                 <div class="flex flex-wrap gap-2" id="categorias-container">
                     @foreach(['Patrimonio Natural', 'Aventura', 'Gastronomía', 'Familiar', 'Cultural', 'Nieve', 'Playa', 'Ciudad'] as $cat)
-                        <button type="button"
-                            onclick="toggleCategoria(this, '{{ $cat }}')"
-                            class="categoria-btn px-4 py-2 rounded-full border text-xs font-bold transition-all
+                    <button type="button"
+                        onclick="toggleCategoria(this, '{{ $cat }}')"
+                        class="categoria-btn px-4 py-2 rounded-full border text-xs font-bold transition-all
                                 {{ old('categoria', $destino->categoria) == $cat
                                     ? 'activo bg-[#28628f]/10 border-[#28628f] text-[#28628f]'
                                     : 'border-slate-200 text-slate-500 hover:border-[#28628f] hover:text-[#28628f]' }}">
-                            {{ $cat }}
-                        </button>
+                        {{ $cat }}
+                    </button>
                     @endforeach
                 </div>
                 <input type="hidden" name="categoria" id="categoria-input" value="{{ old('categoria', $destino->categoria) }}">
@@ -90,11 +90,44 @@
                     placeholder="https://..."
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-[#28628f] focus:border-[#28628f]">
                 @if($destino->imagen_url)
-                    <div class="mt-3 flex items-center gap-3">
-                        <img src="{{ $destino->imagen_url }}" class="w-16 h-16 rounded-xl object-cover border border-slate-200" alt="Preview">
-                        <p class="text-xs text-slate-400">Imagen actual</p>
-                    </div>
+                <div class="mt-3 flex items-center gap-3">
+                    <img src="{{ $destino->imagen_url }}" class="w-16 h-16 rounded-xl object-cover border border-slate-200" alt="Preview">
+                    <p class="text-xs text-slate-400">Imagen actual</p>
+                </div>
                 @endif
+            </div>
+        </div>
+    </div>
+
+    {{-- Ubicación --}}
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-base font-black text-slate-700 mb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#28628f]">location_on</span>
+            Ubicación
+        </h2>
+        <p class="text-xs text-slate-400 mb-5">Coordenadas actuales del destino en el mapa.</p>
+
+        @php
+        $coords = null;
+        if ($destino->ubicacion) {
+        $coords = \DB::select('SELECT ST_Y(ubicacion::geometry) as lat, ST_X(ubicacion::geometry) as lng FROM destinos WHERE id = ?', [$destino->id])[0] ?? null;
+        }
+        @endphp
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Latitud</label>
+                <input type="text" name="latitud"
+                    value="{{ old('latitud', $coords->lat ?? '') }}"
+                    placeholder="Ej: -50.4967"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-[#28628f] focus:border-[#28628f]">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Longitud</label>
+                <input type="text" name="longitud"
+                    value="{{ old('longitud', $coords->lng ?? '') }}"
+                    placeholder="Ej: -73.1377"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-[#28628f] focus:border-[#28628f]">
             </div>
         </div>
     </div>
@@ -118,7 +151,7 @@
     {{-- Botones guardar --}}
     <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
         <a href="{{ route('admin.destinos.index') }}"
-           class="w-full sm:w-auto px-8 py-3 rounded-full border border-slate-200 text-slate-500 font-bold text-sm hover:bg-slate-50 transition-all text-center text-decoration-none">
+            class="w-full sm:w-auto px-8 py-3 rounded-full border border-slate-200 text-slate-500 font-bold text-sm hover:bg-slate-50 transition-all text-center text-decoration-none">
             Cancelar
         </a>
         <button type="submit"
@@ -139,7 +172,7 @@
     </h2>
     <p class="text-xs text-slate-500 mb-4">Eliminar este destino borrará también todas sus reseñas y favoritos asociados.</p>
     <form method="POST" action="{{ route('admin.destinos.destroy', $destino) }}"
-          class="form-eliminar" data-title="¿Eliminar destino?" data-text="¿Seguro que querés eliminar {{ $destino->nombre }}? Esta acción no se puede deshacer.">
+        class="form-eliminar" data-title="¿Eliminar destino?" data-text="¿Seguro que querés eliminar {{ $destino->nombre }}? Esta acción no se puede deshacer.">
         @csrf
         @method('DELETE')
         <button type="submit"
@@ -151,23 +184,23 @@
 </div>
 
 <script>
-function toggleCategoria(btn, valor) {
-    const input = document.getElementById('categoria-input');
-    const activo = btn.classList.contains('activo');
+    function toggleCategoria(btn, valor) {
+        const input = document.getElementById('categoria-input');
+        const activo = btn.classList.contains('activo');
 
-    document.querySelectorAll('.categoria-btn').forEach(b => {
-        b.classList.remove('activo', 'bg-[#28628f]/10', 'border-[#28628f]', 'text-[#28628f]');
-        b.classList.add('border-slate-200', 'text-slate-500');
-    });
+        document.querySelectorAll('.categoria-btn').forEach(b => {
+            b.classList.remove('activo', 'bg-[#28628f]/10', 'border-[#28628f]', 'text-[#28628f]');
+            b.classList.add('border-slate-200', 'text-slate-500');
+        });
 
-    if (!activo) {
-        btn.classList.add('activo', 'bg-[#28628f]/10', 'border-[#28628f]', 'text-[#28628f]');
-        btn.classList.remove('border-slate-200', 'text-slate-500');
-        input.value = valor;
-    } else {
-        input.value = '';
+        if (!activo) {
+            btn.classList.add('activo', 'bg-[#28628f]/10', 'border-[#28628f]', 'text-[#28628f]');
+            btn.classList.remove('border-slate-200', 'text-slate-500');
+            input.value = valor;
+        } else {
+            input.value = '';
+        }
     }
-}
 </script>
 
 @endsection

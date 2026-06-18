@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Destino;
 use App\Models\Provincia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DestinoController extends Controller
 {
@@ -55,9 +56,11 @@ class DestinoController extends Controller
             'categoria'    => 'nullable|string|max:255',
             'rango_precio' => 'required|string|max:255',
             'imagen_url'   => 'nullable|string|max:255',
+            'latitud'      => 'nullable|numeric|between:-90,90',
+            'longitud'     => 'nullable|numeric|between:-180,180',
         ]);
 
-        Destino::create([
+        $destino = Destino::create([
             'nombre'       => $request->nombre,
             'provincia_id' => $request->provincia_id,
             'descripcion'  => $request->descripcion,
@@ -67,14 +70,16 @@ class DestinoController extends Controller
             'activo'       => $request->has('activo'),
         ]);
 
+        // Guardar ubicación PostGIS si se ingresaron coordenadas
+        if ($request->filled('latitud') && $request->filled('longitud')) {
+            DB::statement(
+                'UPDATE destinos SET ubicacion = ST_SetSRID(ST_MakePoint(?, ?), 4326) WHERE id = ?',
+                [$request->longitud, $request->latitud, $destino->id]
+            );
+        }
+
         return redirect()->route('admin.destinos.index')
             ->with('success', 'Destino creado correctamente.');
-    }
-
-    public function edit(Destino $destino)
-    {
-        $provincias = Provincia::orderBy('nombre')->get();
-        return view('admin.destinos.edit', compact('destino', 'provincias'));
     }
 
     public function update(Request $request, Destino $destino)
@@ -86,6 +91,8 @@ class DestinoController extends Controller
             'categoria'    => 'nullable|string|max:255',
             'rango_precio' => 'required|string|max:255',
             'imagen_url'   => 'nullable|string|max:255',
+            'latitud'      => 'nullable|numeric|between:-90,90',
+            'longitud'     => 'nullable|numeric|between:-180,180',
         ]);
 
         $destino->update([
@@ -98,10 +105,22 @@ class DestinoController extends Controller
             'activo'       => $request->has('activo'),
         ]);
 
+        if ($request->filled('latitud') && $request->filled('longitud')) {
+            DB::statement(
+                'UPDATE destinos SET ubicacion = ST_SetSRID(ST_MakePoint(?, ?), 4326) WHERE id = ?',
+                [$request->longitud, $request->latitud, $destino->id]
+            );
+        }
+
         return redirect()->route('admin.destinos.index')
             ->with('success', 'Destino actualizado correctamente.');
     }
 
+    public function edit(Destino $destino)
+    {
+        $provincias = Provincia::orderBy('nombre')->get();
+        return view('admin.destinos.edit', compact('destino', 'provincias'));
+    }
     public function destroy(Destino $destino)
     {
         $destino->delete();
