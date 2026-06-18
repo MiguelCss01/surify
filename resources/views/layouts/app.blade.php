@@ -939,6 +939,7 @@
     </script>
 
 
+<script>
         // Mobile menu toggle
         document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
             const panel = document.getElementById('mobile-menu-panel');
@@ -964,6 +965,7 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             updateThemeIcon();
         });
+</script>
 
 </body>
 
