@@ -7,7 +7,12 @@
 {{-- Hero --}}
 <div class="relative w-full h-80 rounded-3xl overflow-hidden mb-8 shadow-lg">
     @if($evento->imagen_url)
-    <img src="{{ asset('storage/' . $evento->imagen_url) }}" class="w-full h-full object-cover" alt="{{ $evento->nombre }}">
+    <img src="{{ $evento->imagen_url
+    ? (str_starts_with($evento->imagen_url, 'http')
+        ? $evento->imagen_url
+        : asset('storage/' . $evento->imagen_url))
+    : '' }}"
+        class="w-full h-full object-cover" alt="{{ $evento->nombre }}">
     @else
     <div class="w-full h-full bg-gradient-to-br from-[#28628f] to-[#1a4669] flex items-center justify-center">
         <span class="material-symbols-outlined text-white text-[80px] opacity-30">celebration</span>
@@ -255,9 +260,13 @@
                     class="flex gap-3 p-3 bg-slate-50 rounded-xl hover:bg-[#28628f]/5 transition-all text-decoration-none group">
                     <div class="w-10 h-10 rounded-lg bg-[#28628f]/10 flex items-center justify-center shrink-0 overflow-hidden">
                         @if($rel->imagen_url)
-                        <img src="{{ asset('storage/' . $rel->imagen_url) }}" class="w-full h-full object-cover" alt="">
-                        @else
-                        <span class="material-symbols-outlined text-[#28628f] text-[18px]">celebration</span>
+                        <img src="{{ $rel->imagen_url
+                                ? (str_starts_with($rel->imagen_url, 'http')
+                                    ? $rel->imagen_url
+                                    : asset('storage/' . $rel->imagen_url))
+                                : '' }}"
+                            @else
+                            <span class="material-symbols-outlined text-[#28628f] text-[18px]">celebration</span>
                         @endif
                     </div>
                     <div class="flex-1 min-w-0">

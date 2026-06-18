@@ -115,46 +115,48 @@
 
                     {{-- Celdas vacías al inicio --}}
                     @for($i = 0; $i < $iniciaSemana; $i++)
-                    <div class="bg-slate-50 min-h-[100px] p-2"></div>
-                    @endfor
-
-                    {{-- Días del mes --}}
-                    @for($d = 1; $d <= $diasEnMes; $d++)
-                    @php
-                    $eventoDelDia = $eventos->first(function($e) use ($d) {
-                        $inicio = $e->fecha_inicio->day;
-                        $fin = $e->fecha_fin ? $e->fecha_fin->day : $inicio;
-                        return $d >= $inicio && $d <= $fin;
-                    });
-                    $hoy = now()->day == $d && now()->month == $mes && now()->year == $año;
-                    @endphp
-
-                    @if($eventoDelDia)
-                    {{-- ✅ CAMBIADO: div onclick → <a href> --}}
-                    <div onclick="abrirModalEvento({{ $eventoDelDia->id }}, '{{ addslashes($eventoDelDia->nombre) }}', '{{ addslashes($eventoDelDia->tipo ?? 'Festival') }}', '{{ $eventoDelDia->fecha_inicio->format('d/m/Y') }}', '{{ $eventoDelDia->fecha_fin ? $eventoDelDia->fecha_fin->format('d/m/Y') : '' }}', '{{ addslashes($eventoDelDia->descripcion ?? '') }}', '{{ addslashes($eventoDelDia->imagen_url ?? '') }}', '{{ addslashes($eventoDelDia->provincia->nombre ?? '') }}', '{{ addslashes($eventoDelDia->destino->nombre ?? '') }}', '{{ addslashes($eventoDelDia->rango_precio ?? '') }}')"
-                        class="bg-emerald-50/40 min-h-[100px] p-2 border-2 border-emerald-500/30 hover:bg-emerald-50 transition-colors block text-decoration-none cursor-pointer">
-                        <span class="text-xs font-bold text-emerald-700">{{ $d }}</span>
-                        <div class="mt-1 bg-emerald-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded truncate">{{ Str::limit($eventoDelDia->nombre, 12) }}</div>
-                    </div>
-                    {{-- ✅ FIN cambio calendario --}}
-                    @else
-                    <div class="bg-white min-h-[100px] p-2 hover:bg-slate-50/80 transition-colors {{ $hoy ? 'ring-2 ring-inset ring-[#28628f]' : '' }}">
-                        <span class="text-xs font-semibold {{ $hoy ? 'text-[#28628f] font-black' : 'text-slate-400' }}">{{ $d }}</span>
-                    </div>
-                    @endif
-                    @endfor
-
-                    {{-- Celdas vacías al final --}}
-                    @php $celdasRestantes = (7 - ($iniciaSemana + $diasEnMes) % 7) % 7; @endphp
-                    @for($i = 0; $i < $celdasRestantes; $i++)
-                    <div class="bg-slate-50 min-h-[100px] p-2"></div>
-                    @endfor
-
+                        <div class="bg-slate-50 min-h-[100px] p-2">
                 </div>
+                @endfor
+
+                {{-- Días del mes --}}
+                @for($d = 1; $d <= $diasEnMes; $d++)
+                    @php
+                    $eventoDelDia=$eventos->first(function($e) use ($d) {
+                    $inicio = $e->fecha_inicio->day;
+                    $fin = $e->fecha_fin ? $e->fecha_fin->day : $inicio;
+                    return $d >= $inicio && $d <= $fin;
+                        });
+                        $hoy=now()->day == $d && now()->month == $mes && now()->year == $año;
+                        @endphp
+
+                        @if($eventoDelDia)
+                        {{-- ✅ CAMBIADO: div onclick → <a href> --}}
+                        <div onclick="abrirModalEvento({{ $eventoDelDia->id }}, '{{ addslashes($eventoDelDia->nombre) }}', '{{ addslashes($eventoDelDia->tipo ?? 'Festival') }}', '{{ $eventoDelDia->fecha_inicio->format('d/m/Y') }}', '{{ $eventoDelDia->fecha_fin ? $eventoDelDia->fecha_fin->format('d/m/Y') : '' }}', '{{ addslashes($eventoDelDia->descripcion ?? '') }}', '{{ addslashes($eventoDelDia->imagen_url ?? '') }}', '{{ addslashes($eventoDelDia->provincia->nombre ?? '') }}', '{{ addslashes($eventoDelDia->destino->nombre ?? '') }}', '{{ addslashes($eventoDelDia->rango_precio ?? '') }}')"
+                            class="bg-emerald-50/40 min-h-[100px] p-2 border-2 border-emerald-500/30 hover:bg-emerald-50 transition-colors block text-decoration-none cursor-pointer">
+                            <span class="text-xs font-bold text-emerald-700">{{ $d }}</span>
+                            <div class="mt-1 bg-emerald-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded truncate">{{ Str::limit($eventoDelDia->nombre, 12) }}</div>
+                        </div>
+                        {{-- ✅ FIN cambio calendario --}}
+                        @else
+                        <div class="bg-white min-h-[100px] p-2 hover:bg-slate-50/80 transition-colors {{ $hoy ? 'ring-2 ring-inset ring-[#28628f]' : '' }}">
+                            <span class="text-xs font-semibold {{ $hoy ? 'text-[#28628f] font-black' : 'text-slate-400' }}">{{ $d }}</span>
+                        </div>
+                        @endif
+                        @endfor
+
+                        {{-- Celdas vacías al final --}}
+                        @php $celdasRestantes = (7 - ($iniciaSemana + $diasEnMes) % 7) % 7; @endphp
+                        @for($i = 0; $i < $celdasRestantes; $i++)
+                            <div class="bg-slate-50 min-h-[100px] p-2">
             </div>
-        </section>
+            @endfor
 
     </div>
+</div>
+</section>
+
+</div>
 </div>
 
 {{-- función abrirModalEvento eliminada — ya no se usa --}}
@@ -174,8 +176,11 @@
         destinoEl.textContent = destino ? `• ${destino}` : '';
 
         const img = document.getElementById('modal-evento-img');
-        img.src = imagen || 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800';
-        
+        if (imagen) {
+            img.src = imagen.startsWith('http') ? imagen : '/storage/' + imagen;
+        } else {
+            img.src = 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800';
+        }
         document.getElementById('modal-evento-link').href = `/eventos/${id}`;
 
         document.getElementById('modal-evento').classList.remove('hidden');
@@ -228,7 +233,7 @@
             </div>
             <div class="pt-2">
                 <a id="modal-evento-link" href="#"
-                   class="w-full bg-[#28628f] text-white font-bold py-3 rounded-xl hover:bg-[#1a4669] transition-all text-sm flex items-center justify-center gap-2 text-decoration-none">
+                    class="w-full bg-[#28628f] text-white font-bold py-3 rounded-xl hover:bg-[#1a4669] transition-all text-sm flex items-center justify-center gap-2 text-decoration-none">
                     <span class="material-symbols-outlined text-[18px]">open_in_new</span>
                     Ver detalles completos
                 </a>
