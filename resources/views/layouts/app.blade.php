@@ -544,7 +544,7 @@
     });
 </script>
 
-<body class="flex flex-col min-h-screen antialiased">
+<body class="flex flex-col min-h-screen antialiased bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
     {{-- Pantalla de carga --}}
     <div id="loading-screen">
@@ -560,14 +560,14 @@
         </div>
     </div>
 
-    <header class="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md sticky top-0 z-50 shadow-sm transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
 
             <!-- Logo -->
             <div class="flex items-center gap-2 shrink-0">
-                <a href="{{ route('home') }}" class="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-sm select-none hover:opacity-95 transition-opacity text-decoration-none">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm select-none hover:opacity-95 transition-opacity text-decoration-none">
                     <span class="material-symbols-outlined text-[24px] text-[#28628f]" style="font-variation-settings: 'FILL' 1;">explore</span>
-                    <span class="text-xl font-black text-[#191c1d] tracking-tighter" style="font-family: 'Inter', sans-serif;">Surify</span>
+                    <span class="text-xl font-black text-[#191c1d] dark:text-white tracking-tighter" style="font-family: 'Inter', sans-serif;">Surify</span>
                 </a>
             </div>
 
@@ -665,6 +665,11 @@
 
             <!-- Auth -->
             <div class="flex items-center gap-3 shrink-0">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-amber-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-amber-400 rounded-full transition-colors">
+                    <span id="theme-toggle-icon" class="material-symbols-outlined text-[18px]">dark_mode</span>
+                </button>
+
                 @auth
                 <div class="flex items-center gap-3">
 
@@ -699,6 +704,23 @@
                 @else
                 <a href="{{ route('login') }}" class="text-xs font-semibold px-4 py-2 rounded-full border border-slate-200 hover:border-[#28628f] text-slate-600 hover:text-[#28628f] transition-all bg-white text-decoration-none">Iniciar Sesión</a>
                 <a href="{{ route('register') }}" class="text-xs font-semibold px-4 py-2 rounded-full bg-[#28628f] hover:bg-[#1a4669] text-white transition-all shadow-sm text-decoration-none">Registrarse</a>
+                @endauth
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden w-8 h-8 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-[#28628f] bg-slate-100 dark:bg-slate-800 rounded-lg transition-colors ml-1">
+                    <span class="material-symbols-outlined text-[20px]">menu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu-panel" class="hidden md:hidden border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+            <div class="px-4 py-3 flex flex-col gap-2">
+                <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-decoration-none">Inicio</a>
+                <a href="{{ route('mapa.nacional') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-decoration-none">Mapa</a>
+                <a href="{{ route('eventos.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-decoration-none">Eventos</a>
+                <a href="{{ route('combustible.index') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#28628f] px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-decoration-none">Combustible</a>
+                @auth
+                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-[#28628f] dark:text-sky-400 px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-decoration-none">Panel / Admin</a>
                 @endauth
             </div>
         </div>
@@ -915,6 +937,33 @@
             });
         })();
     </script>
+
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
+            const panel = document.getElementById('mobile-menu-panel');
+            panel.classList.toggle('hidden');
+        });
+
+        // Theme toggle
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-toggle-icon');
+        
+        function updateThemeIcon() {
+            if (document.documentElement.classList.contains('dark')) {
+                if(themeIcon) themeIcon.textContent = 'light_mode';
+            } else {
+                if(themeIcon) themeIcon.textContent = 'dark_mode';
+            }
+        }
+        updateThemeIcon();
+        
+        themeBtn?.addEventListener('click', function() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        });
 
 </body>
 
